@@ -10,10 +10,10 @@ export default function Home() {
         </p>
 
         <div className="flex gap-4 mt-8">
-          <button className="px-6 py-3 rounded-full bg-cozy-primary text-white font-semibold hover:opacity-90 transition-opacity shadow-sm">
+          <button className="btn btn-primary btn-pill">
             Get Started
           </button>
-          <button className="px-6 py-3 rounded-full bg-cozy-muted text-cozy-text font-semibold hover:bg-opacity-80 transition-opacity">
+          <button className="btn btn-muted btn-pill">
             Log In
           </button>
         </div>

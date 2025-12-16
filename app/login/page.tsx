@@ -61,7 +61,7 @@ export default function LoginPage() {
                             name="action"
                             value="login"
                             disabled={isPending}
-                            className="flex-1 bg-cozy-primary text-white py-3 px-4 rounded-xl font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm disabled:opacity-50"
+                            className="flex-1 btn btn-primary btn-md"
                         >
                             {isPending ? 'Loading...' : 'Log In'}
                         </button>
@@ -70,7 +70,7 @@ export default function LoginPage() {
                             name="action"
                             value="signup"
                             disabled={isPending}
-                            className="flex-1 bg-white text-cozy-text border-2 border-cozy-muted py-3 px-4 rounded-xl font-semibold hover:bg-cozy-muted/50 active:scale-[0.98] transition-all disabled:opacity-50"
+                            className="flex-1 btn btn-secondary btn-md"
                         >
                             Sign Up
                         </button>
@@ -87,7 +87,7 @@ export default function LoginPage() {
                 </div>
 
                 <form>
-                    <button formAction={signInWithGoogle} className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-50 transition-colors">
+                    <button formAction={signInWithGoogle} className="w-full btn btn-secondary btn-md gap-3 border-gray-200 text-gray-700 font-medium bg-white hover:bg-gray-50">
                         {/* Google Icon SVG */}
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />

@@ -1,0 +1,38 @@
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 font-semibold transition-all cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+    }
+
+    .btn-primary {
+        @apply bg-cozy-primary text-white hover:opacity-90 shadow-sm shadow-cozy-primary/20;
+    }
+
+    .btn-secondary {
+        @apply bg-white text-cozy-text border-2 border-cozy-muted hover:bg-cozy-muted/50;
+    }
+
+    .btn-muted {
+        @apply bg-cozy-muted text-cozy-text hover:opacity-80;
+    }
+
+    .btn-dark {
+        @apply bg-cozy-text text-white hover:bg-gray-800;
+    }
+
+    .btn-ghost {
+        @apply text-cozy-text/60 hover:bg-cozy-muted;
+    }
+
+    /* Sizes / Shapes */
+    .btn-md {
+        @apply px-4 py-3 rounded-xl text-base;
+    }
+
+    .btn-lg {
+        @apply px-8 py-4 rounded-2xl text-lg;
+    }
+
+    .btn-pill {
+        @apply px-6 py-3 rounded-full;
+    }
+}

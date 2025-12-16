@@ -143,7 +143,7 @@ export default function NewHabitPage() {
                             type="button"
                             onClick={handleBack}
                             disabled={currentStep === 0}
-                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors ${currentStep === 0 ? 'opacity-0 pointer-events-none' : 'text-cozy-text/60 hover:bg-cozy-muted'}`}
+                            className={`btn btn-ghost btn-md gap-2 ${currentStep === 0 ? 'opacity-0 pointer-events-none' : ''}`}
                         >
                             <ArrowLeft className="w-5 h-5" />
                             Back
@@ -153,7 +153,7 @@ export default function NewHabitPage() {
                             <button
                                 type="submit"
                                 disabled={isPending}
-                                className="flex items-center gap-2 bg-cozy-primary text-white px-8 py-4 rounded-2xl font-bold text-lg hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-cozy-primary/20"
+                                className="btn btn-primary btn-lg gap-2 shadow-lg"
                             >
                                 {isPending ? 'Planting...' : 'Plant Seed'}
                                 <Leaf className="w-5 h-5" />
@@ -163,7 +163,7 @@ export default function NewHabitPage() {
                                 type="button"
                                 onClick={handleNext}
                                 disabled={!formData[step.field as keyof typeof formData]}
-                                className="flex items-center gap-2 bg-cozy-text text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-800 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="btn btn-dark btn-lg gap-2"
                             >
                                 Next
                                 <ArrowRight className="w-5 h-5" />
