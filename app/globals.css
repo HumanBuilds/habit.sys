@@ -1,32 +1,7 @@
 @import "tailwindcss";
+@import "./colors.css";
+@import "./buttons.css";
 
-@theme {
-  --color-cozy-bg: var(--cozy-bg);
-  --color-cozy-text: var(--cozy-text);
-  --color-cozy-primary: var(--cozy-primary);
-  --color-cozy-accent: var(--cozy-accent);
-  --color-cozy-muted: var(--cozy-muted);
-  
-  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
-}
-
-:root {
-  --cozy-bg: #FDFCF8;    /* Creamy Off-white */
-  --cozy-text: #292524;  /* Stone 800 */
-  --cozy-primary: #789F8A; /* Soft Sage */
-  --cozy-accent: #E07A5F;  /* Terracotta */
-  --cozy-muted: #F5F5F4;   /* Stone 100 */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --cozy-bg: #1C1917;    /* Stone 900 */
-    --cozy-text: #E7E5E4;  /* Stone 200 */
-    --cozy-primary: #6B8F7C; /* Muted Sage */
-    --cozy-accent: #D06950;  /* Muted Terracotta */
-    --cozy-muted: #292524;   /* Stone 800 */
-  }
-}
 
 body {
   background: var(--cozy-bg);
