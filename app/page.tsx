@@ -1,23 +1,32 @@
+
+import { Window } from '@/components/Window'
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-8 text-center sm:p-20">
-      <main className="flex flex-col gap-8 items-center">
-        <h1 className="text-4xl font-bold text-cozy-primary tracking-tight sm:text-6xl">
-          Habit Garden
-        </h1>
-        <p className="text-lg text-cozy-text/80 max-w-md">
-          Focus on one habit. Nurture it. Watch it grow.
-        </p>
+    <div className="min-h-screen bg-white dither-50 flex items-center justify-center p-8">
+      <Window title="HABIT_GARDEN_V1.0.EXE" className="w-full max-w-2xl text-center">
+        <main className="flex flex-col gap-8 items-center py-12">
+          <h1 className="text-6xl font-bold tracking-tighter border-b-4 border-black pb-4">
+            HABIT GARDEN
+          </h1>
+          <p className="text-2xl font-bold max-w-md">
+            FOCUS ON ONE HABIT. NURTURE IT. WATCH IT GROW.
+          </p>
 
-        <div className="flex gap-4 mt-8">
-          <button className="btn btn-primary btn-pill">
-            Get Started
-          </button>
-          <button className="btn btn-muted btn-pill">
-            Log In
-          </button>
+          <div className="flex gap-6 mt-8">
+            <a href="/dashboard" className="btn-retro inverted text-2xl px-12 py-4">
+              [ GET STARTED ]
+            </a>
+            <a href="/login" className="btn-retro text-2xl px-12 py-4">
+              [ LOG IN ]
+            </a>
+          </div>
+        </main>
+
+        <div className="mt-8 border-t-2 border-black pt-4 text-sm font-bold tracking-widest">
+          WARNING: PERSISTENCE IS REQUIRED FOR GROWTH.
         </div>
-      </main>
+      </Window>
     </div>
   );
 }

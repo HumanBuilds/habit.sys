@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { VT323 } from "next/font/google";
 import "./globals.css";
+import "./retro.css";
 
-const nunito = Nunito({
-  variable: "--font-nunito",
+const vt323 = VT323({
+  weight: "400",
+  variable: "--font-vt323",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "Habit Garden",
-  description: "A cozy habit tracker to nurture your growth.",
+  description: "A retro pixelated habit tracker.",
 };
 
 export default function RootLayout({
@@ -20,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${nunito.variable} antialiased bg-cozy-bg text-cozy-text`}
+        className={`${vt323.variable} retro-theme antialiased`}
       >
         {children}
       </body>
