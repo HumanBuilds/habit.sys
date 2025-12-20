@@ -1,9 +1,7 @@
 @import "tailwindcss";
-@import "./colors.css";
-@import "./buttons.css";
-
+@import "./retro.css";
 
 body {
-  background: var(--cozy-bg);
-  color: var(--cozy-text);
+  background: var(--color-white);
+  color: var(--color-black);
 }

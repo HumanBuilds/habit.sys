@@ -1,34 +1,34 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { createHabit } from './actions'
-import { ArrowLeft, ArrowRight, Check, Leaf } from 'lucide-react'
+import { initializeProtocol } from './actions'
+import { Window } from '@/components/Window'
+import { ProgressBar } from '@/components/ProgressBar'
 
 const steps = [
     {
         id: 'identity',
-        title: 'Who do you want to become?',
-        subtitle: 'Every action is a vote for the type of person you wish to become.',
+        title: 'IDENTITY PROTOCOL',
+        subtitle: 'WHO DO YOU WANT TO BECOME?',
         field: 'identity',
-        placeholder: 'e.g., A runner, A writer, A healthy eater',
-        prefix: 'I want to become a...'
+        placeholder: 'E.G., A RUNNER, A WRITER',
+        prefix: 'I WANT TO BECOME A...'
     },
     {
         id: 'behavior',
-        title: 'What is the core habit?',
-        subtitle: 'Make it specific. Avoid vague goals.',
+        title: 'BEHAVIOR SPECIFICATION',
+        subtitle: 'WHAT IS THE CORE HABIT?',
         field: 'title',
-        placeholder: 'e.g., Run 1 mile, Write 500 words, Eat an apple',
-        prefix: 'I will...'
+        placeholder: 'E.G., RUN 1 MILE, WRITE 500 WORDS',
+        prefix: 'I WILL...'
     },
     {
         id: 'cue',
-        title: 'When will you do it?',
-        subtitle: 'Implementation intention: I will [BEHAVIOR] at [TIME] in [LOCATION].',
+        title: 'CUE INITIALIZATION',
+        subtitle: 'WHEN WILL YOU DO IT?',
         field: 'cue',
-        placeholder: 'e.g., After I brush my teeth, At 7am in the kitchen',
-        prefix: 'Time / Location...'
+        placeholder: 'E.G., AFTER I BRUSH MY TEETH',
+        prefix: 'TIME / LOCATION...'
     }
 ]
 
@@ -44,7 +44,7 @@ export default function NewHabitPage() {
         cue: ''
     })
 
-    const [state, formAction, isPending] = useActionState(createHabit, initialState)
+    const [state, formAction, isPending] = useActionState(initializeProtocol, initialState)
 
     const step = steps[currentStep]
     const isLastStep = currentStep === steps.length - 1
@@ -62,122 +62,87 @@ export default function NewHabitPage() {
     }
 
     return (
-        <div className="min-h-screen bg-cozy-bg flex items-center justify-center p-6">
-            <div className="w-full max-w-2xl">
-                {/* Progress Bar */}
-                <div className="mb-12 flex items-center justify-between px-2">
-                    <div className="flex gap-2">
-                        {steps.map((_, i) => (
-                            <div
-                                key={i}
-                                className={`h-2 w-12 rounded-full transition-colors duration-500 ${i <= currentStep ? 'bg-cozy-primary' : 'bg-cozy-muted'}`}
-                            />
-                        ))}
+        <div className="min-h-screen bg-white dither-50 flex items-center justify-center p-6">
+            <Window title="NEW_HABIT_WIZARD.EXE" className="w-full max-w-2xl">
+                <div className="mb-8">
+                    <ProgressBar currentStep={currentStep + 1} totalSteps={steps.length} />
+                    <div className="flex justify-between font-bold text-sm tracking-widest">
+                        <span>STEP {currentStep + 1} / {steps.length}</span>
+                        <span>STATUS: {isPending ? 'PROCESSING...' : 'AWAITING INPUT'}</span>
                     </div>
-                    <span className="text-sm font-medium text-cozy-text/50">Step {currentStep + 1} of {steps.length}</span>
                 </div>
 
-                <form action={formAction}>
-                    {/* Hidden inputs to submit all data at the end */}
+                <form action={formAction} className="space-y-8">
                     <input type="hidden" name="identity" value={formData.identity} />
                     <input type="hidden" name="title" value={formData.title} />
                     <input type="hidden" name="cue" value={formData.cue} />
 
-                    <div className="relative min-h-[400px]">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentStep}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.3, ease: 'easeOut' }}
-                                className="space-y-8"
-                            >
-                                <div className="space-y-2">
-                                    <motion.h1
-                                        className="text-4xl font-bold text-cozy-text tracking-tight"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.1 }}
-                                    >
-                                        {step.title}
-                                    </motion.h1>
-                                    <motion.p
-                                        className="text-xl text-cozy-text/60"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.2 }}
-                                    >
-                                        {step.subtitle}
-                                    </motion.p>
-                                </div>
+                    <div className="min-h-[250px] border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]">
+                        <div className="space-y-4">
+                            <h1 className="text-3xl font-bold tracking-tighter border-b-2 border-black pb-2">
+                                {step.title}
+                            </h1>
+                            <p className="text-lg font-bold">
+                                {step.subtitle}
+                            </p>
+                        </div>
 
-                                <motion.div
-                                    className="space-y-4"
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: 0.3 }}
-                                >
-                                    <label className="text-sm font-bold uppercase tracking-wider text-cozy-primary">{step.prefix}</label>
-                                    <input
-                                        type="text"
-                                        autoFocus
-                                        value={formData[step.field as keyof typeof formData]}
-                                        onChange={(e) => setFormData({ ...formData, [step.field]: e.target.value })}
-                                        placeholder={step.placeholder}
-                                        className="w-full bg-transparent border-b-2 border-cozy-muted py-4 text-3xl font-medium text-cozy-text placeholder:text-cozy-text/20 focus:outline-none focus:border-cozy-primary transition-colors"
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter') {
-                                                e.preventDefault()
-                                                if (!isLastStep) handleNext()
-                                            }
-                                        }}
-                                    />
-                                </motion.div>
-                            </motion.div>
-                        </AnimatePresence>
+                        <div className="mt-8 space-y-2">
+                            <label className="text-sm font-bold uppercase tracking-widest">{step.prefix}</label>
+                            <input
+                                type="text"
+                                autoFocus
+                                value={formData[step.field as keyof typeof formData]}
+                                onChange={(e) => setFormData({ ...formData, [step.field]: e.target.value.toUpperCase() })}
+                                placeholder={step.placeholder}
+                                className="input-retro w-full text-2xl"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault()
+                                        if (!isLastStep && formData[step.field as keyof typeof formData]) handleNext()
+                                    }
+                                }}
+                            />
+                        </div>
                     </div>
 
-                    <div className="flex justify-between items-center mt-8">
+                    <div className="flex justify-between items-center mt-12">
                         <button
                             type="button"
                             onClick={handleBack}
                             disabled={currentStep === 0}
-                            className={`btn btn-ghost btn-md gap-2 ${currentStep === 0 ? 'opacity-0 pointer-events-none' : ''}`}
+                            className={`btn-retro ${currentStep === 0 ? 'opacity-0 pointer-events-none' : ''}`}
                         >
-                            <ArrowLeft className="w-5 h-5" />
-                            Back
+                            [ BACK ]
                         </button>
 
                         {isLastStep ? (
                             <button
                                 type="submit"
-                                disabled={isPending}
-                                className="btn btn-primary btn-lg gap-2 shadow-lg"
+                                disabled={isPending || !formData[step.field as keyof typeof formData]}
+                                className="btn-retro inverted"
                             >
-                                {isPending ? 'Planting...' : 'Plant Seed'}
-                                <Leaf className="w-5 h-5" />
+                                {isPending ? 'PLANTING...' : '[ PLANT SEED ]'}
                             </button>
                         ) : (
                             <button
                                 type="button"
                                 onClick={handleNext}
                                 disabled={!formData[step.field as keyof typeof formData]}
-                                className="btn btn-dark btn-lg gap-2"
+                                className="btn-retro"
                             >
-                                Next
-                                <ArrowRight className="w-5 h-5" />
+                                [ NEXT ]
                             </button>
                         )}
                     </div>
 
                     {state?.error && (
-                        <div className="mt-4 p-4 text-center text-red-500 bg-red-50 rounded-xl">
-                            {state.error}
+                        <div className="mt-6 p-4 border-2 border-black bg-black text-white font-bold text-center">
+                            ERROR: {state.error.toUpperCase()}
                         </div>
                     )}
                 </form>
-            </div>
+            </Window>
         </div>
     )
 }
