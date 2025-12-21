@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { initializeProtocol } from './actions'
 import { Window } from '@/components/Window'
 import { ProgressBar } from '@/components/ProgressBar'
@@ -102,42 +103,53 @@ export default function NewHabitPage() {
                     <input type="hidden" name="title" value={formData.title} />
                     <input type="hidden" name="cue" value={formData.cue} />
 
-                    <div className="min-h-[250px] border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]">
-                        <div className="space-y-4">
-                            <h1 className="text-3xl font-bold tracking-tighter border-b-2 border-black pb-2">
-                                {step.title}
-                            </h1>
-                            <p className="text-lg font-bold">
-                                {step.subtitle}
-                            </p>
-                        </div>
-
-                        <div className="mt-8 space-y-2">
-                            <label className="text-sm font-bold uppercase tracking-widest">{step.prefix}</label>
-                            <input
-                                type="text"
-                                autoFocus
-                                value={formData[step.field as keyof typeof formData]}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, [step.field]: e.target.value.toUpperCase() })
-                                    if (validationError) setValidationError(null)
-                                }}
-                                placeholder={step.placeholder}
-                                className="input-retro w-full text-2xl"
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault()
-                                        if (isLastStep) return // Let form submit handle it
-                                        handleNext()
-                                    }
-                                }}
-                            />
-                            {validationError && (
-                                <div className="text-red-600 font-bold text-sm mt-1 animate-pulse">
-                                    &gt;&gt; ERROR: {validationError}
+                    <div className="overflow-hidden">
+                        <AnimatePresence mode="wait" initial={false}>
+                            <motion.div
+                                key={currentStep}
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -20, opacity: 0 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                className="min-h-[250px] border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]"
+                            >
+                                <div className="space-y-4">
+                                    <h1 className="text-3xl font-bold tracking-tighter border-b-2 border-black pb-2">
+                                        {step.title}
+                                    </h1>
+                                    <p className="text-lg font-bold">
+                                        {step.subtitle}
+                                    </p>
                                 </div>
-                            )}
-                        </div>
+
+                                <div className="mt-8 space-y-2">
+                                    <label className="text-sm font-bold uppercase tracking-widest">{step.prefix}</label>
+                                    <input
+                                        type="text"
+                                        autoFocus
+                                        value={formData[step.field as keyof typeof formData]}
+                                        onChange={(e) => {
+                                            setFormData({ ...formData, [step.field]: e.target.value.toUpperCase() })
+                                            if (validationError) setValidationError(null)
+                                        }}
+                                        placeholder={step.placeholder}
+                                        className="input-retro w-full text-2xl"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault()
+                                                if (isLastStep) return // Let form submit handle it
+                                                handleNext()
+                                            }
+                                        }}
+                                    />
+                                    {validationError && (
+                                        <div className="text-red-600 font-bold text-sm mt-1 animate-pulse">
+                                            &gt;&gt; ERROR: {validationError}
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
 
                     <div className="flex justify-between items-center mt-12">
