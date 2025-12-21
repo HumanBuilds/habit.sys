@@ -2,7 +2,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { signout } from '../login/actions'
-import { queryProtocolStreak, forceResetProtocol, commitHabitLog } from './actions'
+import { queryProtocolStreak, commitHabitLog } from './actions'
 import { Window } from '@/components/Window'
 import { HabitCard } from '@/components/HabitCard'
 
@@ -95,9 +95,10 @@ export default async function DashboardPage() {
                 )}
             </Window>
 
-            <footer className="mt-8 text-sm font-bold">
+            <footer className="mt-8 text-sm font-bold btn-retro">
                 (C) 1984 ATKINSON PROTOCOL // VERSION 1.0.4
             </footer>
+
         </div>
     )
 }

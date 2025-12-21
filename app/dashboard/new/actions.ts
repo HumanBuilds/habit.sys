@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
-export async function initializeProtocol(prevState: any, formData: FormData) {
+export async function initializeProtocol(prevState: unknown, formData: FormData) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()

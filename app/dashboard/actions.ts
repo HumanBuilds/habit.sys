@@ -89,9 +89,9 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
 
         revalidatePath('/dashboard')
         return { success: true }
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error toggling habit:', error)
-        return { error: error.message }
+        return { error: error instanceof Error ? error.message : 'An unknown error occurred' }
     }
 }
 
@@ -112,8 +112,8 @@ export async function forceResetProtocol(habitId: string) {
 
         revalidatePath('/dashboard')
         return { success: true }
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error resetting streak:', error)
-        return { error: error.message }
+        return { error: error instanceof Error ? error.message : 'An unknown error occurred' }
     }
 }
