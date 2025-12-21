@@ -7,18 +7,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
     return (
         <>
             <motion.div
-                initial={{ top: "-10vh" }}
-                animate={{ top: "110vh" }}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
                 transition={{
-                    duration: 0.8,
-                    ease: "easeInOut"
+                    duration: 0.4,
+                    ease: "easeOut"
                 }}
-                className="scanline-sweep scanline-flicker"
-            />
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
             >
                 {children}
             </motion.div>

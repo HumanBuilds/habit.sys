@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { initializeProtocol } from './actions'
 import { Window } from '@/components/Window'
 import { ProgressBar } from '@/components/ProgressBar'
+import { isInputInvalid } from './utils'
 
 const steps = [
     {
@@ -46,6 +47,8 @@ export default function NewHabitPage() {
     })
     const [validationError, setValidationError] = useState<string | null>(null)
 
+
+
     const [state, formAction, isPending] = useActionState(initializeProtocol, initialState)
 
     const step = steps[currentStep]
@@ -53,7 +56,7 @@ export default function NewHabitPage() {
 
     const handleNext = () => {
         const currentValue = formData[step.field as keyof typeof formData]
-        if (!currentValue || currentValue.trim() === '') {
+        if (isInputInvalid(currentValue)) {
             setValidationError('INPUT_REQUIRED.SYS')
             return
         }
@@ -66,6 +69,7 @@ export default function NewHabitPage() {
 
     const handleBack = () => {
         if (currentStep > 0) {
+            setValidationError(null)
             setCurrentStep(c => c - 1)
         }
     }
@@ -93,7 +97,7 @@ export default function NewHabitPage() {
                     className="space-y-8"
                     onSubmit={(e) => {
                         const currentValue = formData[step.field as keyof typeof formData]
-                        if (!currentValue || currentValue.trim() === '') {
+                        if (isInputInvalid(currentValue)) {
                             e.preventDefault()
                             setValidationError('INPUT_REQUIRED.SYS')
                         }
@@ -107,10 +111,13 @@ export default function NewHabitPage() {
                         <AnimatePresence mode="wait" initial={false}>
                             <motion.div
                                 key={currentStep}
-                                initial={{ y: 20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                exit={{ y: -20, opacity: 0 }}
-                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                initial={{ x: 40, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: -40, opacity: 0 }}
+                                transition={{
+                                    duration: 0.4,
+                                    ease: (t) => Math.floor(t * 12) / 12 // Mechanical stepped motion
+                                }}
                                 className="min-h-[250px] border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]"
                             >
                                 <div className="space-y-4">
