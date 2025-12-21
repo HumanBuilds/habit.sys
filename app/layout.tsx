@@ -10,7 +10,7 @@ const vt323 = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "Habit.sys OS",
+  title: "Habit.sys",
   description: "A mechanical 1-bit habit tracking operating system.",
 };
 

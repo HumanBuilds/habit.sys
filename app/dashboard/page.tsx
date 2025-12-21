@@ -39,7 +39,7 @@ export default async function DashboardPage() {
 
     return (
         <div className="min-h-screen p-8 bg-white dither-50 flex flex-col items-center">
-            <Window title="HABIT.SYS.OS" className="w-full max-w-2xl">
+            <Window title="HABIT.SYS" className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-8 border-b-2 border-black pb-4">
                     <div>
                         <h1 className="text-4xl font-bold tracking-tighter">HABIT.SYS</h1>
