@@ -92,7 +92,26 @@ export default function NewHabitPage() {
                     </div>
                 </div>
 
-                <form action={formAction} className="space-y-8">
+                <form
+                    action={formAction}
+                    className="space-y-8"
+                    onSubmit={(e) => {
+                        const currentValue = formData[step.field as keyof typeof formData]
+                        if (isInputInvalid(currentValue)) {
+                            e.preventDefault()
+                            setValidationError('INPUT_REQUIRED.SYS')
+                            return
+                        }
+
+                        if (!isLastStep) {
+                            // If not the last step, prevent form submission (server action)
+                            // and move to next step manually instead.
+                            e.preventDefault()
+                            handleNext()
+                        }
+                        // If it IS the last step and valid, let the form action proceed
+                    }}
+                >
                     <input type="hidden" name="identity" value={formData.identity} />
                     <input type="hidden" name="title" value={formData.title} />
                     <input type="hidden" name="cue" value={formData.cue} />
@@ -131,21 +150,6 @@ export default function NewHabitPage() {
                                         }}
                                         placeholder={step.placeholder}
                                         className="input-retro w-full text-2xl"
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter') {
-                                                if (isLastStep) {
-                                                    const currentValue = formData[step.field as keyof typeof formData]
-                                                    if (isInputInvalid(currentValue)) {
-                                                        e.preventDefault()
-                                                        setValidationError('INPUT_REQUIRED.SYS')
-                                                    }
-                                                    // Else: let it submit the form
-                                                } else {
-                                                    e.preventDefault()
-                                                    handleNext()
-                                                }
-                                            }
-                                        }}
                                     />
                                     {validationError && (
                                         <div className="text-red-600 font-bold text-sm mt-1 animate-pulse">
