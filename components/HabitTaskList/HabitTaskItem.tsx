@@ -51,7 +51,7 @@ export const HabitTaskItem: React.FC<HabitTaskItemProps> = ({ id, title, isCompl
 
                 {/* Animated Strikethrough Line */}
                 <motion.div
-                    className="absolute left-0 top-1/2 w-full h-1 bg-black origin-left"
+                    className="absolute left-0 top-[45%] w-full h-1 bg-black origin-left"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: isCompleted ? 1 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
