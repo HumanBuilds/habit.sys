@@ -1,18 +1,32 @@
 "use client";
 
-import React, { useMemo, useTransition } from 'react';
+import React, { useMemo, useTransition, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { HabitTaskItem } from './HabitTaskItem';
 import { sortHabits, type Habit } from './utils';
 import { commitHabitLog } from '@/app/dashboard/actions';
+import { GlitchState } from '../GlitchState';
 
 interface HabitTaskListProps {
     habits: Habit[];
     completedHabitIds: Set<string>;
+    eligibility: {
+        eligible: boolean;
+        stats?: {
+            completions: number;
+            requiredCompletions: number;
+            dedication: number;
+            requiredDedication: number;
+        };
+        latestHabitTitle?: string;
+    };
 }
 
-export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedHabitIds }) => {
+export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedHabitIds, eligibility }) => {
     const [isPending, startTransition] = useTransition();
+    const [devOverride, setDevOverride] = useState(false);
+
+    const isEligible = eligibility.eligible || devOverride;
 
     const sortedHabits = useMemo(() => {
         return sortHabits(habits, completedHabitIds);
@@ -26,10 +40,28 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
 
     return (
         <div className="flex flex-col border-t-2 border-black">
+            {/* Command Row or Glitch State */}
+            {isEligible ? (
+                <div className="mb-6">
+                    <a href="/dashboard/new" className="flex items-center gap-4 py-2 px-3 border-2 border-dashed border-black hover:bg-black hover:text-white transition-colors group">
+                        <div className="w-8 h-8 flex items-center justify-center shrink-0 border-2 border-black group-hover:border-white">
+                            <span className="text-2xl font-bold">+</span>
+                        </div>
+                        <span className="text-xl font-bold tracking-tight uppercase">Initialize New Protocol...</span>
+                    </a>
+                </div>
+            ) : (
+                <GlitchState
+                    stats={eligibility.stats}
+                    latestHabitTitle={eligibility.latestHabitTitle}
+                />
+            )}
+
             <h2 className="text-sm font-bold tracking-[0.2em] bg-black text-white px-2 py-1 mb-4 flex justify-between">
                 <span>ONGOING_HABITS.LOG</span>
                 {isPending && <span className="animate-pulse">UPDATING...</span>}
             </h2>
+
             <div className="flex flex-col divide-y-1 divide-black/10">
                 <AnimatePresence mode="popLayout">
                     {sortedHabits.map((habit) => (
@@ -38,17 +70,29 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                             id={habit.id}
                             title={habit.title}
                             isCompleted={completedHabitIds.has(habit.id)}
-                            onToggle={handleToggle}
+                            onToggle={(id, currentlyDone) => handleToggle(id, currentlyDone)}
                         />
                     ))}
                 </AnimatePresence>
             </div>
 
-            {habits.length === 0 && (
-                <div className="text-center py-10 opacity-50 italic">
-                    NO ACTIVE PROTOCOLS FOUND.
+            {!isEligible && (
+                <div className="mt-8">
+                    <GlitchState
+                        stats={eligibility.stats}
+                        latestHabitTitle={eligibility.latestHabitTitle}
+                    />
                 </div>
             )}
+
+            <div className="mt-auto pt-8 flex justify-end">
+                <button
+                    onClick={() => setDevOverride(!devOverride)}
+                    className="text-[10px] uppercase tracking-widest opacity-20 hover:opacity-100 transition-opacity"
+                >
+                    [ DEV_OVERRIDE: {devOverride ? "ACTIVE" : "INACTIVE"} ]
+                </button>
+            </div>
         </div>
     );
 };

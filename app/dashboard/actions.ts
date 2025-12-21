@@ -95,6 +95,65 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
     }
 }
 
+export async function checkProtocolEligibility() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return { eligible: false, error: 'Unauthorized' }
+
+    // 1. Get the latest habit
+    const { data: habits, error: habitError } = await supabase
+        .from('habits')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+
+    if (habitError) throw habitError
+    if (!habits || habits.length === 0) {
+        // No habits yet, so they are eligible to create their first one
+        return { eligible: true }
+    }
+
+    const latestHabit = habits[0]
+
+    // 2. Count completions
+    const { count, error: countError } = await supabase
+        .from('habit_logs')
+        .select('*', { count: 'exact', head: true })
+        .eq('habit_id', latestHabit.id)
+
+    if (countError) throw countError
+    const completionCount = count || 0
+
+    // 3. Calculate total days since creation
+    const createdDate = new Date(latestHabit.created_at)
+    const today = new Date()
+    // Reset hours to compare dates only
+    createdDate.setHours(0, 0, 0, 0)
+    today.setHours(0, 0, 0, 0)
+
+    const diffTime = Math.abs(today.getTime() - createdDate.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1 // +1 because first day counts
+
+    const dedicationRate = diffDays > 0 ? (completionCount / diffDays) * 100 : 0
+
+    // Eligibility check: 10 completions AND 90% dedication
+    const eligible = completionCount >= 10 && dedicationRate >= 90
+
+    return {
+        eligible,
+        stats: {
+            completions: completionCount,
+            dedication: Math.round(dedicationRate),
+            totalDays: diffDays,
+            requiredCompletions: 10,
+            requiredDedication: 90
+        },
+        latestHabitTitle: latestHabit.title
+    }
+}
+
 export async function forceResetProtocol(habitId: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()

@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { signout } from '../login/actions'
+import { checkProtocolEligibility } from './actions'
 import { Window } from '@/components/Window'
 import { HabitTaskList } from '@/components/HabitTaskList'
 
@@ -33,6 +34,9 @@ export default async function DashboardPage() {
 
     const completedHabitIds = new Set(logs?.map(log => log.habit_id) || [])
 
+    // Check protocol eligibility for new ones
+    const eligibility = await checkProtocolEligibility()
+
     return (
         <div className="min-h-screen p-8 bg-white dither-50 flex flex-col items-center">
             <Window title="HABIT_GARDEN.EXE" className="w-full max-w-2xl">
@@ -42,12 +46,9 @@ export default async function DashboardPage() {
                         <p className="text-xl">USER: {user.email?.split('@')[0].toUpperCase()}</p>
                     </div>
                     <div className="flex gap-4">
-                        <a href="/dashboard/new" className="btn-retro">
-                            + NEW
-                        </a>
                         <form action={signout}>
-                            <button className="btn-retro">
-                                EXIT
+                            <button className="btn-retro-secondary">
+                                [ EXIT ]
                             </button>
                         </form>
                     </div>
@@ -57,6 +58,7 @@ export default async function DashboardPage() {
                     <HabitTaskList
                         habits={habits}
                         completedHabitIds={completedHabitIds}
+                        eligibility={eligibility}
                     />
                 ) : (
                     <div className="text-center py-20 border-2 border-dashed border-black">
