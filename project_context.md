@@ -1,63 +1,63 @@
-# Habit Garden: Project Context & Roadmap
+# Atkinson Protocol OS: System Context & Baseline
 
-Habit Garden is a mechanical, 1-bit habit tracking interface focused on the philosophy of **one habit at a time**. It leverages Atomic Habits methodology to ensure habits are small, specific, and identity-based.
+Atkinson Protocol OS is a mechanical, 1-bit habit tracking interface designed for **systematic self-optimization**. It treats habits as core system modules that must be stabilized before further expansion.
 
-## 🌿 Current State
+## 💾 System State
 
 ### Architecture & Tech Stack
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router, Server Actions)
-- **Database/Auth**: [Supabase](https://supabase.com/) (SSR, Postgres)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) with the **Atkinson Protocol** (1-bit Design System)
-- **Design Strategy**: 1-bit (Black & White) aesthetic, dithered backgrounds, pixel-perfect borders.
-- **Typography**: [VT323](https://fonts.google.com/specimen/VT323) (Pixel-bitmap font)
-- **Icons**: Simplified pixel-art / high-contrast glyphs via [Lucide React](https://lucide.dev/)
+- **Engine**: [Next.js 15](https://nextjs.org/) (Server-Side Execution)
+- **Data Terminal**: [Supabase](https://supabase.com/) (Distributed Postgres)
+- **Visual Interface**: [Tailwind CSS 4](https://tailwindcss.com/) with **Atkinson Protocol** (1-bit Design System)
+- **Display Mode**: High-contrast Black & White, hardware-acceleration dithering.
+- **Font Face**: [VT323](https://fonts.google.com/specimen/VT323) (System Bitmap)
 
-### Core Features
-- **One Habit Focus**: The dashboard prioritizes the most recently created habit, keeping the user focused on a single change.
-- **Identity-First Creation**: The habit creation flow asks "Who do you want to become?" before "What will you do?", aligning with Atomic Habits.
-- **Retro Windows**: Content is organized inside draggable-style "Windows" with striped title bars.
-- **Habit Matrix**: A high-contrast grid of "Habit Cards" that invert colors when a protocol is completed.
+### Core Directives
+- **Single Node Focus**: The system prioritizes the most recent protocol initialization to prevent cognitive overload.
+- **Identity-First Boot**: Habit initialization begins by defining the target system state (Identity) before the execution parameters (Habit).
+- **Retro-System Windows**: Data is encapsulated in rigid, solid-bordered window modules.
+- **Check-In Matrix**: A high-contrast task list where protocols are executed and prioritized based on load-state.
 
-### Database Schema
-- `habits`: Stores the identity goal, habit title, cue, and pixel-icon identifier.
-- `habit_logs`: Tracks daily completions.
-
----
-
-## 🚀 Feature Roadmap
-
-### 1. Streaks & Protocol Stability
-- **System Growth**: A visual representation of a pixelated garden that matures as users maintain their "Protocol Stability" (streak).
-- **Protocol Milestones**: Hard-edge visual rewards for 7, 30, and 100-day uptime.
-
-### 2. Atomic Habit Enhancements
-- **"Matrix Cues"**: Browser notifications at the specific "Cue" time to trigger habit execution.
-- **"Fallback Mode"**: A "Two-Minute Version" toggle for emergency habit maintenance when the full protocol cannot be executed.
-- **"Mechanical Feedback"**: Sound effects on check-in (mechanical clicks) and visual glitches on milestone achievement.
-
-### 3. Archive & Reflection
-- **The Archives**: View past protocols that were successfully integrated into the user's permanent identity state.
-- **Identity Synthesis**: A visual timeline showing the sequence of identities the user has adopted.
+### Database Terminal
+- `habits`: Stores the identity directives and protocol parameters.
+- `habit_logs`: Tracks execution logs (completions).
 
 ---
 
-## 🎨 Atkinson Protocol (Design System)
-- **Layout**: Fluid grid inside solid-bordered containers.
-- **Solid Borders**: 2px or 3px solid black.
-- **Hard Shadows**: `box-shadow: 4px 4px 0px 0px #000;`
-- **Dithering**: SVG-based checkerboards (50%) and stippling (25%) for depth without grays.
+## 🛰️ System Roadmap
+
+### 1. Stability & Protocol Integration
+- **Stability Metrics**: Visual indicators of protocol integration that mature as uptime increases.
+- **Integration Milestones**: System-wide visual feedback for 7, 30, and 100-day uptime targets.
+
+### 2. Systematic Enhancements
+- **"System Pulsing"**: Timed alerts for protocol execution (Cue triggers).
+- **"Recovery Mode"**: Low-power execution mode for emergency protocol maintenance.
+- **"Mechanical Feedback"**: Hardware-inspired soundscapes and visual glitches upon protocol stabilization.
+
+### 3. Archive & System History
+- **The Archives**: Secure storage for fully integrated protocols.
+- **System Evolution**: A visual timeline of identity states adopted by the operator.
 
 ---
 
-## 🧪 Testing Strategy
+## 🎨 Atkinson Protocol (Visual Standards)
+- **Containerization**: Solid-bordered modules with 3px black lines.
+- **System Shadow**: `box-shadow: 4px 4px 0px 0px #000;`
+- **Dithering Modes**: Hardware-level patterns (50% check, 25% stipple) for depth without grayscale.
 
-### 1. Protocol Verification
-- **Vitest**: Test server actions (e.g., `commitHabitLog`) and protocol math logic.
-- **Browser Subagent**: Verify 1-bit aesthetic adherence and pixel-perfect rendering across steps.
+---
 
-### 2. End-to-End (E2E)
-- **Playwright**: Automate the "Happy Path":
-  1. System Login.
-  2. Protocol Initialization (New Habit).
-  3. Daily Check-In Execution.
-  4. Verify Stability Upshift (Streak Update).
+## 🧪 System Verification
+
+### 1. Logic Validation
+- **Vitest**: Unit testing for server actions and protocol stability calculations.
+
+### 2. Physical Rendering
+- **Browser Subagent**: Verify 1-bit adherence and terminal-grade layout precision.
+
+### 3. End-to-End (E2E) Execution
+- **Playwright**: Automate the standard operator path:
+  1. System Auth.
+  2. Protocol Initialization.
+  3. Execution Log Entry.
+  4. Stability Upshift Verification.

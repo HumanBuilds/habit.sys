@@ -58,8 +58,8 @@ export const GlitchState: React.FC<GlitchStateProps> = ({
                 )}
 
                 <div className="mt-2 text-xs opacity-60 italic">
-                    &gt;&gt; STATUS: PROTOCOL_UNSTABLE. <br />
-                    &gt;&gt; ADVICE: STRENGTHEN THE CURRENT NODE BEFORE EXPANDING THE GARDEN.
+                    &gt;&gt; STATUS: MODULE_UNSTABLE. <br />
+                    &gt;&gt; ADVICE: STRENGTHEN THE CURRENT NODE BEFORE SYSTEM EXPANSION.
                 </div>
             </div>
         </motion.div>

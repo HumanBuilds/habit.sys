@@ -10,8 +10,8 @@ const vt323 = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "Habit Garden",
-  description: "A retro pixelated habit tracker.",
+  title: "Atkinson Protocol OS",
+  description: "A mechanical 1-bit habit tracking operating system.",
 };
 
 export default function RootLayout({
