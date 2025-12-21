@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useTransition, useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { HabitTaskItem } from './HabitTaskItem';
 import { sortHabits, type Habit } from './utils';
 import { commitHabitLog } from '@/app/dashboard/actions';
@@ -25,6 +25,7 @@ interface HabitTaskListProps {
 export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedHabitIds, eligibility }) => {
     const [isPending, startTransition] = useTransition();
     const [devOverride, setDevOverride] = useState(false);
+    const [glitchExpanded, setGlitchExpanded] = useState(false);
 
     const isEligible = eligibility.eligible || devOverride;
 
@@ -73,10 +74,35 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
 
             {!isEligible && (
                 <div className="mt-8">
-                    <GlitchState
-                        stats={eligibility.stats}
-                        latestHabitTitle={eligibility.latestHabitTitle}
-                    />
+                    <button
+                        onClick={() => setGlitchExpanded(!glitchExpanded)}
+                        className="w-full border-2 border-black bg-black text-white px-3 py-2 flex justify-between items-center hover:bg-white hover:text-black transition-colors group mb-2"
+                    >
+                        <div className="flex items-center gap-2">
+                            <span className="animate-pulse text-red-500">●</span>
+                            <span className="font-bold tracking-tight uppercase">
+                                System Expansion Blocked
+                            </span>
+                        </div>
+                        <span className="font-mono text-xs opacity-70">{glitchExpanded ? "[ COLLAPSE_LOG ]" : "[ VIEW_DIAGNOSTICS ]"}</span>
+                    </button>
+
+                    <AnimatePresence>
+                        {glitchExpanded && (
+                            <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                className="overflow-hidden"
+                            >
+                                <GlitchState
+                                    stats={eligibility.stats}
+                                    latestHabitTitle={eligibility.latestHabitTitle}
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             )}
 
