@@ -10,7 +10,7 @@ const initialState = {
 }
 
 export default function LoginPage() {
-    const [state, formAction, isPending] = useActionState(async (prevState: any, formData: FormData) => {
+    const [state, formAction, isPending] = useActionState(async (prevState: unknown, formData: FormData) => {
         const actionType = formData.get('action')
         if (actionType === 'signup') {
             return await signup(prevState, formData)
