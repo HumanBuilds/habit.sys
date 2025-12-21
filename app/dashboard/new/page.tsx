@@ -120,12 +120,12 @@ export default function NewHabitPage() {
                         <AnimatePresence mode="wait" initial={false}>
                             <motion.div
                                 key={currentStep}
-                                initial={{ x: 40, opacity: 0 }}
+                                initial={{ x: 80, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: -40, opacity: 0 }}
+                                exit={{ x: -80, opacity: 0 }}
                                 transition={{
-                                    duration: 0.4,
-                                    ease: (t) => Math.floor(t * 12) / 12 // Mechanical stepped motion
+                                    duration: 0.8,
+                                    ease: (t) => Math.floor(t * 4) / 4 // Mechanical stepped motion
                                 }}
                                 className="min-h-[250px] border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]"
                             >
