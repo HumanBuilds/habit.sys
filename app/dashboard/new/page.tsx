@@ -122,7 +122,7 @@ export default function NewHabitPage() {
                                 disabled={isPending || !formData[step.field as keyof typeof formData]}
                                 className="btn-retro inverted"
                             >
-                                {isPending ? 'PLANTING...' : '[ PLANT SEED ]'}
+                                {isPending ? 'INITIALIZING...' : '[ INITIALIZE MODULE ]'}
                             </button>
                         ) : (
                             <button

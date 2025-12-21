@@ -10,7 +10,7 @@ const vt323 = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "Atkinson Protocol OS",
+  title: "Habit.sys OS",
   description: "A mechanical 1-bit habit tracking operating system.",
 };
 

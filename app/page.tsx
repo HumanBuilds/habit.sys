@@ -4,10 +4,10 @@ import { Window } from '@/components/Window'
 export default function Home() {
   return (
     <div className="min-h-screen bg-white dither-50 flex items-center justify-center p-8">
-      <Window title="ATKINSON_PROTOCOL_v1.0.SYS" className="w-full max-w-2xl text-center">
+      <Window title="HABIT.SYS_v1.0.SYS" className="w-full max-w-2xl text-center">
         <main className="flex flex-col gap-8 items-center py-12">
           <h1 className="text-6xl font-bold tracking-tighter border-b-4 border-black pb-4">
-            ATKINSON PROTOCOL
+            HABIT.SYS
           </h1>
           <p className="text-2xl font-bold max-w-md">
             ONE HABIT MODULE. SYSTEMATIC EXECUTION. OPTIMIZE_LOAD_STATE.

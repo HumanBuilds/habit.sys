@@ -39,10 +39,10 @@ export default async function DashboardPage() {
 
     return (
         <div className="min-h-screen p-8 bg-white dither-50 flex flex-col items-center">
-            <Window title="ATKINSON_PROTOCOL.OS" className="w-full max-w-2xl">
+            <Window title="HABIT.SYS.OS" className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-8 border-b-2 border-black pb-4">
                     <div>
-                        <h1 className="text-4xl font-bold tracking-tighter">ATKINSON PROTOCOL</h1>
+                        <h1 className="text-4xl font-bold tracking-tighter">HABIT.SYS</h1>
                         <p className="text-xl">OPERATOR: {user.email?.split('@')[0].toUpperCase()}</p>
                     </div>
                     <div className="flex gap-4">
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
             </Window>
 
             <footer className="mt-8 text-sm font-bold btn-retro">
-                (C) 1984 ATKINSON PROTOCOL // VERSION 1.1.0
+                (C) 1984 HABIT.SYS // VERSION 1.1.0
             </footer>
 
         </div>

@@ -1,6 +1,6 @@
-# Atkinson Protocol OS: System Context & Baseline
+# Habit.sys OS: System Context & Baseline
 
-Atkinson Protocol OS is a mechanical, 1-bit habit tracking interface designed for **systematic self-optimization**. It treats habits as core system modules that must be stabilized before further expansion.
+Habit.sys OS is a mechanical, 1-bit habit tracking interface designed for **systematic self-optimization**. It treats habits as core system modules that must be stabilized before further expansion.
 
 ## 💾 System State
 
