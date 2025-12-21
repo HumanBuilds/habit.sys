@@ -43,6 +43,7 @@ export default function NewHabitPage() {
         title: '',
         cue: ''
     })
+    const [validationError, setValidationError] = useState<string | null>(null)
 
     const [state, formAction, isPending] = useActionState(initializeProtocol, initialState)
 
@@ -50,7 +51,14 @@ export default function NewHabitPage() {
     const isLastStep = currentStep === steps.length - 1
 
     const handleNext = () => {
+        const currentValue = formData[step.field as keyof typeof formData]
+        if (!currentValue || currentValue.trim() === '') {
+            setValidationError('INPUT_REQUIRED.SYS')
+            return
+        }
+
         if (currentStep < steps.length - 1) {
+            setValidationError(null)
             setCurrentStep(c => c + 1)
         }
     }
@@ -79,7 +87,17 @@ export default function NewHabitPage() {
                     </div>
                 </div>
 
-                <form action={formAction} className="space-y-8">
+                <form
+                    action={formAction}
+                    className="space-y-8"
+                    onSubmit={(e) => {
+                        const currentValue = formData[step.field as keyof typeof formData]
+                        if (!currentValue || currentValue.trim() === '') {
+                            e.preventDefault()
+                            setValidationError('INPUT_REQUIRED.SYS')
+                        }
+                    }}
+                >
                     <input type="hidden" name="identity" value={formData.identity} />
                     <input type="hidden" name="title" value={formData.title} />
                     <input type="hidden" name="cue" value={formData.cue} />
@@ -100,16 +118,25 @@ export default function NewHabitPage() {
                                 type="text"
                                 autoFocus
                                 value={formData[step.field as keyof typeof formData]}
-                                onChange={(e) => setFormData({ ...formData, [step.field]: e.target.value.toUpperCase() })}
+                                onChange={(e) => {
+                                    setFormData({ ...formData, [step.field]: e.target.value.toUpperCase() })
+                                    if (validationError) setValidationError(null)
+                                }}
                                 placeholder={step.placeholder}
                                 className="input-retro w-full text-2xl"
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         e.preventDefault()
-                                        if (!isLastStep && formData[step.field as keyof typeof formData]) handleNext()
+                                        if (isLastStep) return // Let form submit handle it
+                                        handleNext()
                                     }
                                 }}
                             />
+                            {validationError && (
+                                <div className="text-red-600 font-bold text-sm mt-1 animate-pulse">
+                                    &gt;&gt; ERROR: {validationError}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -126,7 +153,7 @@ export default function NewHabitPage() {
                         {isLastStep ? (
                             <button
                                 type="submit"
-                                disabled={isPending || !formData[step.field as keyof typeof formData]}
+                                disabled={isPending}
                                 className="btn-retro inverted"
                             >
                                 {isPending ? 'INITIALIZING...' : '[ INITIALIZE MODULE ]'}
@@ -135,7 +162,6 @@ export default function NewHabitPage() {
                             <button
                                 type="button"
                                 onClick={handleNext}
-                                disabled={!formData[step.field as keyof typeof formData]}
                                 className="btn-retro"
                             >
                                 [ NEXT ]
