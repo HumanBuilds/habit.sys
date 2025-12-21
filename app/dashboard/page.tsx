@@ -39,11 +39,11 @@ export default async function DashboardPage() {
 
     return (
         <div className="min-h-screen p-8 bg-white dither-50 flex flex-col items-center">
-            <Window title="HABIT_GARDEN.EXE" className="w-full max-w-2xl">
+            <Window title="ATKINSON_PROTOCOL.OS" className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-8 border-b-2 border-black pb-4">
                     <div>
-                        <h1 className="text-4xl font-bold tracking-tighter">HABIT GARDEN</h1>
-                        <p className="text-xl">USER: {user.email?.split('@')[0].toUpperCase()}</p>
+                        <h1 className="text-4xl font-bold tracking-tighter">ATKINSON PROTOCOL</h1>
+                        <p className="text-xl">OPERATOR: {user.email?.split('@')[0].toUpperCase()}</p>
                     </div>
                     <div className="flex gap-4">
                         <form action={signout}>
@@ -62,9 +62,9 @@ export default async function DashboardPage() {
                     />
                 ) : (
                     <div className="text-center py-20 border-2 border-dashed border-black">
-                        <p className="text-2xl mb-8">NO SEEDS PLANTED IN THIS GARDEN.</p>
+                        <p className="text-2xl mb-8">NO PROTOCOLS INITIALIZED IN THIS NODE.</p>
                         <a href="/dashboard/new" className="btn-retro">
-                            + PLANT FIRST SEED
+                            + INITIALIZE FIRST MODULE
                         </a>
                     </div>
                 )}

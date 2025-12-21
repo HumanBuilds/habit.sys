@@ -39,7 +39,7 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
     };
 
     return (
-        <div className="flex flex-col border-t-2 border-black">
+        <div className="flex flex-col">
             {/* Command Row or Glitch State */}
             {isEligible ? (
                 <div className="mb-6">
@@ -50,12 +50,7 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                         <span className="text-xl font-bold tracking-tight uppercase">Initialize New Protocol...</span>
                     </a>
                 </div>
-            ) : (
-                <GlitchState
-                    stats={eligibility.stats}
-                    latestHabitTitle={eligibility.latestHabitTitle}
-                />
-            )}
+            ) : null}
 
             <h2 className="text-sm font-bold tracking-[0.2em] bg-black text-white px-2 py-1 mb-4 flex justify-between">
                 <span>ONGOING_HABITS.LOG</span>
