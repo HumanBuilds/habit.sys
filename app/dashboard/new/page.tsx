@@ -92,17 +92,7 @@ export default function NewHabitPage() {
                     </div>
                 </div>
 
-                <form
-                    action={formAction}
-                    className="space-y-8"
-                    onSubmit={(e) => {
-                        const currentValue = formData[step.field as keyof typeof formData]
-                        if (isInputInvalid(currentValue)) {
-                            e.preventDefault()
-                            setValidationError('INPUT_REQUIRED.SYS')
-                        }
-                    }}
-                >
+                <form action={formAction} className="space-y-8">
                     <input type="hidden" name="identity" value={formData.identity} />
                     <input type="hidden" name="title" value={formData.title} />
                     <input type="hidden" name="cue" value={formData.cue} />
@@ -143,9 +133,17 @@ export default function NewHabitPage() {
                                         className="input-retro w-full text-2xl"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
-                                                e.preventDefault()
-                                                if (isLastStep) return // Let form submit handle it
-                                                handleNext()
+                                                if (isLastStep) {
+                                                    const currentValue = formData[step.field as keyof typeof formData]
+                                                    if (isInputInvalid(currentValue)) {
+                                                        e.preventDefault()
+                                                        setValidationError('INPUT_REQUIRED.SYS')
+                                                    }
+                                                    // Else: let it submit the form
+                                                } else {
+                                                    e.preventDefault()
+                                                    handleNext()
+                                                }
                                             }
                                         }}
                                     />
@@ -171,6 +169,7 @@ export default function NewHabitPage() {
 
                         {isLastStep ? (
                             <button
+                                key="submit-btn"
                                 type="submit"
                                 disabled={isPending}
                                 className="btn-retro inverted"
@@ -179,6 +178,7 @@ export default function NewHabitPage() {
                             </button>
                         ) : (
                             <button
+                                key="next-btn"
                                 type="button"
                                 onClick={handleNext}
                                 className="btn-retro"
