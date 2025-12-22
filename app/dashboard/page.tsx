@@ -48,7 +48,7 @@ export default async function DashboardPage() {
             <Window
                 title="HABIT.SYS"
                 className="w-full max-w-2xl flex-1 min-h-0"
-                contentClassName="overflow-y-auto flex-1 custom-scrollbar"
+                contentClassName="overflow-y-auto flex-1 custom-scrollbar overflow-x-hidden"
             >
                 <DashboardClient
                     user={{ email: user.email }}

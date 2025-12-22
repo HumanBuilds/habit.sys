@@ -3,6 +3,7 @@ import { VT323 } from "next/font/google";
 import "./globals.css";
 import PageTransition from "@/components/PageTransition";
 import { Footer } from "@/components/Footer";
+import { RetroSoundController } from "@/components/RetroSoundController";
 
 const vt323 = VT323({
   weight: "400",
@@ -25,8 +26,10 @@ export default function RootLayout({
       <body
         className={`${vt323.variable} dither-50 retro-theme antialiased h-screen overflow-hidden`}
       >
+        <RetroSoundController />
         <PageTransition>
           {children}
+          <Footer />
         </PageTransition>
       </body>
     </html>

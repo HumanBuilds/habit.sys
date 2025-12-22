@@ -9,7 +9,7 @@ interface WindowProps {
 
 export const Window: React.FC<WindowProps> = ({ title, children, className = "", contentClassName = "" }) => {
     return (
-        <div className={`window ${className} flex flex-col relative`}>
+        <div className={`window ${className} flex flex-col relative `}>
             <div className="window-header flex-none">
                 <div className="window-title-strips"></div>
                 <div className="window-title">{title}</div>
