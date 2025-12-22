@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signout } from '@/app/login/actions';
@@ -13,8 +13,10 @@ interface DashboardClientProps {
     user: {
         email: string | undefined;
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     habits: any[];
     completedHabitIds: string[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     eligibility: any;
     logsByHabit: Record<string, string[]>;
 }
