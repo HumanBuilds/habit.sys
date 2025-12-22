@@ -44,17 +44,18 @@ class SoundEngine {
         const t = this.audioContext.currentTime;
         const oscillator = this.audioContext.createOscillator();
         const gainNode = this.audioContext.createGain();
-
         // Small random pitch variation (+/- 15%)
-        const randomDetune = 1 + (Math.random() * 0.3 - 0.15);
+        const randomDetune = 1 + Math.min(Math.max(Math.random(), 0.15), 0);
         const baseFreq = 150 * randomDetune;
+
+        const timeRamp = t + Math.min(Math.max(Math.random(), 0.05), 0.5);
 
         oscillator.type = 'square';
         oscillator.frequency.setValueAtTime(baseFreq, t);
-        oscillator.frequency.exponentialRampToValueAtTime(40, t + 0.05);
+        oscillator.frequency.exponentialRampToValueAtTime(40, timeRamp);
 
-        gainNode.gain.setValueAtTime(0.1, t);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
+        gainNode.gain.setValueAtTime(0.01, t);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
 
         oscillator.connect(gainNode);
         gainNode.connect(this.audioContext.destination);
