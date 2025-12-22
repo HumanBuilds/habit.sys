@@ -85,7 +85,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                         )}
                     </AnimatePresence>
                     {/* View Toggle - Positioned bottom-right of the window container */}
-                    <div className="absolute bottom-4 right-4 z-[100]">
+                    <div className="flex justify-center mt-4">
                         <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
                     </div>
                 </>

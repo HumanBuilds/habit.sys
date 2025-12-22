@@ -149,14 +149,14 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                 </AnimatePresence>
             </motion.div>
 
-            <motion.div layout className="mt-auto pt-8 flex justify-end">
+            {/* <motion.div layout className="mt-auto pt-8 flex justify-end">
                 <button
                     onClick={() => setDevOverride(!devOverride)}
                     className="text-[10px] uppercase tracking-widest opacity-20 hover:opacity-100 transition-opacity"
                 >
                     [ DEV_OVERRIDE: {devOverride ? "ACTIVE" : "INACTIVE"} ]
                 </button>
-            </motion.div>
+            </motion.div> */}
         </motion.div>
     );
 };

@@ -188,7 +188,7 @@ export default function NewHabitPage() {
                                 </div>
 
                                 <div className="mt-8 space-y-2">
-                                    <label className="text-sm font-bold uppercase tracking-widest">{step.prefix}</label>
+                                    <label className="text-sm font-bold uppercase tracking-widest">{step.prefix}{step.type === 'frequency' && ` ${formData.frequency.length} / 7`}</label>
 
                                     {step.type === 'frequency' ? (
                                         <div className="grid grid-cols-4 gap-4 mt-4">
