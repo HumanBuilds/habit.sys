@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${vt323.variable} retro-theme antialiased`}
+        className={`${vt323.variable}  dither-50 retro-theme antialiased overflow-x-hidden`}
       >
         <PageTransition>
           {children}

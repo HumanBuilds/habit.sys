@@ -19,7 +19,7 @@ export default function LoginPage() {
     }, initialState)
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white dither-50 p-4">
+        <div className="min-h-screen flex items-center justify-center p-4">
             <Window title="SYSTEM_ACCESS.EXE" className="w-full max-w-md">
                 <div className="text-center mb-8 border-b-2 border-black pb-4">
                     <h1 className="text-4xl font-bold tracking-tighter">WELCOME BACK</h1>

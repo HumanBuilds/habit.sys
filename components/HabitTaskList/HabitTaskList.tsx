@@ -2,6 +2,7 @@
 
 import React, { useMemo, useTransition, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import Link from 'next/link';
 import { HabitTaskItem } from './HabitTaskItem';
 import { sortHabits, type Habit } from './utils';
 import { commitHabitLog } from '@/app/dashboard/actions';
@@ -44,12 +45,12 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
             {/* Command Row or Glitch State */}
             {isEligible ? (
                 <div className="mb-6">
-                    <a href="/dashboard/new" className="flex items-center gap-4 py-2 px-3 border-2 border-dashed border-black hover:bg-black hover:text-white transition-colors group">
+                    <Link href="/create-habit" scroll={false} className="flex items-center gap-4 py-2 px-3 border-2 border-dashed border-black hover:bg-black hover:text-white transition-colors group">
                         <div className="w-8 h-8 flex items-center justify-center shrink-0 border-2 border-black group-hover:border-white">
                             <span className="text-2xl font-bold">+</span>
                         </div>
                         <span className="text-xl font-bold tracking-tight uppercase">Initialize New Protocol...</span>
-                    </a>
+                    </Link>
                 </div>
             ) : null}
 

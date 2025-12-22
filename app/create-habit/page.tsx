@@ -6,6 +6,7 @@ import { initializeProtocol } from './actions'
 import { Window } from '@/components/Window'
 import { ProgressBar } from '@/components/ProgressBar'
 import { isInputInvalid } from './utils'
+import Link from 'next/link'
 
 const steps = [
     {
@@ -75,13 +76,13 @@ export default function NewHabitPage() {
     }
 
     return (
-        <div className="min-h-screen bg-white dither-50 flex items-center justify-center p-6">
+        <div className="min-h-screen flex items-center justify-center p-6">
             <Window title="NEW_HABIT_WIZARD.EXE" className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-6 border-b-2 border-black pb-4">
                     <span className="text-xl font-bold tracking-widest">INITIALIZE_PROTOCOL</span>
-                    <a href="/dashboard" className="btn-retro-secondary">
+                    <Link href="/dashboard" scroll={false} className="btn-retro-secondary">
                         [ EXIT ]
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="mb-8">

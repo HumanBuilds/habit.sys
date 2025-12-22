@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { signout } from '../login/actions'
 import { checkProtocolEligibility } from './actions'
 import { Window } from '@/components/Window'
@@ -38,7 +39,7 @@ export default async function DashboardPage() {
     const eligibility = await checkProtocolEligibility()
 
     return (
-        <div className="min-h-screen p-8 bg-white dither-50 flex flex-col items-center">
+        <div className="min-h-screen p-8  flex flex-col items-center">
             <Window title="HABIT.SYS" className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-8 border-b-2 border-black pb-4">
                     <div>
@@ -63,9 +64,9 @@ export default async function DashboardPage() {
                 ) : (
                     <div className="text-center py-20 border-2 border-dashed border-black">
                         <p className="text-2xl mb-8">NO PROTOCOLS INITIALIZED IN THIS NODE.</p>
-                        <a href="/dashboard/new" className="btn-retro">
+                        <Link href="/create-habit" scroll={false} className="btn-retro">
                             + INITIALIZE FIRST MODULE
-                        </a>
+                        </Link>
                     </div>
                 )}
             </Window>
