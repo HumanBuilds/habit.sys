@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signout } from '@/app/login/actions';
@@ -14,7 +14,7 @@ interface DashboardClientProps {
         email: string | undefined;
     };
     habits: any[];
-    completedHabitIds: Set<string>;
+    completedHabitIds: string[];
     eligibility: any;
     logsByHabit: Record<string, string[]>;
 }

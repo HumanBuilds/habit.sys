@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useTransition, useState } from 'react';
+import React, { useMemo, useTransition, useState, useOptimistic } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { HabitTaskItem } from './HabitTaskItem';
@@ -11,7 +11,7 @@ import { sidewaysFlashVariants } from '@/utils/animations';
 
 interface HabitTaskListProps {
     habits: Habit[];
-    completedHabitIds: Set<string>;
+    completedHabitIds: string[]; // Standardized to array for stable serialization
     eligibility: {
         eligible: boolean;
         stats?: {
@@ -30,15 +30,45 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
     const [devOverride, setDevOverride] = useState(false);
     const [glitchExpanded, setGlitchExpanded] = useState(false);
 
+    // Initial value for useOptimistic should be the base prop.
+    const [optimisticCompletedIds, addOptimisticId] = useOptimistic(
+        completedHabitIds,
+        (state: string[], { habitId, isCompleted }: { habitId: string, isCompleted: boolean }) => {
+            if (isCompleted) {
+                return state.filter(id => id !== habitId);
+            } else {
+                return [...state, habitId];
+            }
+        }
+    );
+
+    console.log('[HabitTaskList] Render:', {
+        propCompletedIds: completedHabitIds,
+        optimisticIds: optimisticCompletedIds,
+        isTransitionPending: isPending
+    });
+
+    // Convert to Set once for efficient .has() lookups across items
+    const completedSet = useMemo(() => {
+        return new Set(optimisticCompletedIds)
+    }, [optimisticCompletedIds]);
+
     const isEligible = eligibility.eligible || devOverride;
 
     const sortedHabits = useMemo(() => {
-        return sortHabits(habits, completedHabitIds);
-    }, [habits, completedHabitIds]);
+        return sortHabits(habits, completedSet);
+    }, [habits, completedSet]);
 
     const handleToggle = (habitId: string, isCompleted: boolean) => {
+        // Optimistic update
         startTransition(async () => {
-            await commitHabitLog(habitId, isCompleted);
+            addOptimisticId({ habitId, isCompleted });
+
+            const result = await commitHabitLog(habitId, isCompleted);
+            if (result.error) {
+                // revalidatePath will handle the rollback if needed by fetching fresh data
+                console.error(result.error);
+            }
         });
     };
 
@@ -127,8 +157,8 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                             key={habit.id}
                             id={habit.id}
                             title={habit.title}
-                            isCompleted={completedHabitIds.has(habit.id)}
-                            onToggle={(id, currentlyDone) => handleToggle(id, currentlyDone)}
+                            isCompleted={completedSet.has(habit.id)}
+                            onToggle={async (id, currentlyDone) => await handleToggle(id, currentlyDone)}
                         />
                     ))}
                 </AnimatePresence>
