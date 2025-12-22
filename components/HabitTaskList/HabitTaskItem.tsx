@@ -23,7 +23,7 @@ export const HabitTaskItem: React.FC<HabitTaskItemProps> = ({ id, title, isCompl
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="flex items-center gap-4 py-3 group cursor-pointer select-none"
+            className="flex items-center gap-4 ps-4 py-3 group cursor-pointer select-none"
             onClick={() => onToggle(id, isCompleted)}
         >
             {/* Chunky Checkbox */}

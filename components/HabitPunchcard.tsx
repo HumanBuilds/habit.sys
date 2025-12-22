@@ -42,7 +42,7 @@ export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ title, createdAt
             </div>
 
             <div className="flex flex-wrap gap-2">
-                {daysSinceCreation.map((date) => {
+                {daysSinceCreation.reverse().map((date) => {
                     const dateStr = date.toISOString().split('T')[0];
                     const isPunched = logSet.has(dateStr);
 
