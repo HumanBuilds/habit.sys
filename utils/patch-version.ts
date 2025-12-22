@@ -5,7 +5,7 @@ export function getPatchVersion() {
     try {
         // Run git command to get counts
         commitCount = parseInt(execSync('git rev-list --count HEAD', { encoding: 'utf8' }));
-    } catch (e) {
+    } catch {
         console.warn('Could not determine git version, defaulting to 000');
     }
 

@@ -1,5 +1,5 @@
 import { getPatchVersion } from '@/utils/patch-version';
-import { execSync } from 'child_process';
+
 
 export const Footer = () => {
 
