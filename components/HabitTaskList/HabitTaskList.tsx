@@ -78,16 +78,7 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                         animate="animate"
                         exit="exit"
                     >
-                        {isEligible ? (
-                            <div className="mb-6">
-                                <Link href="/create-habit" scroll={false} className="flex items-center gap-4 py-2 px-3 border-2 border-dashed border-black hover:bg-black hover:text-white transition-colors group">
-                                    <div className="w-8 h-8 flex items-center justify-center shrink-0 border-2 border-black group-hover:border-white">
-                                        <span className="text-2xl font-bold">+</span>
-                                    </div>
-                                    <span className="text-xl font-bold tracking-tight uppercase">Initialize New Protocol...</span>
-                                </Link>
-                            </div>
-                        ) : (
+                        {!isEligible && (
                             <div >
                                 <button
                                     onClick={() => setGlitchExpanded(!glitchExpanded)}

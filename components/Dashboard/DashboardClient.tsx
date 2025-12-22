@@ -84,20 +84,21 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                             </motion.div>
                         )}
                     </AnimatePresence>
+                    {/* View Toggle - Positioned bottom-right of the window container */}
+                    <div className="absolute bottom-4 right-4 z-[100]">
+                        <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
+                    </div>
                 </>
             ) : (
                 <div className="text-center py-20 border-2 border-dashed border-black">
                     <p className="text-2xl mb-8">NO PROTOCOLS INITIALIZED IN THIS NODE.</p>
                     <Link href="/create-habit" scroll={false} className="btn-retro">
-                        + INITIALIZE FIRST MODULE
+                        + INITIALIZE FIRST PROTOCOL
                     </Link>
                 </div>
             )}
 
-            {/* View Toggle - Positioned bottom-right of the window container */}
-            <div className="absolute bottom-4 right-4 z-[100]">
-                <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
-            </div>
+
         </>
     );
 };
