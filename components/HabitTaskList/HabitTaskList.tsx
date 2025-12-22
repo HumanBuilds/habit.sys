@@ -89,9 +89,21 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                 )
             )}
 
-            <h2 className="text-sm font-bold tracking-[0.2em] bg-black text-white px-2 py-1 mb-4 flex justify-between">
-                <span>ONGOING_HABITS.LOG</span>
-                {isPending && <span className="animate-pulse">UPDATING...</span>}
+            <h2 className="text-sm font-bold tracking-[0.2em] bg-black text-white px-2 py-1 mb-4 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <span>ONGOING_HABITS.LOG</span>
+                    {isPending && <span className="animate-pulse opacity-70">UPDATING...</span>}
+                </div>
+                {viewMode === 'simplified' && (
+                    <Link
+                        href="/create-habit"
+                        scroll={false}
+                        className="w-5 h-5 flex items-center justify-center border border-transparent hover:border-white transition-all leading-none text-lg pb-0.5"
+                        aria-label="Add New Protocol"
+                    >
+                        +
+                    </Link>
+                )}
             </h2>
 
             <div className="flex flex-col divide-y-1 divide-black/10">
