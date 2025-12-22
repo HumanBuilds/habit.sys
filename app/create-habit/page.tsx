@@ -77,7 +77,7 @@ export default function NewHabitPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6">
+        <div className=" flex items-center justify-center p-4 md:p-8">
             <Window title="NEW_HABIT_WIZARD.EXE" className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-6 border-b-2 border-black pb-4">
                     <span className="text-xl font-bold tracking-widest">INITIALIZE_PROTOCOL</span>
