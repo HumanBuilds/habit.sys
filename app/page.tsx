@@ -1,10 +1,11 @@
 import { Window } from '@/components/Window'
 import Link from 'next/link'
+import { getPatchVersion } from '@/utils/patch-version'
 
 export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center p-8">
-      <Window title="HABIT.SYS_v1.0.SYS" className="w-full max-w-2xl text-center">
+      <Window title={`HABIT.SYS v${getPatchVersion()}`} className="w-full max-w-2xl text-center">
         <main className="flex flex-col gap-8 items-center py-12">
           <h1 className="text-6xl font-bold tracking-tighter border-b-4 border-black pb-4">
             HABIT.SYS
@@ -16,9 +17,6 @@ export default function Home() {
           <div className="flex gap-6 mt-8">
             <Link href="/dashboard" scroll={false} className="btn-retro inverted text-2xl px-12 py-4">
               [ ACCESS_SYSTEM ]
-            </Link>
-            <Link href="/login" scroll={false} className="btn-retro text-2xl px-12 py-4">
-              [ AUTH_USER ]
             </Link>
           </div>
         </main>
