@@ -88,7 +88,7 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
 
             if (error) {
                 if (error.code === '23505') {
-                    console.log('[Server] Duplicate insert attempt ignored (Idempotent fix)')
+                    // console.log('[Server] Duplicate insert attempt ignored (Idempotent fix)')
                 } else {
                     throw error
                 }

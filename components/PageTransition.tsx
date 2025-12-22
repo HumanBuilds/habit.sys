@@ -27,7 +27,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
     return (
         <AnimatePresence
-            mode="wait"
+            mode="popLayout"
         >
             <motion.div
                 key={pathname}

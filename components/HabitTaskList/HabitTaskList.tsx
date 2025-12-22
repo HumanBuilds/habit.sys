@@ -42,12 +42,6 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
         }
     );
 
-    console.log('[HabitTaskList] Render:', {
-        propCompletedIds: completedHabitIds,
-        optimisticIds: optimisticCompletedIds,
-        isTransitionPending: isPending
-    });
-
     // Convert to Set once for efficient .has() lookups across items
     const completedSet = useMemo(() => {
         return new Set(optimisticCompletedIds)
