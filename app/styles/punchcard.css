@@ -41,7 +41,7 @@
     height: 6px;
     background: var(--color-white);
     border-radius: 50%;
-    opacity: 0.2;
+    /* opacity: 0.2; */
 }
 
 /* Corner clip for physical card effect */
