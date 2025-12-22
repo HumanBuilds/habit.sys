@@ -1,0 +1,13 @@
+/* Input Styles */
+.input-retro {
+    border: 2px solid var(--color-black);
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: 1.1rem;
+    outline: none;
+    background: var(--color-white);
+}
+
+.input-retro:focus {
+    background: var(--color-white);
+}

@@ -1,0 +1,44 @@
+/* Button Styles */
+.btn-retro {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--color-white);
+    border: 2px solid var(--color-black);
+    box-shadow: 2px 2px 0px 0px var(--color-black);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1.25rem;
+    user-select: none;
+}
+
+.btn-retro:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px 0px var(--color-black);
+}
+
+.btn-retro.inverted {
+    background: var(--color-black);
+    color: var(--color-white);
+}
+
+.btn-retro-secondary {
+    display: inline-block;
+    padding: 2px 8px;
+    background: transparent;
+    border: 1px solid var(--color-black);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    user-select: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.btn-retro-secondary:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.btn-retro-secondary:active {
+    transform: translate(1px, 1px);
+}

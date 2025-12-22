@@ -1,5 +1,15 @@
 @import "tailwindcss";
-@import "./retro.css";
+
+/* Retro Theme Modular Styles */
+@import "./styles/theme.css";
+@import "./styles/base.css";
+@import "./styles/patterns.css";
+@import "./styles/utilities.css";
+@import "./styles/animations.css";
+@import "./styles/buttons.css";
+@import "./styles/inputs.css";
+@import "./styles/window.css";
+@import "./styles/punchcard.css";
 
 body {
   background: var(--color-white);

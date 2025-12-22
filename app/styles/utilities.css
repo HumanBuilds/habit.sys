@@ -1,0 +1,13 @@
+/* Utility Classes */
+.pixel-border {
+    border: var(--retro-border-width) solid var(--color-black);
+}
+
+.hard-shadow {
+    box-shadow: var(--retro-shadow-offset) var(--retro-shadow-offset) 0px 0px var(--color-black);
+}
+
+.inset-border {
+    border: var(--retro-border-width) solid var(--color-black);
+    box-shadow: inset 2px 2px 0px 0px var(--color-black);
+}
