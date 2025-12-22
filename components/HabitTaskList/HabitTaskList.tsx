@@ -44,50 +44,63 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
     return (
         <div className="flex flex-col">
             {/* Command Row or Glitch State - Only visible in Detailed mode */}
-            {viewMode === 'detailed' && (
-                isEligible ? (
-                    <div className="mb-6">
-                        <Link href="/create-habit" scroll={false} className="flex items-center gap-4 py-2 px-3 border-2 border-dashed border-black hover:bg-black hover:text-white transition-colors group">
-                            <div className="w-8 h-8 flex items-center justify-center shrink-0 border-2 border-black group-hover:border-white">
-                                <span className="text-2xl font-bold">+</span>
+            <AnimatePresence mode="wait">
+                {viewMode === 'detailed' && (
+                    <motion.div
+                        key="detailed-controls"
+                        initial={{ x: 40, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: -40, opacity: 0 }}
+                        transition={{
+                            duration: 0.8,
+                            ease: (t) => Math.floor(t * 4) / 4
+                        }}
+                    >
+                        {isEligible ? (
+                            <div className="mb-6">
+                                <Link href="/create-habit" scroll={false} className="flex items-center gap-4 py-2 px-3 border-2 border-dashed border-black hover:bg-black hover:text-white transition-colors group">
+                                    <div className="w-8 h-8 flex items-center justify-center shrink-0 border-2 border-black group-hover:border-white">
+                                        <span className="text-2xl font-bold">+</span>
+                                    </div>
+                                    <span className="text-xl font-bold tracking-tight uppercase">Initialize New Protocol...</span>
+                                </Link>
                             </div>
-                            <span className="text-xl font-bold tracking-tight uppercase">Initialize New Protocol...</span>
-                        </Link>
-                    </div>
-                ) : (
-                    <div >
-                        <button
-                            onClick={() => setGlitchExpanded(!glitchExpanded)}
-                            className="w-full border-2 border-black bg-black text-white px-3 py-2 flex justify-between items-center hover:bg-white hover:text-black transition-colors group mb-2"
-                        >
-                            <div className="flex items-center gap-2">
-                                <span >●</span>
-                                <span className="font-bold tracking-tight uppercase">
-                                    System Expansion Blocked
-                                </span>
-                            </div>
-                            <span className="font-mono text-xs opacity-70">{glitchExpanded ? "[ COLLAPSE_LOG ]" : "[ VIEW_DIAGNOSTICS ]"}</span>
-                        </button>
-
-                        <AnimatePresence>
-                            {glitchExpanded && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                                    className="overflow-hidden"
+                        ) : (
+                            <div >
+                                <button
+                                    onClick={() => setGlitchExpanded(!glitchExpanded)}
+                                    className="w-full border-2 border-black bg-black text-white px-3 py-2 flex justify-between items-center hover:bg-white hover:text-black transition-colors group mb-2"
                                 >
-                                    <GlitchState
-                                        stats={eligibility.stats}
-                                        latestHabitTitle={eligibility.latestHabitTitle}
-                                    />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                )
-            )}
+                                    <div className="flex items-center gap-2">
+                                        <span >●</span>
+                                        <span className="font-bold tracking-tight uppercase">
+                                            System Expansion Blocked
+                                        </span>
+                                    </div>
+                                    <span className="font-mono text-xs opacity-70">{glitchExpanded ? "[ COLLAPSE_LOG ]" : "[ VIEW_DIAGNOSTICS ]"}</span>
+                                </button>
+
+                                <AnimatePresence>
+                                    {glitchExpanded && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                                            className="overflow-hidden"
+                                        >
+                                            <GlitchState
+                                                stats={eligibility.stats}
+                                                latestHabitTitle={eligibility.latestHabitTitle}
+                                            />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <h2 className="text-sm font-bold tracking-[0.2em] bg-black text-white px-2 py-1 mb-4 flex justify-between items-center">
                 <div className="flex items-center gap-2">

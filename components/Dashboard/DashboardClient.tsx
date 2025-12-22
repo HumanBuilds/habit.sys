@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { signout } from '@/app/login/actions';
 import { HabitTaskList } from '@/components/HabitTaskList';
 import { HabitPunchcard } from '@/components/HabitPunchcard';
@@ -53,24 +54,36 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                         viewMode={viewMode}
                     />
 
-                    {viewMode === 'detailed' && (
-                        <div className="mt-4 pt-8 border-t-4 border-black border-double">
-                            <h2 className="text-xl font-bold tracking-widest mb-6 flex items-center gap-2" id="system-diagnostics-header">
-                                <span className="bg-black text-white px-2">SYSTEM_DIAGNOSTICS:</span>
-                                <span>STREAK_PUNCHCARDS.DB</span>
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="punchcards-grid">
-                                {habits.map((habit) => (
-                                    <HabitPunchcard
-                                        key={habit.id}
-                                        title={habit.title}
-                                        createdAt={habit.created_at}
-                                        logs={logsByHabit[habit.id] || []}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                    <AnimatePresence mode="wait">
+                        {viewMode === 'detailed' && (
+                            <motion.div
+                                key="detailed-diagnostics"
+                                initial={{ x: 40, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: -40, opacity: 0 }}
+                                transition={{
+                                    duration: 0.8,
+                                    ease: (t) => Math.floor(t * 4) / 4
+                                }}
+                                className="mt-4 pt-8 border-t-4 border-black border-double"
+                            >
+                                <h2 className="text-xl font-bold tracking-widest mb-6 flex items-center gap-2" id="system-diagnostics-header">
+                                    <span className="bg-black text-white px-2">SYSTEM_DIAGNOSTICS:</span>
+                                    <span>STREAK_PUNCHCARDS.DB</span>
+                                </h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="punchcards-grid">
+                                    {habits.map((habit) => (
+                                        <HabitPunchcard
+                                            key={habit.id}
+                                            title={habit.title}
+                                            createdAt={habit.created_at}
+                                            logs={logsByHabit[habit.id] || []}
+                                        />
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </>
             ) : (
                 <div className="text-center py-20 border-2 border-dashed border-black">
