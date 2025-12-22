@@ -4,9 +4,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutRouterContext } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { usePathname } from 'next/navigation';
 import { useContext, useState } from 'react';
-function FrozenRouter({ children }: { children: React.ReactNode }) {
+function FrozenRouter({ children, targetPath }: { children: React.ReactNode, targetPath: string }) {
     const context = useContext(LayoutRouterContext);
-    const [frozen] = useState(context);
+    const [frozen, setFrozen] = useState(context);
+    const currentPath = usePathname();
+
+    // Sync the frozen context with the live context as long as we are on the same route.
+    // This ensures that server action revalidations (which update the context) are reflected immediately.
+    // When the route changes (currentPath !== targetPath), we stop syncing, preserving the "frozen" state for the exit animation.
+    if (currentPath === targetPath && frozen !== context) {
+        setFrozen(context);
+    }
 
     return (
         <LayoutRouterContext.Provider value={frozen}>
@@ -19,7 +27,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
     return (
         <AnimatePresence
-            mode="popLayout"
+            mode="wait"
         >
             <motion.div
                 key={pathname}
@@ -42,9 +50,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
                 className="min-h-screen w-full z-10"
                 style={{ willChange: 'transform, opacity' }}
             >
-                <FrozenRouter>{children}
-
-
+                <FrozenRouter targetPath={pathname}>
+                    {children}
                 </FrozenRouter>
             </motion.div>
         </AnimatePresence>

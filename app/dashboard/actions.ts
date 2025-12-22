@@ -57,43 +57,52 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user) {
-        return { error: 'Unauthorized' }
-    }
+    if (!user) return { error: 'Unauthorized' }
 
-    const today = new Date().toISOString().split('T')[0]
+    // Define "today" in UTC boundaries
+    const now = new Date()
+    const startOfTodayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+    const startOfTomorrowUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1))
 
     try {
         if (isCompleted) {
-            // If currently completed, we want to un-complete it (delete the log)
+            // Uncheck: delete any log for today (range match)
             const { error } = await supabase
                 .from('habit_logs')
                 .delete()
                 .eq('habit_id', habitId)
                 .eq('user_id', user.id)
-                .eq('completed_at', today)
+                .gte('completed_at', startOfTodayUtc.toISOString())
+                .lt('completed_at', startOfTomorrowUtc.toISOString())
 
             if (error) throw error
         } else {
-            // Not completed, so insert a log
+            // Check: insert with a timestamp
             const { error } = await supabase
                 .from('habit_logs')
                 .insert({
                     habit_id: habitId,
                     user_id: user.id,
-                    completed_at: today
+                    completed_at: new Date().toISOString(),
                 })
 
-            if (error) throw error
+            if (error) {
+                if (error.code === '23505') {
+                    console.log('[Server] Duplicate insert attempt ignored (Idempotent fix)')
+                } else {
+                    throw error
+                }
+            }
         }
 
         revalidatePath('/dashboard')
         return { success: true }
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error toggling habit:', error)
-        return { error: error instanceof Error ? error.message : 'An unknown error occurred' }
+        return { error: error?.message || 'An unknown error occurred', details: error }
     }
 }
+
 
 export async function checkProtocolEligibility() {
     const supabase = await createClient()

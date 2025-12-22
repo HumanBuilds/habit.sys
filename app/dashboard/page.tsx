@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation'
 import { checkProtocolEligibility } from './actions'
 import { Window } from '@/components/Window'
 import { DashboardClient } from '@/components/Dashboard'
-import { Footer } from '@/components/Footer'
 
 export default async function DashboardPage() {
     const supabase = await createClient()
@@ -17,7 +16,6 @@ export default async function DashboardPage() {
     }
 
     const today = new Date().toISOString().split('T')[0]
-
     // Fetch all habits
     const { data: habits } = await supabase
         .from('habits')
@@ -31,9 +29,9 @@ export default async function DashboardPage() {
         .select('habit_id, completed_at')
         .eq('user_id', user.id)
 
-    // Logs for today Specifically
-    const todayLogs = allLogs?.filter(log => log.completed_at === today) || []
-    const completedHabitIds = new Set(todayLogs.map(log => log.habit_id))
+    // Logs for today
+    const todayLogs = allLogs?.filter(log => log.completed_at && log.completed_at.startsWith(today)) || []
+    const completedHabitIds = todayLogs.map(log => log.habit_id)
 
     // Group logs by habit_id for the punchcards
     const logsByHabit = allLogs?.reduce((acc, log) => {
