@@ -5,6 +5,7 @@ import { signout } from '../login/actions'
 import { checkProtocolEligibility } from './actions'
 import { Window } from '@/components/Window'
 import { HabitTaskList } from '@/components/HabitTaskList'
+import { HabitPunchcard } from '@/components/HabitPunchcard'
 
 export default async function DashboardPage() {
     const supabase = await createClient()
@@ -26,14 +27,22 @@ export default async function DashboardPage() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
-    // Fetch logs for today for all habits
-    const { data: logs } = await supabase
+    // Fetch ALL logs for the history visualization
+    const { data: allLogs } = await supabase
         .from('habit_logs')
-        .select('habit_id')
+        .select('habit_id, completed_at')
         .eq('user_id', user.id)
-        .eq('completed_at', today)
 
-    const completedHabitIds = new Set(logs?.map(log => log.habit_id) || [])
+    // Logs for today Specifically
+    const todayLogs = allLogs?.filter(log => log.completed_at === today) || []
+    const completedHabitIds = new Set(todayLogs.map(log => log.habit_id))
+
+    // Group logs by habit_id for the punchcards
+    const logsByHabit = allLogs?.reduce((acc, log) => {
+        if (!acc[log.habit_id]) acc[log.habit_id] = []
+        acc[log.habit_id].push(log.completed_at)
+        return acc
+    }, {} as Record<string, string[]>) || {}
 
     // Check protocol eligibility for new ones
     const eligibility = await checkProtocolEligibility()
@@ -56,11 +65,30 @@ export default async function DashboardPage() {
                 </div>
 
                 {habits && habits.length > 0 ? (
-                    <HabitTaskList
-                        habits={habits}
-                        completedHabitIds={completedHabitIds}
-                        eligibility={eligibility}
-                    />
+                    <>
+                        <HabitTaskList
+                            habits={habits}
+                            completedHabitIds={completedHabitIds}
+                            eligibility={eligibility}
+                        />
+
+                        <div className="mt-12 pt-8 border-t-4 border-black border-double">
+                            <h2 className="text-xl font-bold tracking-widest mb-6 flex items-center gap-2">
+                                <span className="bg-black text-white px-2">SYSTEM_DIAGNOSTICS:</span>
+                                <span>STREAK_PUNCHCARDS.DB</span>
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {habits.map((habit) => (
+                                    <HabitPunchcard
+                                        key={habit.id}
+                                        title={habit.title}
+                                        createdAt={habit.created_at}
+                                        logs={logsByHabit[habit.id] || []}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </>
                 ) : (
                     <div className="text-center py-20 border-2 border-dashed border-black">
                         <p className="text-2xl mb-8">NO PROTOCOLS INITIALIZED IN THIS NODE.</p>
