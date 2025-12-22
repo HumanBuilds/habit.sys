@@ -7,6 +7,7 @@ import { Window } from '@/components/Window'
 import { ProgressBar } from '@/components/ProgressBar'
 import { isInputInvalid } from './utils'
 import Link from 'next/link'
+import { sidewaysFlashVariants } from '@/utils/animations'
 
 const steps = [
     {
@@ -121,13 +122,10 @@ export default function NewHabitPage() {
                         <AnimatePresence mode="wait" initial={false}>
                             <motion.div
                                 key={currentStep}
-                                initial={{ x: 80, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: -80, opacity: 0 }}
-                                transition={{
-                                    duration: 0.8,
-                                    ease: (t) => Math.floor(t * 4) / 4 // Mechanical stepped motion
-                                }}
+                                variants={sidewaysFlashVariants}
+                                initial="initial"
+                                animate="animate"
+                                exit="exit"
                                 className="min-h-[250px] border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]"
                             >
                                 <div className="space-y-4">

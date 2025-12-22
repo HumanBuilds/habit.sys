@@ -7,6 +7,7 @@ import { signout } from '@/app/login/actions';
 import { HabitTaskList } from '@/components/HabitTaskList';
 import { HabitPunchcard } from '@/components/HabitPunchcard';
 import { ViewToggle } from './ViewToggle';
+import { sidewaysFlashVariants } from '@/utils/animations';
 
 interface DashboardClientProps {
     user: {
@@ -58,13 +59,10 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                         {viewMode === 'detailed' && (
                             <motion.div
                                 key="detailed-diagnostics"
-                                initial={{ x: 40, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: -40, opacity: 0 }}
-                                transition={{
-                                    duration: 0.8,
-                                    ease: (t) => Math.floor(t * 4) / 4
-                                }}
+                                variants={sidewaysFlashVariants}
+                                initial="initial"
+                                animate="animate"
+                                exit="exit"
                                 className="mt-4 pt-8 border-t-4 border-black border-double"
                             >
                                 <h2 className="text-xl font-bold tracking-widest mb-6 flex items-center gap-2" id="system-diagnostics-header">

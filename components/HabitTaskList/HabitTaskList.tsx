@@ -7,6 +7,7 @@ import { HabitTaskItem } from './HabitTaskItem';
 import { sortHabits, type Habit } from './utils';
 import { commitHabitLog } from '@/app/dashboard/actions';
 import { GlitchState } from '../GlitchState';
+import { sidewaysFlashVariants } from '@/utils/animations';
 
 interface HabitTaskListProps {
     habits: Habit[];
@@ -49,13 +50,10 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                     <motion.div
                         key="detailed-controls"
                         layout
-                        initial={{ x: "100%", opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: "-100%", opacity: 0 }}
-                        transition={{
-                            duration: 0.8,
-                            ease: (t) => Math.floor(t * 4) / 4
-                        }}
+                        variants={sidewaysFlashVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
                     >
                         {isEligible ? (
                             <div className="mb-6">
