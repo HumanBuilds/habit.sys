@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { checkProtocolEligibility } from './actions'
 import { Window } from '@/components/Window'
 import { DashboardClient } from '@/components/Dashboard'
+import { Footer } from '@/components/Footer'
 
 export default async function DashboardPage() {
     const supabase = await createClient()

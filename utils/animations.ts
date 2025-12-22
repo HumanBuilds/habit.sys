@@ -11,7 +11,7 @@ export const steppedEase = (steps: number = 4) => (t: number) => Math.floor(t * 
  */
 export const mechanicalTransition: Transition = {
     duration: 1,
-    ease: steppedEase(12)
+    ease: steppedEase(8)
 };
 
 /**

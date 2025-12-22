@@ -20,9 +20,6 @@ export default function PageTransition({ children }: { children: React.ReactNode
     return (
         <AnimatePresence
             mode="popLayout"
-            onExitComplete={() => {
-                window.scrollTo(0, 0);
-            }}
         >
             <motion.div
                 key={pathname}
@@ -42,7 +39,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
                     document.documentElement.style.overflow = '';
                     document.body.classList.remove('transitioning');
                 }}
-                className="min-h-screen w-full relative z-10"
+                className="min-h-screen w-full z-10"
                 style={{ willChange: 'transform, opacity' }}
             >
                 <FrozenRouter>{children}
