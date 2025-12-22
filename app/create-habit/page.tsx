@@ -9,6 +9,8 @@ import { isInputInvalid } from './utils'
 import Link from 'next/link'
 import { sidewaysFlashVariants } from '@/utils/animations'
 
+const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
+
 const steps = [
     {
         id: 'identity',
@@ -16,7 +18,8 @@ const steps = [
         subtitle: 'WHO DO YOU WANT TO BECOME?',
         field: 'identity',
         placeholder: 'E.G., A RUNNER, A WRITER',
-        prefix: 'I WANT TO BECOME A...'
+        prefix: 'I WANT TO BECOME A...',
+        type: 'text'
     },
     {
         id: 'behavior',
@@ -24,7 +27,8 @@ const steps = [
         subtitle: 'WHAT IS THE CORE HABIT?',
         field: 'title',
         placeholder: 'E.G., RUN 1 MILE, WRITE 500 WORDS',
-        prefix: 'I WILL...'
+        prefix: 'I WILL...',
+        type: 'text'
     },
     {
         id: 'cue',
@@ -32,7 +36,17 @@ const steps = [
         subtitle: 'WHEN WILL YOU DO IT?',
         field: 'cue',
         placeholder: 'E.G., AFTER I BRUSH MY TEETH',
-        prefix: 'TIME / LOCATION...'
+        prefix: 'TIME / LOCATION...',
+        type: 'text'
+    },
+    {
+        id: 'frequency',
+        title: 'FREQUENCY PROTOCOL',
+        subtitle: 'WHICH CYCLES TO ACTIVATE?',
+        field: 'frequency',
+        placeholder: '',
+        prefix: 'ACTIVE CYCLES:',
+        type: 'frequency'
     }
 ]
 
@@ -45,11 +59,10 @@ export default function NewHabitPage() {
     const [formData, setFormData] = useState({
         identity: '',
         title: '',
-        cue: ''
+        cue: '',
+        frequency: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] // Default: All days
     })
     const [validationError, setValidationError] = useState<string | null>(null)
-
-
 
     const [state, formAction, isPending] = useActionState(initializeProtocol, initialState)
 
@@ -58,7 +71,13 @@ export default function NewHabitPage() {
 
     const handleNext = () => {
         const currentValue = formData[step.field as keyof typeof formData]
-        if (isInputInvalid(currentValue)) {
+
+        if (step.id === 'frequency') {
+            if ((currentValue as string[]).length === 0) {
+                setValidationError('AT_LEAST_ONE_CYCLE_REQUIRED')
+                return
+            }
+        } else if (isInputInvalid(currentValue as string)) {
             setValidationError('INPUT_REQUIRED.SYS')
             return
         }
@@ -74,6 +93,25 @@ export default function NewHabitPage() {
             setValidationError(null)
             setCurrentStep(c => c - 1)
         }
+    }
+
+    const toggleDay = (day: string) => {
+        // Convert display day (MON) to value day (Mon)
+        const valueDay = day.charAt(0) + day.slice(1).toLowerCase();
+
+        const currentDays = formData.frequency;
+        let newDays;
+
+        if (currentDays.includes(valueDay)) {
+            newDays = currentDays.filter(d => d !== valueDay);
+        } else {
+            newDays = [...currentDays, valueDay];
+        }
+
+        // Sort properly to keep order Mon-Sun if needed, but not strictly necessary for logic
+        // Just updating state
+        setFormData({ ...formData, frequency: newDays });
+        if (validationError) setValidationError(null);
     }
 
     return (
@@ -99,9 +137,20 @@ export default function NewHabitPage() {
                     className="space-y-8"
                     onSubmit={(e) => {
                         const currentValue = formData[step.field as keyof typeof formData]
-                        if (isInputInvalid(currentValue)) {
-                            e.preventDefault()
+                        let isValid = true;
+
+                        if (step.id === 'frequency') {
+                            if ((currentValue as string[]).length === 0) {
+                                setValidationError('AT_LEAST_ONE_CYCLE_REQUIRED')
+                                isValid = false;
+                            }
+                        } else if (isInputInvalid(currentValue as string)) {
                             setValidationError('INPUT_REQUIRED.SYS')
+                            isValid = false;
+                        }
+
+                        if (!isValid) {
+                            e.preventDefault()
                             return
                         }
 
@@ -117,6 +166,7 @@ export default function NewHabitPage() {
                     <input type="hidden" name="identity" value={formData.identity} />
                     <input type="hidden" name="title" value={formData.title} />
                     <input type="hidden" name="cue" value={formData.cue} />
+                    <input type="hidden" name="frequency" value={JSON.stringify(formData.frequency)} />
 
                     <div className="overflow-hidden">
                         <AnimatePresence mode="wait" initial={false}>
@@ -139,17 +189,38 @@ export default function NewHabitPage() {
 
                                 <div className="mt-8 space-y-2">
                                     <label className="text-sm font-bold uppercase tracking-widest">{step.prefix}</label>
-                                    <input
-                                        type="text"
-                                        autoFocus
-                                        value={formData[step.field as keyof typeof formData]}
-                                        onChange={(e) => {
-                                            setFormData({ ...formData, [step.field]: e.target.value.toUpperCase() })
-                                            if (validationError) setValidationError(null)
-                                        }}
-                                        placeholder={step.placeholder}
-                                        className="input-retro w-full text-2xl"
-                                    />
+
+                                    {step.type === 'frequency' ? (
+                                        <div className="grid grid-cols-4 gap-4 mt-4">
+                                            {DAYS.map((day) => {
+                                                const valueDay = day.charAt(0) + day.slice(1).toLowerCase();
+                                                const isSelected = formData.frequency.includes(valueDay);
+                                                return (
+                                                    <button
+                                                        key={day}
+                                                        type="button"
+                                                        onClick={() => toggleDay(day)}
+                                                        className={`btn-retro text-center py-4 ${isSelected ? 'inverted' : ''}`}
+                                                    >
+                                                        {day}
+                                                    </button>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <input
+                                            type="text"
+                                            autoFocus
+                                            value={formData[step.field as keyof typeof formData] as string}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, [step.field]: e.target.value.toUpperCase() })
+                                                if (validationError) setValidationError(null)
+                                            }}
+                                            placeholder={step.placeholder}
+                                            className="input-retro w-full text-2xl"
+                                        />
+                                    )}
+
                                     {validationError && (
                                         <div className="text-red-600 font-bold text-sm mt-1 animate-pulse">
                                             &gt;&gt; ERROR: {validationError}

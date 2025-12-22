@@ -16,9 +16,23 @@ export async function initializeProtocol(prevState: unknown, formData: FormData)
     const title = formData.get('title') as string
     const identity = formData.get('identity') as string
     const cue = formData.get('cue') as string
+    const frequencyStr = formData.get('frequency') as string
 
     if (!title || !identity || !cue) {
         return { error: 'Please fill in all fields.' }
+    }
+
+    let frequency = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']; // Default
+    try {
+        if (frequencyStr) {
+            frequency = JSON.parse(frequencyStr);
+        }
+    } catch (e) {
+        console.warn('Failed to parse frequency', e);
+    }
+
+    if (!frequency || frequency.length === 0) {
+        return { error: 'At least one day must be selected.' }
     }
 
     const { error } = await supabase
@@ -28,7 +42,7 @@ export async function initializeProtocol(prevState: unknown, formData: FormData)
             title,
             identity,
             cue,
-            frequency: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] // Defaulting to daily for now
+            frequency
         })
 
     if (error) {
