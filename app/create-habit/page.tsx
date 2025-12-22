@@ -82,7 +82,7 @@ export default function NewHabitPage() {
                 <div className="flex justify-between items-center mb-6 border-b-2 border-black pb-4">
                     <span className="text-xl font-bold tracking-widest">INITIALIZE_PROTOCOL</span>
                     <Link href="/dashboard" scroll={false} className="btn-retro-secondary">
-                        [ EXIT ]
+                        [ <span >EXIT</span> ]
                     </Link>
                 </div>
 

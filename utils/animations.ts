@@ -10,8 +10,8 @@ export const steppedEase = (steps: number = 4) => (t: number) => Math.floor(t * 
  * Shared transition settings for mechanical animations.
  */
 export const mechanicalTransition: Transition = {
-    duration: 0.8,
-    ease: steppedEase(4)
+    duration: 1,
+    ease: steppedEase(12)
 };
 
 /**

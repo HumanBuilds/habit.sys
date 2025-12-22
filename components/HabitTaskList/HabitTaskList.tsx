@@ -49,7 +49,6 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                 {viewMode === 'detailed' && (
                     <motion.div
                         key="detailed-controls"
-                        layout
                         variants={sidewaysFlashVariants}
                         initial="initial"
                         animate="animate"
@@ -109,14 +108,14 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                     <span>ONGOING_HABITS.LOG</span>
                     {isPending && <span className="animate-pulse opacity-70">UPDATING...</span>}
                 </div>
-                {viewMode === 'simplified' && (
+                {viewMode === 'simplified' && isEligible && (
                     <Link
                         href="/create-habit"
                         scroll={false}
-                        className="w-5 h-5 flex items-center justify-center border border-transparent hover:border-white transition-all leading-none text-lg pb-0.5"
+                        className="w-5 h-5 flex items-center justify-center border border-transparent hover:border-white transition-all leading-none text-lg"
                         aria-label="Add New Protocol"
                     >
-                        +
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#fff" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>
                     </Link>
                 )}
             </motion.h2>

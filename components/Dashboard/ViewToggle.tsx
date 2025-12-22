@@ -30,8 +30,8 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({ viewMode, onToggle }) =>
                 {/* Slider Thumb */}
                 <motion.div
                     className="w-full h-5 bg-black relative z-10"
-                    animate={{ y: isDetailed ? -8 : 8 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    animate={{ y: isDetailed ? -10 : 10 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 80 }}
                 >
                 </motion.div>
             </button>
