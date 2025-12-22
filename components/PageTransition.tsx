@@ -45,7 +45,10 @@ export default function PageTransition({ children }: { children: React.ReactNode
                 className="min-h-screen w-full relative z-10"
                 style={{ willChange: 'transform, opacity' }}
             >
-                <FrozenRouter>{children}</FrozenRouter>
+                <FrozenRouter>{children}
+
+
+                </FrozenRouter>
             </motion.div>
         </AnimatePresence>
     );

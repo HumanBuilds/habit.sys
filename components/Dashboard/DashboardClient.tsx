@@ -40,7 +40,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                 <div className="flex gap-4">
                     <form action={signout}>
                         <button className="btn-retro-secondary text-xs">
-                            [ EXIT ]
+                            [ <span>EXIT</span> ]
                         </button>
                     </form>
                 </div>
