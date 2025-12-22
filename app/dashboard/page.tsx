@@ -59,13 +59,6 @@ export default async function DashboardPage() {
                     logsByHabit={logsByHabit}
                 />
             </Window>
-
-            <footer className="mt-4 text-sm font-bold flex-none">
-                <span className="btn-retro cursor-default">
-                    (C) 1984 HABIT.SYS // VERSION 1.1.0
-                </span>
-            </footer>
-
         </div>
     )
 }
