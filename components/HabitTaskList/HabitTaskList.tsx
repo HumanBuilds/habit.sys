@@ -42,15 +42,16 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
     };
 
     return (
-        <div className="flex flex-col">
+        <motion.div layout className="flex flex-col">
             {/* Command Row or Glitch State - Only visible in Detailed mode */}
             <AnimatePresence mode="wait">
                 {viewMode === 'detailed' && (
                     <motion.div
                         key="detailed-controls"
-                        initial={{ x: 40, opacity: 0 }}
+                        layout
+                        initial={{ x: "100%", opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: -40, opacity: 0 }}
+                        exit={{ x: "-100%", opacity: 0 }}
                         transition={{
                             duration: 0.8,
                             ease: (t) => Math.floor(t * 4) / 4
@@ -102,7 +103,10 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                 )}
             </AnimatePresence>
 
-            <h2 className="text-sm font-bold tracking-[0.2em] bg-black text-white px-2 py-1 mb-4 flex justify-between items-center">
+            <motion.h2
+                layout
+                className="text-sm font-bold tracking-[0.2em] bg-black text-white px-2 py-1 mb-4 flex justify-between items-center"
+            >
                 <div className="flex items-center gap-2">
                     <span>ONGOING_HABITS.LOG</span>
                     {isPending && <span className="animate-pulse opacity-70">UPDATING...</span>}
@@ -117,10 +121,10 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                         +
                     </Link>
                 )}
-            </h2>
+            </motion.h2>
 
-            <div className="flex flex-col divide-y-1 divide-black/10">
-                <AnimatePresence mode="popLayout">
+            <motion.div layout className="flex flex-col divide-y-1 divide-black/10">
+                <AnimatePresence mode="popLayout" initial={false}>
                     {sortedHabits.map((habit) => (
                         <HabitTaskItem
                             key={habit.id}
@@ -131,16 +135,16 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                         />
                     ))}
                 </AnimatePresence>
-            </div>
+            </motion.div>
 
-            <div className="mt-auto pt-8 flex justify-end">
+            <motion.div layout className="mt-auto pt-8 flex justify-end">
                 <button
                     onClick={() => setDevOverride(!devOverride)}
                     className="text-[10px] uppercase tracking-widest opacity-20 hover:opacity-100 transition-opacity"
                 >
                     [ DEV_OVERRIDE: {devOverride ? "ACTIVE" : "INACTIVE"} ]
                 </button>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
