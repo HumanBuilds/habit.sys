@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { VT323 } from "next/font/google";
 import "./globals.css";
 import PageTransition from "@/components/PageTransition";
+import { Footer } from "@/components/Footer";
 
 const vt323 = VT323({
   weight: "400",
@@ -26,10 +27,8 @@ export default function RootLayout({
       >
         <PageTransition>
           {children}
-
         </PageTransition>
-
-
+        <Footer />
       </body>
     </html>
   );
