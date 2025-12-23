@@ -99,7 +99,19 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                                             System Expansion Blocked
                                         </span>
                                     </div>
-                                    <span className="font-mono text-xs opacity-70">{glitchExpanded ? "[ COLLAPSE_LOG ]" : "[ VIEW_DIAGNOSTICS ]"}</span>
+                                    <span className="font-mono text-xs opacity-70">
+                                        {glitchExpanded ? (
+                                            <>
+                                                <span className="md:hidden">[ COLLAPSE ]</span>
+                                                <span className="hidden md:inline">[ COLLAPSE_LOG ]</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="md:hidden">[ DIAGNOSTICS ]</span>
+                                                <span className="hidden md:inline">[ VIEW_DIAGNOSTICS ]</span>
+                                            </>
+                                        )}
+                                    </span>
                                 </button>
 
                                 <AnimatePresence>
