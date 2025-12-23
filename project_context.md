@@ -8,6 +8,8 @@ Habit.sys OS is a mechanical, 1-bit habit tracking interface designed for **syst
 - **Engine**: [Next.js 15](https://nextjs.org/) (Server-Side Execution)
 - **Data Terminal**: [Supabase](https://supabase.com/) (Distributed Postgres)
 - **Visual Interface**: [Tailwind CSS 4](https://tailwindcss.com/) with **Atkinson Protocol** (1-bit Design System)
+- **Audio Engine**: [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) (Synthesized Soundscapes)
+- **Animation**: [Framer Motion](https://www.framer.com/motion/) (Kinetic Interactions)
 - **Display Mode**: High-contrast Black & White, hardware-acceleration dithering.
 - **Font Face**: [VT323](https://fonts.google.com/specimen/VT323) (System Bitmap)
 
@@ -15,6 +17,7 @@ Habit.sys OS is a mechanical, 1-bit habit tracking interface designed for **syst
 - **Single Node Focus**: The system prioritizes the most recent protocol initialization to prevent cognitive overload.
 - **Identity-First Boot**: Habit initialization begins by defining the target system state (Identity) before the execution parameters (Habit).
 - **Retro-System Windows**: Data is encapsulated in rigid, solid-bordered window modules.
+- **Tactile Feedback**: User inputs trigger immediate visual (kinetic) and auditory (synthesized) feedback to simulate mechanical operation.
 - **Check-In Matrix**: A high-contrast task list where protocols are executed and prioritized based on load-state.
 
 ### Database Terminal
@@ -32,7 +35,8 @@ Habit.sys OS is a mechanical, 1-bit habit tracking interface designed for **syst
 ### 2. Systematic Enhancements
 - **"System Pulsing"**: Timed alerts for protocol execution (Cue triggers).
 - **"Recovery Mode"**: Low-power execution mode for emergency protocol maintenance.
-- **"Mechanical Feedback"**: Hardware-inspired soundscapes and visual glitches upon protocol stabilization.
+- **"Mechanical Feedback"**: [IMPLEMENTED] Hardware-inspired soundscapes and visual glitches upon protocol stabilization.
+- **"Frequency Filtering"**: [IMPLEMENTED] Protocols are filtered by day-of-week frequency logic.
 
 ### 3. Archive & System History
 - **The Archives**: Secure storage for fully integrated protocols.
