@@ -44,11 +44,11 @@ export default async function DashboardPage() {
     const eligibility = await checkProtocolEligibility()
 
     return (
-        <div className=" p-4 md:p-8 flex flex-col items-center overflow-hidden">
+        <div className="h-full p-4 md:p-8 !pb-0 flex flex-col items-center">
             <Window
                 title="HABIT.SYS"
                 className="w-full max-w-2xl min-h-0"
-                contentClassName="overflow-y-auto  custom-scrollbar overflow-x-hidden"
+                contentClassName="overflow-y-auto scrollbar-stable custom-scrollbar overflow-x-hidden"
             >
                 <DashboardClient
                     user={{ email: user.email }}

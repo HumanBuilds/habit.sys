@@ -25,6 +25,11 @@ body.transitioning {
     /* border: 2px solid var(--color-black); */
 }
 
+*::-webkit-scrollbar-track {
+    margin: 0;
+    /* remove fake padding */
+}
+
 *::-webkit-scrollbar-thumb {
     background: var(--color-black);
     border: 3px solid var(--color-white);

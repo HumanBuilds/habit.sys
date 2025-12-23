@@ -1,0 +1,9 @@
+.agent
+.git
+.github
+task.md
+project_context.md
+*.md
+playwright-report
+test-results
+e2e

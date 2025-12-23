@@ -27,27 +27,19 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
     return (
         <AnimatePresence
-            mode="wait"
+            mode="popLayout"
         >
             <motion.div
                 key={pathname}
-                initial={{ y: "100vh", opacity: 1 }}
-                animate={{ y: "0", opacity: 1 }}
-                exit={{ y: "-100vh", opacity: 1 }}
+                initial={{ y: "100%", opacity: 1 }}
+                animate={{ y: "0%", opacity: 1 }}
+                exit={{ y: "-100%", opacity: 1 }}
                 transition={{
                     duration: 1.6,
                     ease: (t) => Math.floor(t * 12) / 12,
                     delay: 0.2
                 }}
-                onAnimationStart={() => {
-                    document.documentElement.style.overflow = 'hidden';
-                    document.body.classList.add('transitioning');
-                }}
-                onAnimationComplete={() => {
-                    document.documentElement.style.overflow = '';
-                    document.body.classList.remove('transitioning');
-                }}
-                className="min-h-screen w-full z-10"
+                className="h-full w-full z-10 overflow-hidden"
                 style={{ willChange: 'transform, opacity' }}
             >
                 <FrozenRouter targetPath={pathname}>
