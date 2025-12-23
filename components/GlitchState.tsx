@@ -37,20 +37,20 @@ export const GlitchState: React.FC<GlitchStateProps> = ({
                 </p>
 
                 {stats && (
-                    <div className="space-y-2 text-sm">
+                    <div className="space-y-2 text-sm ">
                         <div className="flex justify-between border-b border-white/10 pb-1">
                             <span>LATEST_PROTOCOL:</span>
                             <span className="font-bold underline">{latestHabitTitle?.toUpperCase() || "N/A"}</span>
                         </div>
                         <div className="flex justify-between">
                             <span>STABILITY_COUNT:</span>
-                            <span className={stats.completions >= stats.requiredCompletions ? "text-green-400" : "glitch-flash"}>
+                            <span className={stats.completions >= stats.requiredCompletions ? "text-green-400" : "glitch-text-large glitch-text"}>
                                 {stats.completions} / {stats.requiredCompletions} COMPLETED
                             </span>
                         </div>
                         <div className="flex justify-between">
                             <span>DEDICATION_RATE:</span>
-                            <span className={stats.dedication >= stats.requiredDedication ? "text-green-400" : "glitch-flash"}>
+                            <span className={stats.dedication >= stats.requiredDedication ? "text-green-400" : "glitch-text-large glitch-text"}>
                                 {stats.dedication}% / {stats.requiredDedication}% REQUIRED
                             </span>
                         </div>

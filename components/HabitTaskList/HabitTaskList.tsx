@@ -7,7 +7,7 @@ import { HabitTaskItem } from './HabitTaskItem';
 import { sortHabits, type Habit } from './utils';
 import { commitHabitLog } from '@/app/dashboard/actions';
 import { GlitchState } from '../GlitchState';
-import { sidewaysFlashVariants } from '@/utils/animations';
+import { sidewaysFlashVariants, glitchExpansionVariants } from '@/utils/animations';
 
 interface HabitTaskListProps {
     habits: Habit[];
@@ -96,10 +96,10 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                                 <AnimatePresence>
                                     {glitchExpanded && (
                                         <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                                            variants={glitchExpansionVariants}
+                                            initial="initial"
+                                            animate="animate"
+                                            exit="exit"
                                             className="overflow-hidden"
                                         >
                                             <GlitchState

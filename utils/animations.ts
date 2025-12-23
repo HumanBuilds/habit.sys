@@ -34,3 +34,29 @@ export const sidewaysFlashVariants: Variants = {
         transition: mechanicalTransition
     }
 };
+
+/**
+ * Vertical expansion for the glitch state with a "jerky" stepped feel.
+ */
+export const glitchExpansionVariants: Variants = {
+    initial: {
+        height: 0,
+        opacity: .9
+    },
+    animate: {
+        height: 'auto',
+        opacity: 1,
+        transition: {
+            duration: 0.8,
+            ease: steppedEase(6)
+        }
+    },
+    exit: {
+        height: 0,
+        opacity: .9,
+        transition: {
+            duration: 0.6,
+            ease: steppedEase(6)
+        }
+    }
+};
