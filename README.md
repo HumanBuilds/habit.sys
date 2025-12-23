@@ -17,7 +17,7 @@ Habit.sys OS is a mechanical, 1-bit habit tracking interface designed for **syst
 ### 1. Clone & Install
 ```bash
 git clone <repository-url>
-cd habit_garden
+cd habit.sys
 npm install
 ```
 
