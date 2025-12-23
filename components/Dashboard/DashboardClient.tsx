@@ -78,6 +78,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                                             title={habit.title}
                                             createdAt={habit.created_at}
                                             logs={logsByHabit[habit.id] || []}
+                                            frequency={habit.frequency}
                                         />
                                     ))}
                                 </div>

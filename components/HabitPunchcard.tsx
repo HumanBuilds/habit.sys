@@ -6,9 +6,10 @@ interface HabitPunchcardProps {
     title: string;
     createdAt: string;
     logs: string[]; // Array of 'YYYY-MM-DD' strings
+    frequency?: string[]; // Array of short weekdays e.g. ['Mon', 'Tue']
 }
 
-export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ title, createdAt, logs }) => {
+export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ title, createdAt, logs, frequency }) => {
     // 1. Calculate dates from creation to today
     const createdDate = new Date(createdAt);
     createdDate.setHours(0, 0, 0, 0);
@@ -20,7 +21,17 @@ export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ title, createdAt
     const tempDate = new Date(createdDate);
 
     while (tempDate <= today) {
-        daysSinceCreation.push(new Date(tempDate));
+        // If frequency is specified, only include matching days
+        if (frequency && frequency.length > 0) {
+            const dayName = tempDate.toLocaleDateString('en-US', { weekday: 'short' });
+            if (frequency.includes(dayName)) {
+                daysSinceCreation.push(new Date(tempDate));
+            }
+        } else {
+            // Fallback: Include all days if no frequency set
+            daysSinceCreation.push(new Date(tempDate));
+        }
+
         tempDate.setDate(tempDate.getDate() + 1);
     }
 

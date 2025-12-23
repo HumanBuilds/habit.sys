@@ -50,7 +50,15 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
     const isEligible = eligibility.eligible || devOverride;
 
     const sortedHabits = useMemo(() => {
-        return sortHabits(habits, completedSet);
+        const today = new Date().toLocaleDateString('en-US', { weekday: 'short' }); // "Mon", "Tue"
+
+        const filtered = habits.filter(h => {
+            // If frequency is missing or empty, assume Daily (or show it to be safe)
+            if (!h.frequency || h.frequency.length === 0) return true;
+            return h.frequency.includes(today);
+        });
+
+        return sortHabits(filtered, completedSet);
     }, [habits, completedSet]);
 
     const handleToggle = (habitId: string, isCompleted: boolean) => {
