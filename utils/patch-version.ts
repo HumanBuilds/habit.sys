@@ -1,12 +1,12 @@
 import { execSync } from "child_process";
 
 export function getPatchVersion() {
-    let commitCount = 0;
+    let commitCount = 55; // Hardcoded for production (git not available in Vercel)
     try {
         // Run git command to get counts
         commitCount = parseInt(execSync('git rev-list --count HEAD', { encoding: 'utf8' }));
     } catch {
-        console.warn('Could not determine git version, defaulting to 000');
+        // Fallback to hardcoded value
     }
 
     const majorVersion = Math.floor(commitCount / 100) + 1;
