@@ -62,5 +62,20 @@ To maintain the 1-bit mechanical aesthetic:
 - `npm run test:e2e`: Run end-to-end tests with Playwright.
 - `npm run lint`: Check for code style protocol violations.
 
+## 🚀 Deployment
+
+The system is configured for seamless deployment to [Vercel](https://vercel.com).
+
+### Prerequisites
+1.  **Vercel CLI**: Ensure `vercel` is installed.
+2.  **Environment**: Supabase credentials must be added to the Vercel project (`vercel env add`).
+
+### Deploy Command
+To deploy to production:
+```bash
+npm run deploy
+```
+This runs `vercel --prod` to build and deploy the application.
+
 ---
 *System maintained by the Fiery Pioneer.*

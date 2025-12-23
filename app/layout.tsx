@@ -24,13 +24,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${vt323.variable} dither-50 retro-theme antialiased h-screen overflow-hidden`}
+        className={`${vt323.variable} dither-50 retro-theme antialiased h-screen overflow-hidden flex flex-col`}
       >
         <RetroSoundController />
-        <PageTransition>
-          {children}
-          <Footer />
-        </PageTransition>
+        <div className="flex-1 overflow-hidden relative">
+          <PageTransition>
+            {children}
+          </PageTransition>
+        </div>
+        <Footer />
       </body>
     </html>
   );

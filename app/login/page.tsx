@@ -19,7 +19,7 @@ export default function LoginPage() {
     }, initialState)
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="h-full flex items-center justify-center p-4">
             <Window title="SYSTEM_ACCESS.EXE" className="w-full max-w-md">
                 <div className="text-center mb-8 border-b-2 border-black pb-4">
                     <h1 className="text-4xl font-bold tracking-tighter">WELCOME BACK</h1>
@@ -79,7 +79,7 @@ export default function LoginPage() {
                     </div>
                 </form>
 
-                <div className="relative my-8">
+                <div className="relative my-4">
                     <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t-2 border-black" />
                     </div>
@@ -90,8 +90,6 @@ export default function LoginPage() {
 
                 <form>
                     <button formAction={signInWithGoogle} className="w-full btn-retro flex items-center justify-center gap-4">
-                        {/* Simplified Pixelated Google-ish Icon placeholder */}
-                        <div className="w-6 h-6 border-2 border-black dither-50"></div>
                         [ GOOGLE AUTH ]
                     </button>
                 </form>

@@ -4,6 +4,7 @@ import React, { useMemo, useTransition, useState, useOptimistic } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { HabitTaskItem } from './HabitTaskItem';
+import { EmptyState } from './EmptyState';
 import { sortHabits, type Habit } from './utils';
 import { commitHabitLog } from '@/app/dashboard/actions';
 import { GlitchState } from '../GlitchState';
@@ -145,15 +146,19 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
 
             <motion.div layout className="flex flex-col divide-y-1 divide-black/10">
                 <AnimatePresence mode="popLayout" initial={false}>
-                    {sortedHabits.map((habit) => (
-                        <HabitTaskItem
-                            key={habit.id}
-                            id={habit.id}
-                            title={habit.title}
-                            isCompleted={completedSet.has(habit.id)}
-                            onToggle={async (id, currentlyDone) => await handleToggle(id, currentlyDone)}
-                        />
-                    ))}
+                    {sortedHabits.length > 0 ? (
+                        sortedHabits.map((habit) => (
+                            <HabitTaskItem
+                                key={habit.id}
+                                id={habit.id}
+                                title={habit.title}
+                                isCompleted={completedSet.has(habit.id)}
+                                onToggle={async (id, currentlyDone) => await handleToggle(id, currentlyDone)}
+                            />
+                        ))
+                    ) : (
+                        <EmptyState key="empty-state" />
+                    )}
                 </AnimatePresence>
             </motion.div>
 

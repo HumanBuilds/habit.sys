@@ -115,7 +115,7 @@ export default function NewHabitPage() {
     }
 
     return (
-        <div className=" flex items-center justify-center p-4 md:p-8">
+        <div className="h-full flex items-center justify-center p-4 md:p-8 !pb-0">
             <Window title="NEW_HABIT_WIZARD.EXE" className="w-full max-w-2xl">
                 <div className="flex justify-between items-center mb-6 border-b-2 border-black pb-4">
                     <span className="text-xl font-bold tracking-widest">INITIALIZE_PROTOCOL</span>
@@ -176,7 +176,7 @@ export default function NewHabitPage() {
                                 initial="initial"
                                 animate="animate"
                                 exit="exit"
-                                className="min-h-[250px] border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]"
+                                className=" border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]"
                             >
                                 <div className="space-y-4">
                                     <h1 className="text-3xl font-bold tracking-tighter border-b-2 border-black pb-2">
@@ -187,7 +187,7 @@ export default function NewHabitPage() {
                                     </p>
                                 </div>
 
-                                <div className="mt-8 space-y-2">
+                                <div className="mt-4 space-y-2">
                                     <label className="text-sm font-bold uppercase tracking-widest">{step.prefix}{step.type === 'frequency' && ` ${formData.frequency.length} / 7`}</label>
 
                                     {step.type === 'frequency' ? (
@@ -231,7 +231,7 @@ export default function NewHabitPage() {
                         </AnimatePresence>
                     </div>
 
-                    <div className="flex justify-between items-center mt-12">
+                    <div className="flex justify-between items-center mt-4">
                         <button
                             type="button"
                             onClick={handleBack}
