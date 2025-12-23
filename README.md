@@ -8,6 +8,7 @@ Habit.sys OS is a mechanical, 1-bit habit tracking interface designed for **syst
 - **Data Terminal**: [Supabase](https://supabase.com/) (Auth & Postgres)
 - **Visual Interface**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **Animation Layer**: [Framer Motion](https://www.framer.com/motion/)
+- **Audio Engine**: [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) (No external assets)
 - **Visual Standards**: **Atkinson Protocol** (1-bit dithering, high-contrast B&W)
 - **Testing**: [Vitest](https://vitest.dev/) (Unit) & [Playwright](https://playwright.dev/) (E2E)
 
