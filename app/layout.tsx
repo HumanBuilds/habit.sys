@@ -5,6 +5,9 @@ import PageTransition from "@/components/PageTransition";
 import { Footer } from "@/components/Footer";
 import { RetroSoundController } from "@/components/RetroSoundController";
 
+import { NavigationLoaderProvider } from "@/context/NavigationLoaderContext";
+import { NavigationListener } from "@/components/NavigationListener";
+
 const vt323 = VT323({
   weight: "400",
   variable: "--font-vt323",
@@ -26,12 +29,15 @@ export default function RootLayout({
       <body
         className={`${vt323.variable} dither-50 retro-theme antialiased h-screen overflow-hidden flex flex-col`}
       >
-        <RetroSoundController />
-        <div className="flex-1 overflow-hidden relative">
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </div>
+        <NavigationLoaderProvider>
+          <NavigationListener />
+          <RetroSoundController />
+          <div className="flex-1 overflow-hidden relative">
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </div>
+        </NavigationLoaderProvider>
         <Footer />
       </body>
     </html>
