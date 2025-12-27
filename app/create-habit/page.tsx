@@ -191,19 +191,32 @@ export default function NewHabitPage() {
                                     <label className="text-sm font-bold uppercase tracking-widest">{step.prefix}{step.type === 'frequency' && ` ${formData.frequency.length} / 7`}</label>
 
                                     {step.type === 'frequency' ? (
-                                        <div className="grid grid-cols-4 gap-4 mt-4">
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
                                             {DAYS.map((day) => {
                                                 const valueDay = day.charAt(0) + day.slice(1).toLowerCase();
                                                 const isSelected = formData.frequency.includes(valueDay);
                                                 return (
-                                                    <button
+                                                    <div
                                                         key={day}
-                                                        type="button"
+                                                        className="flex items-center gap-4 cursor-pointer group select-none"
                                                         onClick={() => toggleDay(day)}
-                                                        className={`btn-retro text-center py-4 ${isSelected ? 'inverted' : ''}`}
                                                     >
-                                                        {day}
-                                                    </button>
+                                                        <div className="relative w-8 h-8 border-3 border-black bg-white flex items-center justify-center shrink-0 transition-transform active:scale-95">
+                                                            <AnimatePresence>
+                                                                {isSelected && (
+                                                                    <motion.div
+                                                                        initial={{ scale: 0 }}
+                                                                        animate={{ scale: 0.8 }}
+                                                                        exit={{ scale: 0 }}
+                                                                        className="w-full h-full bg-black"
+                                                                    />
+                                                                )}
+                                                            </AnimatePresence>
+                                                        </div>
+                                                        <span className={`text-xl font-bold tracking-tighter ${isSelected ? 'text-black' : 'text-black/40'} transition-colors`}>
+                                                            {day}
+                                                        </span>
+                                                    </div>
                                                 )
                                             })}
                                         </div>
