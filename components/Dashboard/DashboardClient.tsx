@@ -74,6 +74,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                                     {habits.map((habit) => (
                                         <HabitPunchcard
                                             key={habit.id}
+                                            id={habit.id}
                                             title={habit.title}
                                             createdAt={habit.created_at}
                                             logs={logsByHabit[habit.id] || []}

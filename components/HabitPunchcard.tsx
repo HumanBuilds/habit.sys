@@ -1,15 +1,17 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 interface HabitPunchcardProps {
+    id: string;
     title: string;
     createdAt: string;
     logs: string[]; // Array of 'YYYY-MM-DD' strings
     frequency?: string[]; // Array of short weekdays e.g. ['Mon', 'Tue']
 }
 
-export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ title, createdAt, logs, frequency }) => {
+export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ id, title, createdAt, logs, frequency }) => {
     // 1. Calculate dates from creation to today
     const createdDate = new Date(createdAt);
     createdDate.setHours(0, 0, 0, 0);
@@ -69,13 +71,22 @@ export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ title, createdAt
                 })}
             </div>
 
-            <div className="mt-6 pt-4 border-t border-black/10 flex justify-between items-center">
-                <div className="punchcard-label italic">
-                    &gt;&gt; DATA_VALIDATION_PASSED
+            <div className="mt-6 pt-4 border-t-2 border-dashed border-black/20 flex flex-col gap-3">
+                <div className="flex justify-between items-center">
+                    <div className="punchcard-label italic text-[10px] opacity-60">
+                        &gt;&gt; DATA_INTEGRITY_VERIFIED
+                    </div>
+                    <div className="text-[10px] font-bold opacity-30 uppercase font-mono">
+                        REF: {id ? id.slice(0, 8) : 'NULL'}
+                    </div>
                 </div>
-                <div className="text-xs font-bold opacity-30 uppercase">
-                    ID: {createdAt.split('T')[0].replace(/-/g, '')}
-                </div>
+
+                <Link
+                    href={`/edit-habit/${id}`}
+                    className="btn-retro-secondary w-full text-center group"
+                >
+                    [ <span >MODIFY_PROTOCOL_PARAMETERS</span> ]
+                </Link>
             </div>
         </div>
     );
