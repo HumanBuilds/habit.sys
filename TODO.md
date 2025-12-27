@@ -2,7 +2,7 @@
 
 - [x] Add edit habits feature
 - [ ] Implement Google Auth
-- [ X ] Make dashboard headings match the log 
+- [x] Make dashboard headings match the log 
 - [ ] Add loading indicator when going between pages
 - [x] Turn frequency options into checkboxes
 - [x] Happy beep when crossing off habits
