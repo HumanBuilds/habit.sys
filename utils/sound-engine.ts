@@ -85,6 +85,39 @@ class SoundEngine {
         oscillator.start(t);
         oscillator.stop(t + 0.1);
     }
+
+    // Ascending Happy Beep / Arpeggio (Sine waves)
+    public playSuccess() {
+        if (this.isMuted || !this.audioContext) return;
+        this.ensureContext();
+
+        const t = this.audioContext.currentTime;
+
+        // Major Arpeggio: C5 -> E5 -> G5
+        const notes = [
+            { freq: 523.25, start: 0, duration: 0.1 },    // C5
+            { freq: 659.25, start: 0.08, duration: 0.1 }, // E5
+            { freq: 783.99, start: 0.16, duration: 0.2 }  // G5
+        ];
+
+        notes.forEach(note => {
+            const osc = this.audioContext!.createOscillator();
+            const gain = this.audioContext!.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(note.freq, t + note.start);
+
+            // Slightly more emphasized volume (0.07 instead of 0.05)
+            gain.gain.setValueAtTime(0.07, t + note.start);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + note.start + note.duration);
+
+            osc.connect(gain);
+            gain.connect(this.audioContext!.destination);
+
+            osc.start(t + note.start);
+            osc.stop(t + note.start + note.duration);
+        });
+    }
 }
 
 export const soundEngine = new SoundEngine();
