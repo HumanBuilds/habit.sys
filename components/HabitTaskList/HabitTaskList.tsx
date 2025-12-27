@@ -9,6 +9,7 @@ import { sortHabits, type Habit } from './utils';
 import { commitHabitLog } from '@/app/dashboard/actions';
 import { GlitchState } from '../GlitchState';
 import { sidewaysFlashVariants, glitchExpansionVariants } from '@/utils/animations';
+import { soundEngine } from '@/utils/sound-engine';
 
 interface HabitTaskListProps {
     habits: Habit[];
@@ -65,7 +66,11 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
     const handleToggle = (habitId: string, isCompleted: boolean) => {
         // Optimistic update
         startTransition(async () => {
-            addOptimisticId({ habitId, isCompleted });
+            if (!isCompleted) {
+                soundEngine.playSuccess();
+            } else {
+                soundEngine.playClick();
+            }
 
             const result = await commitHabitLog(habitId, isCompleted);
             if (result.error) {

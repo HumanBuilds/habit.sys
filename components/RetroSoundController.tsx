@@ -12,6 +12,10 @@ export const RetroSoundController = () => {
             const interactiveElement = target.closest('.btn-retro, .btn-retro-secondary, .habit-item, button, a');
 
             if (interactiveElement) {
+                // If the element handles its own sounds, don't play the default click
+                if ((interactiveElement as HTMLElement).dataset.customSound === "true") {
+                    return;
+                }
                 soundEngine.playClick();
             }
         };
