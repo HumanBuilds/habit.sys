@@ -38,7 +38,7 @@ export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ title, createdAt
     const logSet = new Set(logs);
 
     return (
-        <div className="punchcard w-full max-w-md my-4">
+        <div className="punchcard w-full max-w-md">
             <div className="punchcard-clip"></div>
 
             <div className="flex justify-between items-start mb-6 border-b border-black/10 pb-2">

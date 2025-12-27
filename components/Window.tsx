@@ -14,7 +14,7 @@ export const Window: React.FC<WindowProps> = ({ title, children, className = "",
                 <div className="window-title-strips"></div>
                 <div className="window-title">{title}</div>
             </div>
-            <div className={`p-4 pe-2 flex-1 overflow-auto min-h-0 ${contentClassName}`}
+            <div className={`p-4 pe-1 flex-1 overflow-auto min-h-0 ${contentClassName}`}
                 style={{
                     scrollbarGutter: "stable",
                 }}>

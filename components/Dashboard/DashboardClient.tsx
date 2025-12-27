@@ -65,11 +65,10 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                                 initial="initial"
                                 animate="animate"
                                 exit="exit"
-                                className="mt-4 pt-8 border-t-4 border-black border-double"
+                                className="mt-4 pt-4 border-t-4 border-black border-double"
                             >
-                                <h2 className="text-xl font-bold tracking-widest mb-6 flex flex-col md:flex-row md:items-center gap-2" id="system-diagnostics-header">
-                                    <span className="bg-black text-white px-2 self-start md:self-auto">SYSTEM_DIAGNOSTICS:</span>
-                                    <span>STREAK_PUNCHCARDS.DB</span>
+                                <h2 className="text-sm font-bold tracking-[0.2em] bg-black text-white px-2 py-1 mb-4 flex justify-between items-center" id="system-diagnostics-header">
+                                    <span>SYSTEM_DIAGNOSTICS</span>
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="punchcards-grid">
                                     {habits.map((habit) => (
