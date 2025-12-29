@@ -1,7 +1,7 @@
 'use client';
 
 // Singleton to manage audio context and sounds
-class SoundEngine {
+export class SoundEngine {
     private audioContext: AudioContext | null = null;
     private isMuted: boolean = false;
 
@@ -37,9 +37,10 @@ class SoundEngine {
     }
 
     // Mechanical Switch Sound (Square wave burst)
+    // Mechanical Switch Sound (Square wave burst)
     public playClick() {
-        if (this.isMuted || !this.audioContext) return;
         this.ensureContext();
+        if (this.isMuted || !this.audioContext) return;
 
         const t = this.audioContext.currentTime;
         const oscillator = this.audioContext.createOscillator();
@@ -66,8 +67,8 @@ class SoundEngine {
 
     // High Pitch Beep (Sine wave)
     public playConfirm() {
-        if (this.isMuted || !this.audioContext) return;
         this.ensureContext();
+        if (this.isMuted || !this.audioContext) return;
 
         const t = this.audioContext.currentTime;
         const oscillator = this.audioContext.createOscillator();
@@ -88,8 +89,8 @@ class SoundEngine {
 
     // Ascending Happy Beep / Arpeggio (Sine waves)
     public playSuccess() {
-        if (this.isMuted || !this.audioContext) return;
         this.ensureContext();
+        if (this.isMuted || !this.audioContext) return;
 
         const t = this.audioContext.currentTime;
 
