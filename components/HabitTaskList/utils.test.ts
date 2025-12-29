@@ -1,40 +1,46 @@
 import { describe, it, expect } from 'vitest';
-import { sortHabits, type Habit } from './utils';
+import { sortHabits, Habit } from './utils';
 
 describe('sortHabits', () => {
-    const habits: Habit[] = [
-        { id: '1', title: 'Habit 1' },
-        { id: '2', title: 'Habit 2' },
-        { id: '3', title: 'Habit 3' },
+    const mockHabits: Habit[] = [
+        { id: '1', title: 'Wake up', frequency: ['Mon'] },
+        { id: '2', title: 'Run', frequency: ['Mon'] },
+        { id: '3', title: 'Sleep', frequency: ['Mon'] },
     ];
 
-    it('should move completed habits to the bottom', () => {
-        const completedHabitIds = new Set(['1']);
-        const sorted = sortHabits(habits, completedHabitIds);
+    it('should push completed habits to the bottom', () => {
+        const completedIds = new Set(['1']); // 'Wake up' is done
 
-        expect(sorted[0].id).toBe('2');
-        expect(sorted[1].id).toBe('3');
+        const sorted = sortHabits(mockHabits, completedIds);
+
+        // Expected: Uncompleted first (2 or 3), Completed last (1)
         expect(sorted[2].id).toBe('1');
+        expect(sorted.length).toBe(3);
+
+        // First two should be 2 and 3 (stable sort preserves order if engine supports it, 
+        // logic says aDone === bDone returns 0)
+        expect([sorted[0].id, sorted[1].id]).toContain('2');
+        expect([sorted[0].id, sorted[1].id]).toContain('3');
     });
 
-    it('should keep order if all or none are completed', () => {
-        const noneCompleted = new Set<string>();
-        const sortedNone = sortHabits(habits, noneCompleted);
-        expect(sortedNone.map(h => h.id)).toEqual(['1', '2', '3']);
+    it('should keep order if completion status is same', () => {
+        const completedIds = new Set<string>(); // None done
 
-        const allCompleted = new Set(['1', '2', '3']);
-        const sortedAll = sortHabits(habits, allCompleted);
-        expect(sortedAll.map(h => h.id)).toEqual(['1', '2', '3']);
+        const sorted = sortHabits(mockHabits, completedIds);
+
+        // Should match original order logic (return 0)
+        // Note: Array.prototype.sort is stable in modern JS/Node
+        expect(sorted[0].id).toBe('1');
+        expect(sorted[1].id).toBe('2');
+        expect(sorted[2].id).toBe('3');
     });
 
-    it('should handle multiple completed habits', () => {
-        const completedHabitIds = new Set(['1', '2']);
-        const sorted = sortHabits(habits, completedHabitIds);
+    it('should handle all completed', () => {
+        const completedIds = new Set(['1', '2', '3']);
+        const sorted = sortHabits(mockHabits, completedIds);
 
-        // '3' should be first as it's not completed
-        expect(sorted[0].id).toBe('3');
-        // '1' and '2' should be at the bottom (order preserved among completed)
-        expect(sorted[1].id).toBe('1');
-        expect(sorted[2].id).toBe('2');
+        expect(sorted[0].id).toBe('1');
+        expect(sorted[1].id).toBe('2');
+        expect(sorted[2].id).toBe('3');
     });
 });

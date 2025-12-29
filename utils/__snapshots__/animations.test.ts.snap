@@ -1,0 +1,58 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Animation Config > glitchExpansionVariants should match snapshot 1`] = `
+{
+  "animate": {
+    "height": "auto",
+    "opacity": 1,
+    "transition": {
+      "duration": 0.8,
+      "ease": [Function],
+    },
+  },
+  "exit": {
+    "height": 0,
+    "opacity": 0.9,
+    "transition": {
+      "duration": 0.6,
+      "ease": [Function],
+    },
+  },
+  "initial": {
+    "height": 0,
+    "opacity": 0.9,
+  },
+}
+`;
+
+exports[`Animation Config > mechanicalTransition should match snapshot 1`] = `
+{
+  "duration": 1,
+  "ease": [Function],
+}
+`;
+
+exports[`Animation Config > sidewaysFlashVariants should match snapshot 1`] = `
+{
+  "animate": {
+    "opacity": 1,
+    "transition": {
+      "duration": 1,
+      "ease": [Function],
+    },
+    "x": 0,
+  },
+  "exit": {
+    "opacity": 0,
+    "transition": {
+      "duration": 1,
+      "ease": [Function],
+    },
+    "x": "-100%",
+  },
+  "initial": {
+    "opacity": 0,
+    "x": "100%",
+  },
+}
+`;
