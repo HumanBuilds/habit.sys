@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { signout } from '@/app/login/actions';
+import { useClerk } from '@clerk/nextjs';
 import { HabitTaskList } from '@/components/HabitTaskList';
 import { HabitPunchcard } from '@/components/HabitPunchcard';
 import { ViewToggle } from './ViewToggle';
@@ -29,6 +29,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
     logsByHabit,
 }) => {
     const [viewMode, setViewMode] = useState<'detailed' | 'simplified'>('simplified');
+    const { signOut } = useClerk();
 
     return (
         <>
@@ -40,11 +41,12 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                     </div>
                 </div>
                 <div className="flex gap-4">
-                    <form action={signout}>
-                        <button className="btn-retro-secondary text-xs">
-                            [ <span>EXIT</span> ]
-                        </button>
-                    </form>
+                    <button
+                        onClick={() => signOut({ redirectUrl: '/login' })}
+                        className="btn-retro-secondary text-xs"
+                    >
+                        [ <span>EXIT</span> ]
+                    </button>
                 </div>
             </div>
 
