@@ -1,15 +1,17 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { auth } from '@clerk/nextjs/server'
+import { createNeonClient } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
 
 export async function queryProtocolStreak(habitId: string) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { userId } = await auth()
 
-    if (!user) return 0
+    if (!userId) return 0
 
-    const { data: logs } = await supabase
+    const neonClient = await createNeonClient()
+
+    const { data: logs } = await neonClient
         .from('habit_logs')
         .select('completed_at')
         .eq('habit_id', habitId)
@@ -54,10 +56,11 @@ export async function queryProtocolStreak(habitId: string) {
 }
 
 export async function commitHabitLog(habitId: string, isCompleted: boolean) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { userId } = await auth()
 
-    if (!user) return { error: 'Unauthorized' }
+    if (!userId) return { error: 'Unauthorized' }
+
+    const neonClient = await createNeonClient()
 
     // Define "today" in UTC boundaries
     const now = new Date()
@@ -67,28 +70,28 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
     try {
         if (isCompleted) {
             // Uncheck: delete any log for today (range match)
-            const { error } = await supabase
+            const { error } = await neonClient
                 .from('habit_logs')
                 .delete()
                 .eq('habit_id', habitId)
-                .eq('user_id', user.id)
+                .eq('user_id', userId)
                 .gte('completed_at', startOfTodayUtc.toISOString())
                 .lt('completed_at', startOfTomorrowUtc.toISOString())
 
             if (error) throw error
         } else {
             // Check: insert with a timestamp
-            const { error } = await supabase
+            const { error } = await neonClient
                 .from('habit_logs')
                 .insert({
                     habit_id: habitId,
-                    user_id: user.id,
+                    user_id: userId,
                     completed_at: new Date().toISOString(),
                 })
 
             if (error) {
                 if (error.code === '23505') {
-                    // console.log('[Server] Duplicate insert attempt ignored (Idempotent fix)')
+                    // Duplicate insert attempt ignored (Idempotent fix)
                 } else {
                     throw error
                 }
@@ -105,16 +108,17 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
 
 
 export async function checkProtocolEligibility() {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { userId } = await auth()
 
-    if (!user) return { eligible: false, error: 'Unauthorized' }
+    if (!userId) return { eligible: false, error: 'Unauthorized' }
+
+    const neonClient = await createNeonClient()
 
     // 1. Get the latest habit
-    const { data: habits, error: habitError } = await supabase
+    const { data: habits, error: habitError } = await neonClient
         .from('habits')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(1)
 
@@ -126,14 +130,14 @@ export async function checkProtocolEligibility() {
 
     const latestHabit = habits[0]
 
-    // 2. Count completions
-    const { count, error: countError } = await supabase
+    // 2. Count completions (fetch minimal data and count in JS)
+    const { data: logs, error: countError } = await neonClient
         .from('habit_logs')
-        .select('*', { count: 'exact', head: true })
+        .select('id')
         .eq('habit_id', latestHabit.id)
 
     if (countError) throw countError
-    const completionCount = count || 0
+    const completionCount = logs?.length || 0
 
     // 3. Calculate total days since creation
     const createdDate = new Date(latestHabit.created_at)
@@ -164,17 +168,18 @@ export async function checkProtocolEligibility() {
 }
 
 export async function forceResetProtocol(habitId: string) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { userId } = await auth()
 
-    if (!user) return { error: 'Unauthorized' }
+    if (!userId) return { error: 'Unauthorized' }
+
+    const neonClient = await createNeonClient()
 
     try {
-        const { error } = await supabase
+        const { error } = await neonClient
             .from('habit_logs')
             .delete()
             .eq('habit_id', habitId)
-            .eq('user_id', user.id)
+            .eq('user_id', userId)
 
         if (error) throw error
 

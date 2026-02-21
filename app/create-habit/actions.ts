@@ -1,15 +1,14 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { auth } from '@clerk/nextjs/server'
+import { createNeonClient } from '@/lib/neon'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
 export async function initializeProtocol(prevState: unknown, formData: FormData) {
-    const supabase = await createClient()
+    const { userId } = await auth()
 
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
+    if (!userId) {
         return { error: 'You must be logged in to create a habit.' }
     }
 
@@ -35,10 +34,12 @@ export async function initializeProtocol(prevState: unknown, formData: FormData)
         return { error: 'At least one day must be selected.' }
     }
 
-    const { error } = await supabase
+    const neonClient = await createNeonClient()
+
+    const { error } = await neonClient
         .from('habits')
         .insert({
-            user_id: user.id,
+            user_id: userId,
             title,
             identity,
             cue,

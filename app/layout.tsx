@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { VT323 } from "next/font/google";
 import "./globals.css";
 import PageTransition from "@/components/PageTransition";
@@ -26,23 +27,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${vt323.variable} dither-50 retro-theme antialiased h-screen overflow-hidden flex flex-col`}
-      >
-        <NavigationLoaderProvider>
-          <Suspense fallback={null}>
-            <NavigationListener />
-          </Suspense>
-          <RetroSoundController />
-          <div className="flex-1 overflow-hidden relative">
-            <PageTransition>
-              {children}
-            </PageTransition>
-          </div>
-        </NavigationLoaderProvider>
-        <Footer />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${vt323.variable} dither-50 retro-theme antialiased h-screen overflow-hidden flex flex-col`}
+        >
+          <NavigationLoaderProvider>
+            <Suspense fallback={null}>
+              <NavigationListener />
+            </Suspense>
+            <RetroSoundController />
+            <div className="flex-1 overflow-hidden relative">
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </div>
+          </NavigationLoaderProvider>
+          <Footer />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

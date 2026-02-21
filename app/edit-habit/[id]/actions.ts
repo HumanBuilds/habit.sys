@@ -1,26 +1,23 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { auth } from '@clerk/nextjs/server'
+import { createNeonClient } from '@/lib/neon'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
 export async function updateProtocol(prevState: unknown, formData: FormData) {
-    const supabase = await createClient()
+    const { userId } = await auth()
 
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
+    if (!userId) {
         return { error: 'You must be logged in to update a habit.' }
     }
 
-    const id = formData.get('id') as string; // We'll need to pass this ID somehow or handle it via URL params/hidden field
+    const id = formData.get('id') as string
     const title = formData.get('title') as string
     const identity = formData.get('identity') as string
     const cue = formData.get('cue') as string
     const frequencyStr = formData.get('frequency') as string
 
-    // For update, ID is critical. However, `useActionState` doesn't easily let us pass arguments.
-    // A common pattern is using bind, but here we might just ensure the ID is in the form (hidden input).
     if (!id) {
         return { error: 'Protocol ID missing.' }
     }
@@ -42,7 +39,9 @@ export async function updateProtocol(prevState: unknown, formData: FormData) {
         return { error: 'At least one day must be selected.' }
     }
 
-    const { error } = await supabase
+    const neonClient = await createNeonClient()
+
+    const { error } = await neonClient
         .from('habits')
         .update({
             title,
@@ -51,7 +50,7 @@ export async function updateProtocol(prevState: unknown, formData: FormData) {
             frequency
         })
         .eq('id', id)
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
 
     if (error) {
         return { error: error.message }
