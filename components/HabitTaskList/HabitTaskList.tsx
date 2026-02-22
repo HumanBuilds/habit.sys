@@ -25,9 +25,10 @@ interface HabitTaskListProps {
         latestHabitTitle?: string;
     };
     viewMode: 'detailed' | 'simplified';
+    direction?: number;
 }
 
-export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedHabitIds, eligibility, viewMode }) => {
+export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedHabitIds, eligibility, viewMode, direction = -1 }) => {
     const [isPending, startTransition] = useTransition();
     const [devOverride, setDevOverride] = useState(false);
     const [glitchExpanded, setGlitchExpanded] = useState(false);
@@ -84,10 +85,11 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
         <LayoutGroup id="habit-task-list">
             <motion.div layout className="flex flex-col">
                 {/* Command Row or Glitch State - Only visible in Detailed mode */}
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="wait" custom={direction}>
                     {viewMode === 'detailed' && (
                         <motion.div
                             key="detailed-controls"
+                            custom={direction}
                             variants={sidewaysFlashVariants}
                             initial="initial"
                             animate="animate"
@@ -163,7 +165,7 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                 </motion.h2>
 
                 <motion.div layout className="flex flex-col divide-y-1 divide-black/10">
-                    <AnimatePresence mode="wait" initial={false}>
+                    <AnimatePresence mode="popLayout" initial={false}>
                         {sortedHabits.length > 0 ? (
                             sortedHabits.map((habit) => (
                                 <HabitTaskItem
