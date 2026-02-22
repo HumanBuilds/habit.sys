@@ -6,9 +6,6 @@ import PageTransition from "@/components/PageTransition";
 import { Footer } from "@/components/Footer";
 import { RetroSoundController } from "@/components/RetroSoundController";
 
-import { Suspense } from "react";
-import { NavigationLoaderProvider } from "@/context/NavigationLoaderContext";
-import { NavigationListener } from "@/components/NavigationListener";
 
 const vt323 = VT323({
   weight: "400",
@@ -32,17 +29,12 @@ export default function RootLayout({
         <body
           className={`${vt323.variable} dither-50 retro-theme antialiased h-screen overflow-hidden flex flex-col`}
         >
-          <NavigationLoaderProvider>
-            <Suspense fallback={null}>
-              <NavigationListener />
-            </Suspense>
-            <RetroSoundController />
-            <div className="flex-1 overflow-hidden relative">
-              <PageTransition>
-                {children}
-              </PageTransition>
-            </div>
-          </NavigationLoaderProvider>
+          <RetroSoundController />
+          <div className="flex-1 overflow-hidden relative">
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </div>
           <Footer />
         </body>
       </html>
