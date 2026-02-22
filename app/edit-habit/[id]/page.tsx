@@ -1,5 +1,6 @@
 import { updateProtocol } from './actions'
 import { HabitWizard } from '@/components/HabitWizard/HabitWizard'
+import { Window } from '@/components/Window'
 import { auth } from '@clerk/nextjs/server'
 import { createNeonClient } from '@/lib/neon'
 import { redirect } from 'next/navigation'
@@ -34,13 +35,18 @@ export default async function EditHabitPage({ params }: { params: Promise<{ id: 
     }
 
     return (
-        <>
-            <HabitWizard
-                action={updateProtocol}
-                initialData={initialData}
-                id={id}
-                mode="edit"
-            />
-        </>
+        <div className="h-full p-4 md:p-8 !pb-0 flex flex-col items-center justify-center">
+            <Window title="EDIT_PROTOCOL.EXE"
+                className="w-full max-w-2xl min-h-0"
+                contentClassName="overflow-y-auto scrollbar-stable custom-scrollbar overflow-x-hidden"
+            >
+                <HabitWizard
+                    action={updateProtocol}
+                    initialData={initialData}
+                    id={id}
+                    mode="edit"
+                />
+            </Window>
+        </div>
     )
 }
