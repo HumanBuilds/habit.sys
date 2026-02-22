@@ -157,7 +157,7 @@ export default function LoginPage() {
                             <p className="mt-2 text-xl font-bold">PLEASE IDENTIFY YOURSELF</p>
                         </div>
 
-                        <form action={handleSubmit} className="space-y-6">
+                        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(new FormData(e.currentTarget)) }} className="space-y-6">
                             <div className="space-y-2">
                                 <label htmlFor="email" className="text-sm font-bold uppercase tracking-widest">EMAIL ADDRESS</label>
                                 <input
