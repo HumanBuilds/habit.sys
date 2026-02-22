@@ -2,7 +2,6 @@
 
 import { auth } from '@clerk/nextjs/server'
 import { createNeonClient } from '@/lib/neon'
-import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
 export async function initializeProtocol(prevState: unknown, formData: FormData) {
@@ -51,5 +50,5 @@ export async function initializeProtocol(prevState: unknown, formData: FormData)
     }
 
     revalidatePath('/dashboard')
-    redirect('/dashboard')
+    return { success: true }
 }
