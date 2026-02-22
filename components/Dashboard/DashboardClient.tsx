@@ -49,7 +49,6 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                     </button>
                 </div>
             </div>
-
             {habits && habits.length > 0 ? (
                 <>
                     <HabitTaskList
@@ -94,7 +93,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                 </>
             ) : (
                 <div className="text-center py-20 border-2 border-dashed border-black">
-                    <p className="text-2xl mb-8">NO PROTOCOLS INITIALIZED IN THIS NODE.</p>
+                    <p className="text-2xl mb-8">NO PROTOCOLS INITIALIZED.</p>
                     <Link href="/create-habit" scroll={false} className="btn-retro">
                         + INITIALIZE FIRST PROTOCOL
                     </Link>

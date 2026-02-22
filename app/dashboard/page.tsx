@@ -43,7 +43,7 @@ export default async function DashboardPage() {
     const eligibility = await checkProtocolEligibility()
 
     return (
-        <div className="h-full p-4 md:p-8 !pb-0 flex flex-col items-center">
+        <div className="h-full p-4 md:p-8 !pb-0 flex flex-col items-center justify-center">
             <Window
                 title="HABIT.SYS"
                 className="w-full max-w-2xl min-h-0"
