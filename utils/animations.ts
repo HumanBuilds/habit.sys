@@ -16,23 +16,23 @@ export const mechanicalTransition: Transition = {
 
 /**
  * Variants for the "Sideways Flash" transition.
- * Elements slide in from the right and exit to the left.
+ * Pass custom={1} for forward (right-to-left) or custom={-1} for backward (left-to-right).
  */
 export const sidewaysFlashVariants: Variants = {
-    initial: {
-        x: "100%",
+    initial: (direction: number) => ({
+        x: `${100 * direction}%`,
         opacity: 0
-    },
+    }),
     animate: {
         x: 0,
         opacity: 1,
         transition: mechanicalTransition
     },
-    exit: {
-        x: "-100%",
+    exit: (direction: number) => ({
+        x: `${-100 * direction}%`,
         opacity: 0,
         transition: mechanicalTransition
-    }
+    })
 };
 
 /**

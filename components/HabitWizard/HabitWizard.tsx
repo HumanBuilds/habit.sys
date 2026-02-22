@@ -69,6 +69,7 @@ interface HabitWizardProps {
 
 export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps) {
     const [currentStep, setCurrentStep] = useState(0)
+    const [direction, setDirection] = useState(1)
     const [formData, setFormData] = useState<HabitData>({
         identity: initialData?.identity || '',
         title: initialData?.title || '',
@@ -84,11 +85,17 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
     const step = steps[currentStep]
     const isLastStep = currentStep === steps.length - 1
 
-    useEffect(() => {
+    const focusInput = () => {
         if (transitionComplete && step.type === 'text') {
             inputRef.current?.focus()
         }
-    }, [transitionComplete, currentStep, step.type])
+    }
+
+    // Focus when page transition completes (initial navigation)
+    useEffect(() => {
+        if (transitionComplete) focusInput()
+    }, [transitionComplete])
+
     const headerTitle = mode === 'create' ? "INITIALIZE_PROTOCOL" : "MODIFY_PROTOCOL"
     const submitLabel = mode === 'create' ? "INITIALIZE MODULE" : "UPDATE PROTOCOL"
     const loadingLabel = mode === 'create' ? "INITIALIZING..." : "UPDATING..."
@@ -111,6 +118,7 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
 
         if (currentStep < steps.length - 1) {
             setValidationError(null)
+            setDirection(1)
             setCurrentStep(c => c + 1)
         }
     }
@@ -118,6 +126,7 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
     const handleBack = () => {
         if (currentStep > 0) {
             setValidationError(null)
+            setDirection(-1)
             setCurrentStep(c => c - 1)
         }
     }
@@ -194,13 +203,17 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
                 <input type="hidden" name="frequency" value={JSON.stringify(formData.frequency)} />
 
                 <div className="overflow-hidden">
-                    <AnimatePresence mode="wait" initial={false}>
+                    <AnimatePresence mode="wait" initial={false} custom={direction}>
                         <motion.div
                             key={currentStep}
+                            custom={direction}
                             variants={sidewaysFlashVariants}
                             initial="initial"
                             animate="animate"
                             exit="exit"
+                            onAnimationComplete={(def) => {
+                                if (def === 'animate') focusInput()
+                            }}
                             className=" border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]"
                         >
                             <div className="space-y-4">
