@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProgressBar } from '@/components/ProgressBar'
 import Link from 'next/link'
@@ -79,11 +80,19 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
     const [validationError, setValidationError] = useState<string | null>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const transitionComplete = usePageTransitionComplete()
+    const router = useRouter()
 
     const [state, formAction, isPending] = useActionState(action, initialState)
 
     const step = steps[currentStep]
     const isLastStep = currentStep === steps.length - 1
+
+    // Navigate client-side on success so the wizard holds its state during exit animation
+    useEffect(() => {
+        if (state?.success) {
+            router.push('/dashboard')
+        }
+    }, [state, router])
 
     const focusInput = () => {
         if (transitionComplete && step.type === 'text') {
@@ -193,7 +202,6 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
                         e.preventDefault()
                         handleNext()
                     }
-                    // If it IS the last step and valid, let the form action proceed
                 }}
             >
                 {id && <input type="hidden" name="id" value={id} />}
