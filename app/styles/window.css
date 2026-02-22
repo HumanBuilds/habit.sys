@@ -35,4 +35,6 @@
     position: relative;
     z-index: 1;
     font-weight: bold;
+    width: 150px;
+    text-align: center;
 }
