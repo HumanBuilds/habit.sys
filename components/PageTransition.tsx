@@ -48,21 +48,27 @@ export default function PageTransition({ children }: { children: React.ReactNode
         }
     }, [pathname])
 
+    const variants = {
+        initial: { translateY: '100vh' },
+        animate: { translateY: 0 },
+        exit: { translateY: '-100vh' },
+    }
+
     return (
         <PageTransitionContext.Provider value={isComplete}>
             <div className="absolute inset-0 overflow-hidden" data-stage>
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={pathname}
-                        initial={{ translateY: '100vh' }}
-                        animate={{ translateY: 0 }}
-                        exit={{ translateY: '-100vh' }}
+                        variants={variants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
                         transition={{
                             duration: 1.6,
                             ease: (t) => Math.floor(t * 12) / 12,
                             delay: 0.2,
                         }}
-
                         onAnimationComplete={(definition) => {
                             if (definition === 'animate') setIsComplete(true)
                         }}
