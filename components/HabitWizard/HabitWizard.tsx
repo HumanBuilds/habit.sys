@@ -70,6 +70,7 @@ interface HabitWizardProps {
 
 export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps) {
     const [currentStep, setCurrentStep] = useState(0)
+    const [displayStep, setDisplayStep] = useState(0)
     const [direction, setDirection] = useState(1)
     const [formData, setFormData] = useState<HabitData>({
         identity: initialData?.identity || '',
@@ -167,9 +168,9 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
             </div>
 
             <div className="mb-8">
-                <ProgressBar currentStep={currentStep + 1} totalSteps={steps.length} />
+                <ProgressBar currentStep={displayStep + 1} totalSteps={steps.length} />
                 <div className="flex justify-between font-bold text-sm tracking-widest">
-                    <span>STEP {currentStep + 1} / {steps.length}</span>
+                    <span>STEP {displayStep + 1} / {steps.length}</span>
                     <span>STATUS: {isPending ? 'PROCESSING...' : 'AWAITING INPUT'}</span>
                 </div>
             </div>
@@ -220,7 +221,10 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
                             animate="animate"
                             exit="exit"
                             onAnimationComplete={(def) => {
-                                if (def === 'animate') focusInput()
+                                if (def === 'animate') {
+                                    setDisplayStep(currentStep)
+                                    focusInput()
+                                }
                             }}
                             className=" border-2 border-black p-6 bg-white shadow-[4px_4px_0_0_#000]"
                         >
