@@ -28,7 +28,18 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
     eligibility,
     logsByHabit,
 }) => {
-    const [viewMode, setViewMode] = useState<'detailed' | 'simplified'>('simplified');
+    const [viewMode, setViewMode] = useState<'detailed' | 'simplified'>(() => {
+        if (typeof window !== 'undefined') {
+            const stored = sessionStorage.getItem('viewToggle');
+            if (stored === 'detailed' || stored === 'simplified') return stored;
+        }
+        return 'simplified';
+    });
+
+    const handleViewToggle = (mode: 'detailed' | 'simplified') => {
+        setViewMode(mode);
+        sessionStorage.setItem('viewToggle', mode);
+    };
     const { signOut } = useClerk();
 
     return (
@@ -88,7 +99,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                     </AnimatePresence>
                     {/* View Toggle - Positioned bottom-right of the window container */}
                     <div className="flex justify-center mt-4">
-                        <ViewToggle viewMode={viewMode} onToggle={setViewMode} />
+                        <ViewToggle viewMode={viewMode} onToggle={handleViewToggle} />
                     </div>
                 </>
             ) : (
