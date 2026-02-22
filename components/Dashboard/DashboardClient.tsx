@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useClerk } from '@clerk/nextjs';
 import { HabitTaskList } from '@/components/HabitTaskList';
@@ -35,12 +36,22 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
         }
         return 'simplified';
     });
+    const [direction, setDirection] = useState(1);
 
     const handleViewToggle = (mode: 'detailed' | 'simplified') => {
+        setDirection(mode === 'detailed' ? -1 : 1);
         setViewMode(mode);
         sessionStorage.setItem('viewToggle', mode);
     };
+    const router = useRouter();
     const { signOut } = useClerk();
+
+    const handleExit = () => {
+        // Navigate first so FrozenRouter preserves dashboard content during exit animation,
+        // then sign out in the background without triggering its own redirect
+        router.push('/login');
+        signOut({ redirectUrl: '/login' });
+    };
 
     return (
         <>
@@ -54,7 +65,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                     </div>
                     <div className="flex gap-4">
                         <button
-                            onClick={() => signOut({ redirectUrl: '/login' })}
+                            onClick={handleExit}
                             className="btn-retro-secondary text-xs"
                         >
                             [ <span>EXIT</span> ]
@@ -68,12 +79,14 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                             completedHabitIds={completedHabitIds}
                             eligibility={eligibility}
                             viewMode={viewMode}
+                            direction={direction}
                         />
 
-                        <AnimatePresence mode="wait">
+                        <AnimatePresence mode="wait" custom={direction}>
                             {viewMode === 'detailed' && (
                                 <motion.div
                                     key="detailed-diagnostics"
+                                    custom={direction}
                                     variants={sidewaysFlashVariants}
                                     initial="initial"
                                     animate="animate"
@@ -98,8 +111,6 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                                 </motion.div>
                             )}
                         </AnimatePresence>
-
-
                     </>
                 ) : (
                     <div className="text-center py-20 border-2 border-dashed border-black">
