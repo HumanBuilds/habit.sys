@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSignIn, useSignUp } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { Window } from '@/components/Window'
@@ -10,6 +10,16 @@ export default function LoginPage() {
     const { signUp, setActive: setSignUpActive, isLoaded: isSignUpLoaded } = useSignUp()
     const router = useRouter()
     const [error, setError] = useState('')
+
+    // Force font repaint after Clerk finishes async initialization.
+    // Clerk's hooks cause re-renders that can miss font-display swap on inputs.
+    useEffect(() => {
+        if (isSignInLoaded) {
+            document.fonts.ready.then(() => {
+                document.body.offsetHeight
+            })
+        }
+    }, [isSignInLoaded])
     const [isPending, setIsPending] = useState(false)
     const [pendingVerification, setPendingVerification] = useState(false)
     const [verificationCode, setVerificationCode] = useState('')
@@ -164,6 +174,7 @@ export default function LoginPage() {
                                     id="email"
                                     name="email"
                                     type="email"
+                                    autoComplete='email'
                                     required
                                     className="input-retro w-full"
                                     placeholder="USER@EXAMPLE.COM"
@@ -176,6 +187,7 @@ export default function LoginPage() {
                                     id="password"
                                     name="password"
                                     type="password"
+                                    autoComplete='current-password'
                                     required
                                     className="input-retro w-full"
                                     placeholder="********"
