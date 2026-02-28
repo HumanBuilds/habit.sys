@@ -57,7 +57,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
     return (
         <PageTransitionContext.Provider value={isComplete}>
             <div className="absolute inset-0 overflow-hidden" data-stage>
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                         key={pathname}
                         variants={variants}
@@ -73,7 +73,6 @@ export default function PageTransition({ children }: { children: React.ReactNode
                             if (definition === 'animate') setIsComplete(true)
                         }}
                         className="absolute inset-0"
-                        style={{ willChange: 'transform, opacity' }}
                     >
                         <FrozenRouter targetPath={pathname}>{children}</FrozenRouter>
                     </motion.div>

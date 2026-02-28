@@ -15,3 +15,16 @@ body {
   background: var(--color-white);
   color: var(--color-black);
 }
+
+@keyframes autofill-font {
+  from, to { font-family: var(--font-vt323), monospace; }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000 !important;
+  animation: autofill-font 0s forwards;
+  transition: background-color 5000s ease-in-out 0s;
+}

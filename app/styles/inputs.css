@@ -2,16 +2,12 @@
 .input-retro {
     border: 2px solid var(--color-black);
     padding: 4px 8px;
-    font-family: inherit;
+    font-family: var(--font-vt323), monospace;
     font-size: 1.1rem;
     outline: none;
     background: var(--color-white);
-    transition: all 0.2s ease;
 }
 
 .input-retro:focus {
-    background: var(--color-white);
-    border-width: 4px;
-    padding: 2px 6px;
-    /* Adjust padding to prevent layout shift from border increase */
+    outline: 1px black double;
 }

@@ -6,11 +6,11 @@ import PageTransition from "@/components/PageTransition";
 import { Footer } from "@/components/Footer";
 import { RetroSoundController } from "@/components/RetroSoundController";
 
-
 const vt323 = VT323({
   weight: "400",
   variable: "--font-vt323",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${vt323.variable} dither-50 retro-theme antialiased h-screen overflow-hidden flex flex-col`}
+          className={`${vt323.variable} ${vt323.className} dither-50 retro-theme h-screen overflow-hidden flex flex-col`}
         >
           <RetroSoundController />
           <div className="flex-1 overflow-hidden relative">
