@@ -5,6 +5,7 @@ import { useSignIn } from '@clerk/nextjs'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Window } from '@/components/Window'
+import { CodeInput } from '@/components/CodeInput'
 
 function ResetPasswordForm() {
     const { signIn, setActive, isLoaded } = useSignIn()
@@ -80,7 +81,7 @@ function ResetPasswordForm() {
             <Window title="RESET_PASS.EXE" className="w-full max-w-md">
                 {phase === 'code' ? (
                     <>
-                        <div className="text-center mb-8 border-b-2 border-black pb-4">
+                        <div className="text-center border-b-2 border-black" style={{ marginBottom: 16, paddingBottom: 16 }}>
                             <h1 className="text-4xl font-bold tracking-tighter">RESET PASSWORD</h1>
                             <p className="mt-2 text-xl font-bold">
                                 {email ? `CODE SENT TO ${email.toUpperCase()}` : 'ENTER THE CODE FROM YOUR EMAIL'}
@@ -88,20 +89,7 @@ function ResetPasswordForm() {
                         </div>
 
                         <form onSubmit={handleCodeSubmit} className="space-y-6">
-                            <div className="space-y-2">
-                                <label htmlFor="code" className="text-sm font-bold uppercase tracking-widest">RESET CODE</label>
-                                <input
-                                    id="code"
-                                    type="text"
-                                    inputMode="numeric"
-                                    autoComplete="one-time-code"
-                                    required
-                                    value={code}
-                                    onChange={(e) => setCode(e.target.value)}
-                                    className="input-retro w-full text-center tracking-[0.5em] text-2xl"
-                                    placeholder="000000"
-                                />
-                            </div>
+                            <CodeInput value={code} onChange={setCode} />
 
                             {error && (
                                 <div className="p-4 bg-black text-white font-bold text-center border-2 border-black">
@@ -116,11 +104,19 @@ function ResetPasswordForm() {
                             >
                                 {isPending ? 'VERIFYING...' : '[ VERIFY CODE ]'}
                             </button>
+
+                            <button
+                                type="button"
+                                onClick={() => router.push('/forgot-password')}
+                                className="w-full btn-retro"
+                            >
+                                <span>[ RESEND CODE ]</span>
+                            </button>
                         </form>
 
                         <div className="text-center mt-6 pt-4 border-t-2 border-black">
-                            <Link href="/forgot-password" className="text-sm font-bold hover:underline">
-                                RESEND CODE
+                            <Link href="/login" className="text-sm font-bold hover:underline">
+                                BACK TO LOGIN
                             </Link>
                         </div>
                     </>
