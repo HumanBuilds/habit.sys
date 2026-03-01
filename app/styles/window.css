@@ -13,6 +13,7 @@
     justify-content: center;
     position: relative;
     background: var(--color-white);
+    overflow: hidden;
 }
 
 /* Classic striped title bar background */
