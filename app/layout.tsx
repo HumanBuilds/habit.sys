@@ -27,7 +27,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${vt323.variable} ${vt323.className} dither-50 retro-theme h-screen overflow-hidden flex flex-col`}
+          className={`${vt323.variable} ${vt323.className} dither-50 retro-theme h-dvh overflow-hidden flex flex-col`}
         >
           <RetroSoundController />
           <div className="flex-1 overflow-hidden relative">
