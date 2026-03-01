@@ -5,6 +5,7 @@ import { useSignIn, useSignUp } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Window } from '@/components/Window'
+import { CodeInput } from '@/components/CodeInput'
 
 export default function SignUpPage() {
     const { signIn, isLoaded: isSignInLoaded } = useSignIn()
@@ -99,26 +100,13 @@ export default function SignUpPage() {
             <Window title="NEW_USER.EXE" className="w-full max-w-md">
                 {pendingVerification ? (
                     <>
-                        <div className="text-center mb-8 border-b-2 border-black pb-4">
+                        <div className="text-center border-b-2 border-black" style={{ marginBottom: 16, paddingBottom: 16 }}>
                             <h1 className="text-4xl font-bold tracking-tighter">CHECK YOUR EMAIL</h1>
                             <p className="mt-2 text-xl font-bold">ENTER VERIFICATION CODE</p>
                         </div>
 
                         <form onSubmit={handleVerification} className="space-y-6">
-                            <div className="space-y-2">
-                                <label htmlFor="code" className="text-sm font-bold uppercase tracking-widest">VERIFICATION CODE</label>
-                                <input
-                                    id="code"
-                                    type="text"
-                                    inputMode="numeric"
-                                    autoComplete="one-time-code"
-                                    required
-                                    value={verificationCode}
-                                    onChange={(e) => setVerificationCode(e.target.value)}
-                                    className="input-retro w-full text-center tracking-[0.5em] text-2xl"
-                                    placeholder="000000"
-                                />
-                            </div>
+                            <CodeInput value={verificationCode} onChange={setVerificationCode} />
 
                             {error && (
                                 <div className="p-4 bg-black text-white font-bold text-center border-2 border-black">
@@ -126,32 +114,28 @@ export default function SignUpPage() {
                                 </div>
                             )}
 
-                            <div className="flex gap-4 pt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => { setPendingVerification(false); setError('') }}
-                                    disabled={isPending}
-                                    className="flex-1 btn-retro"
-                                >
-                                    [ BACK ]
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={isPending}
-                                    className="flex-1 btn-retro inverted"
-                                >
-                                    {isPending ? 'VERIFYING...' : '[ VERIFY ]'}
-                                </button>
-                            </div>
+                            <button
+                                type="submit"
+                                disabled={isPending}
+                                className="w-full btn-retro inverted"
+                            >
+                                {isPending ? 'VERIFYING...' : '[ VERIFY ]'}
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleResendCode}
+                                className="w-full btn-retro"
+                            >
+                                <span>[ RESEND CODE ]</span>
+                            </button>
                         </form>
 
-                        <button
-                            type="button"
-                            onClick={handleResendCode}
-                            className="w-full btn-retro mt-4"
-                        >
-                            [ RESEND CODE ]
-                        </button>
+                        <div className="text-center mt-6 pt-4 border-t-2 border-black">
+                            <Link href="/login" className="text-sm font-bold hover:underline">
+                                BACK TO LOGIN
+                            </Link>
+                        </div>
                     </>
                 ) : (
                     <>
