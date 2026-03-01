@@ -263,7 +263,7 @@ export function HabitWizard({ action, initialData, id, mode }: HabitWizardProps)
                                                             )}
                                                         </AnimatePresence>
                                                     </div>
-                                                    <span className={`text-xl font-bold tracking-tighter ${isSelected ? 'text-black' : 'text-black/40'} transition-colors`}>
+                                                    <span className={`text-xl font-bold tracking-tighter ${isSelected ? 'text-black' : 'text-[rgba(0,0,0,0.4)]'} transition-colors`}>
                                                         {day}
                                                     </span>
                                                 </div>

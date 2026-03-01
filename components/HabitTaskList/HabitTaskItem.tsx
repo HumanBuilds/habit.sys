@@ -46,7 +46,7 @@ export const HabitTaskItem: React.FC<HabitTaskItemProps> = ({ id, title, isCompl
             <div className="relative overflow-hidden flex-1">
                 <span className={cn(
                     "text-2xl font-bold tracking-tight transition-colors duration-300",
-                    isCompleted ? "text-gray-400" : "text-black"
+                    isCompleted ? "text-[rgba(0,0,0,0.4)]" : "text-black"
                 )}>
                     {title.toUpperCase()}
                 </span>
