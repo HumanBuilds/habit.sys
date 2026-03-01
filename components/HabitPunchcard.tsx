@@ -43,7 +43,7 @@ export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ id, title, creat
         <div className="punchcard w-full max-w-md">
             <div className="punchcard-clip"></div>
 
-            <div className="flex justify-between items-start mb-6 border-b border-black/10 pb-2">
+            <div className="flex justify-between items-start mb-6 border-b border-[rgba(0,0,0,0.1)] pb-2">
                 <div>
                     <h3 className="text-2xl font-bold tracking-tighter leading-none">{title.toUpperCase()}</h3>
                     <p className="punchcard-label mt-1">PROTOCOL_REF: {createdAt.replace(/[^0-9]/g, '').slice(0, 8)}</p>
@@ -71,7 +71,7 @@ export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ id, title, creat
                 })}
             </div>
 
-            <div className="mt-6 pt-4 border-t-2 border-dashed border-black/20 flex flex-col gap-3">
+            <div className="mt-6 pt-4 border-t-2 border-dashed border-[rgba(0,0,0,0.2)] flex flex-col gap-3">
                 <div className="flex justify-between items-center">
                     <div className="punchcard-label italic text-[10px] opacity-60">
                         &gt;&gt; DATA_INTEGRITY_VERIFIED

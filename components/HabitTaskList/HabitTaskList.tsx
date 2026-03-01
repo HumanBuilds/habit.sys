@@ -164,7 +164,7 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
                     )}
                 </motion.h2>
 
-                <motion.div layout className="flex flex-col divide-y-1 divide-black/10">
+                <motion.div layout className="flex flex-col">
                     <AnimatePresence mode="popLayout" initial={false}>
                         {sortedHabits.length > 0 ? (
                             sortedHabits.map((habit) => (
