@@ -65,9 +65,9 @@ export default function PageTransition({ children }: { children: React.ReactNode
                         animate="animate"
                         exit="exit"
                         transition={{
-                            duration: 1.6,
+                            duration: 1.2,
                             ease: (t) => Math.floor(t * 12) / 12,
-                            delay: 0.2,
+                            delay: 0.1,
                         }}
                         onAnimationComplete={(definition) => {
                             if (definition === 'animate') setIsComplete(true)
