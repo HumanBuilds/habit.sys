@@ -8,6 +8,10 @@ export class SoundEngine {
     constructor() {
         if (typeof window !== 'undefined') {
             this.init();
+            const stored = localStorage.getItem('sound-muted');
+            if (stored === 'true') {
+                this.isMuted = true;
+            }
         }
     }
 
@@ -32,8 +36,15 @@ export class SoundEngine {
         }
     }
 
+    public get muted(): boolean {
+        return this.isMuted;
+    }
+
     public setMuted(muted: boolean) {
         this.isMuted = muted;
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('sound-muted', String(muted));
+        }
     }
 
     // Mechanical Switch Sound (Square wave burst)
