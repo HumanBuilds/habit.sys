@@ -6,6 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { sidewaysFlashVariants } from '@/utils/animations';
 import { SettingsMenu } from './SettingsMenu';
 import { SoundSettings } from './SoundSettings';
+import { AccountSettings } from './AccountSettings';
+import { NotificationsSettings } from './NotificationsSettings';
+import { InventorySettings } from './InventorySettings';
+import { ShopView } from './ShopView';
 
 type SettingsPage = 'menu' | 'sound' | 'account' | 'shop' | 'notifications' | 'inventory';
 
@@ -18,8 +22,16 @@ const pageTitles: Record<SettingsPage, string> = {
     inventory: 'INVENTORY',
 };
 
+interface UserData {
+    email: string | null;
+    alias: string | null;
+    hasPassword: boolean;
+}
+
 interface SettingsClientProps {
     isAuthenticated: boolean;
+    userData: UserData | null;
+    pointsBalance: number;
 }
 
 function ComingSoon() {
@@ -30,7 +42,7 @@ function ComingSoon() {
     );
 }
 
-export function SettingsClient({ isAuthenticated }: SettingsClientProps) {
+export function SettingsClient({ isAuthenticated, userData, pointsBalance }: SettingsClientProps) {
     const [activePage, setActivePage] = useState<SettingsPage>('menu');
     const [direction, setDirection] = useState(1);
     const router = useRouter();
@@ -61,18 +73,18 @@ export function SettingsClient({ isAuthenticated }: SettingsClientProps) {
             case 'sound':
                 return <SoundSettings />;
             case 'account':
-                return <ComingSoon />;
+                return <AccountSettings userData={userData} />;
             case 'shop':
                 return <ComingSoon />;
             case 'notifications':
-                return <ComingSoon />;
+                return <NotificationsSettings />;
             case 'inventory':
-                return <ComingSoon />;
+                return <InventorySettings />;
         }
     };
 
     return (
-        <div className="overflow-y-auto scrollbar-stable custom-scrollbar overflow-x-hidden mb-2">
+        <div className="overflow-y-auto scrollbar-stable custom-scrollbar overflow-x-hidden mb-2 pb-1">
             <AnimatePresence mode="wait" custom={direction} initial={false}>
                 <motion.div
                     key={activePage}
