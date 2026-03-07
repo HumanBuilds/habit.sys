@@ -119,6 +119,28 @@
     pointer-events: none;
 }
 
+@keyframes waveform-bar {
+    0% {
+        height: 4px;
+    }
+
+    25% {
+        height: 12px;
+    }
+
+    50% {
+        height: 6px;
+    }
+
+    75% {
+        height: 16px;
+    }
+
+    100% {
+        height: 8px;
+    }
+}
+
 @keyframes scanline-flicker {
     0% {
         opacity: 0.8;

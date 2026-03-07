@@ -4,6 +4,23 @@ import { auth } from '@clerk/nextjs/server'
 import { createNeonClient } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
 
+export type MilestoneEvent = {
+    type: 'streak_3' | 'streak_10' | 'streak_30'
+    bonusPoints: number
+    streakCount: number
+}
+
+export type CommitResult =
+    | { success: true; pointsEarned?: number; milestones?: MilestoneEvent[] }
+    | { success: true; pointsDeducted?: number }
+    | { error: string; details?: unknown }
+
+const STREAK_THRESHOLDS = [
+    { days: 3, bonus: 3, type: 'streak_3' as const },
+    { days: 10, bonus: 5, type: 'streak_10' as const },
+    { days: 30, bonus: 10, type: 'streak_30' as const },
+]
+
 export async function queryProtocolStreak(habitId: string) {
     const { userId } = await auth()
 
@@ -55,7 +72,30 @@ export async function queryProtocolStreak(habitId: string) {
     return streak
 }
 
-export async function commitHabitLog(habitId: string, isCompleted: boolean) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function adjustPoints(neonClient: any, userId: string, amount: number) {
+    const { data: existing } = await neonClient
+        .from('user_points')
+        .select('balance')
+        .eq('user_id', userId)
+        .maybeSingle()
+
+    const currentBalance = existing?.balance ?? 0
+    const newBalance = Math.max(0, currentBalance + amount)
+
+    if (existing) {
+        await neonClient
+            .from('user_points')
+            .update({ balance: newBalance, updated_at: new Date().toISOString() })
+            .eq('user_id', userId)
+    } else {
+        await neonClient
+            .from('user_points')
+            .insert({ user_id: userId, balance: newBalance, updated_at: new Date().toISOString() })
+    }
+}
+
+export async function commitHabitLog(habitId: string, isCompleted: boolean): Promise<CommitResult> {
     const { userId } = await auth()
 
     if (!userId) return { error: 'Unauthorized' }
@@ -79,6 +119,12 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
                 .lt('completed_at', startOfTomorrowUtc.toISOString())
 
             if (error) throw error
+
+            // Deduct 1 point (milestones are never reversed)
+            await adjustPoints(neonClient, userId, -1)
+
+            revalidatePath('/dashboard')
+            return { success: true, pointsDeducted: 1 }
         } else {
             // Check: insert with a timestamp
             const { error } = await neonClient
@@ -96,13 +142,57 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
                     throw error
                 }
             }
-        }
 
-        revalidatePath('/dashboard')
-        return { success: true }
-    } catch (error: any) {
+            // Award 1 point for completion
+            let totalPointsEarned = 1
+            await adjustPoints(neonClient, userId, 1)
+
+            // Log the completion event
+            await neonClient.from('point_events').insert({
+                user_id: userId,
+                habit_id: habitId,
+                type: 'completion',
+                amount: 1,
+            })
+
+            // Check for streak milestones
+            const streak = await queryProtocolStreak(habitId)
+            const milestones: MilestoneEvent[] = []
+
+            for (const threshold of STREAK_THRESHOLDS) {
+                if (streak >= threshold.days) {
+                    // Try to insert milestone — partial unique index rejects duplicates
+                    const { error: milestoneError } = await neonClient
+                        .from('point_events')
+                        .insert({
+                            user_id: userId,
+                            habit_id: habitId,
+                            type: threshold.type,
+                            amount: threshold.bonus,
+                            metadata: { streak_count: streak },
+                        })
+
+                    if (!milestoneError) {
+                        // Milestone awarded for the first time
+                        await adjustPoints(neonClient, userId, threshold.bonus)
+                        totalPointsEarned += threshold.bonus
+                        milestones.push({
+                            type: threshold.type,
+                            bonusPoints: threshold.bonus,
+                            streakCount: streak,
+                        })
+                    }
+                    // If error code 23505, milestone was already awarded — silently skip
+                }
+            }
+
+            revalidatePath('/dashboard')
+            return { success: true, pointsEarned: totalPointsEarned, milestones }
+        }
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An unknown error occurred'
         console.error('Error toggling habit:', error)
-        return { error: error?.message || 'An unknown error occurred', details: error }
+        return { error: message, details: error }
     }
 }
 
@@ -164,6 +254,89 @@ export async function checkProtocolEligibility() {
             requiredDedication: 90
         },
         latestHabitTitle: latestHabit.title
+    }
+}
+
+// ── Dev-only actions (stripped in production builds) ──
+
+export async function devAddPoints(amount: number) {
+    if (process.env.NODE_ENV === 'production') return { error: 'Not available' }
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+    const neonClient = await createNeonClient()
+    await adjustPoints(neonClient, userId, amount)
+    revalidatePath('/dashboard')
+    revalidatePath('/settings')
+    return { success: true }
+}
+
+export async function devResetPoints() {
+    if (process.env.NODE_ENV === 'production') return { error: 'Not available' }
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+    const neonClient = await createNeonClient()
+
+    // Delete all point events
+    await neonClient.from('point_events').delete().eq('user_id', userId)
+    // Reset balance to 0
+    const { data: existing } = await neonClient
+        .from('user_points')
+        .select('user_id')
+        .eq('user_id', userId)
+        .maybeSingle()
+    if (existing) {
+        await neonClient
+            .from('user_points')
+            .update({ balance: 0, updated_at: new Date().toISOString() })
+            .eq('user_id', userId)
+    }
+
+    revalidatePath('/dashboard')
+    revalidatePath('/settings')
+    return { success: true }
+}
+
+export async function devResetMilestones(habitId: string) {
+    if (process.env.NODE_ENV === 'production') return { error: 'Not available' }
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+    const neonClient = await createNeonClient()
+
+    // Delete milestone events for this habit (allows re-earning)
+    for (const type of ['streak_3', 'streak_10', 'streak_30']) {
+        await neonClient
+            .from('point_events')
+            .delete()
+            .eq('user_id', userId)
+            .eq('habit_id', habitId)
+            .eq('type', type)
+    }
+
+    revalidatePath('/dashboard')
+    return { success: true }
+}
+
+export async function devGetPointsInfo() {
+    if (process.env.NODE_ENV === 'production') return { error: 'Not available' }
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+    const neonClient = await createNeonClient()
+
+    const { data: points } = await neonClient
+        .from('user_points')
+        .select('balance')
+        .eq('user_id', userId)
+        .maybeSingle()
+
+    const { data: events } = await neonClient
+        .from('point_events')
+        .select('type, amount, habit_id, created_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+
+    return {
+        balance: points?.balance ?? 0,
+        events: events ?? [],
     }
 }
 

@@ -46,7 +46,7 @@ export const HabitTaskItem: React.FC<HabitTaskItemProps> = ({ id, title, isCompl
             <div className="relative overflow-hidden flex-1">
                 <span className={cn(
                     "text-2xl font-bold tracking-tight transition-colors duration-300",
-                    isCompleted ? "text-[rgba(0,0,0,0.4)]" : "text-black"
+                    isCompleted ? "opacity-40" : ""
                 )}>
                     {title.toUpperCase()}
                 </span>
@@ -67,7 +67,7 @@ export const HabitTaskItem: React.FC<HabitTaskItemProps> = ({ id, title, isCompl
                 className="p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 active:scale-95"
                 title="EDIT_PROTOCOL"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000" viewBox="0 0 256 256"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152.37a16,16,0,0,0-4.69,11.31v44.69A8,8,0,0,0,40,216H84.69a16,16,0,0,0,11.31-4.69L227.31,96a16,16,0,0,0,0-22.63ZM92.69,200H48V155.31L168,35.31,212.69,80ZM192,108,148,64l16-16,44,44Z"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152.37a16,16,0,0,0-4.69,11.31v44.69A8,8,0,0,0,40,216H84.69a16,16,0,0,0,11.31-4.69L227.31,96a16,16,0,0,0,0-22.63ZM92.69,200H48V155.31L168,35.31,212.69,80ZM192,108,148,64l16-16,44,44Z"></path></svg>
             </Link>
         </motion.div>
     );

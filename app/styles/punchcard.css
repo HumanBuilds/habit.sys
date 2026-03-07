@@ -35,15 +35,6 @@
     background: var(--color-black);
 }
 
-.punchcard-slot.punched::after {
-    content: "";
-    width: 6px;
-    height: 6px;
-    background: var(--color-white);
-    border-radius: 50%;
-    /* opacity: 0.2; */
-}
-
 /* Corner clip for physical card effect */
 .punchcard-clip {
     position: absolute;
