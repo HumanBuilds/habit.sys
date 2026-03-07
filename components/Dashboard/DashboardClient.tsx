@@ -13,6 +13,7 @@ import { sidewaysFlashVariants } from '@/utils/animations';
 interface DashboardClientProps {
     user: {
         email: string | undefined;
+        alias: string | null;
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     habits: any[];
@@ -60,7 +61,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                     <div>
                         <h1 className="text-4xl font-bold tracking-tighter">HABIT.SYS</h1>
                         <div className="flex items-center gap-6 mt-2">
-                            <p className="text-xl">OPERATOR: {user.email?.split('@')[0].toUpperCase()}</p>
+                            <p className="text-xl">OPERATOR: {user.alias?.toUpperCase() || user.email?.split('@')[0].toUpperCase()}</p>
                         </div>
                     </div>
                     <div className="flex gap-4">

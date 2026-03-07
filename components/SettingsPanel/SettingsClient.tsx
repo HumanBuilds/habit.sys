@@ -34,14 +34,6 @@ interface SettingsClientProps {
     pointsBalance: number;
 }
 
-function ComingSoon() {
-    return (
-        <div className="text-center py-8">
-            <p className="text-sm opacity-60">COMING SOON</p>
-        </div>
-    );
-}
-
 export function SettingsClient({ isAuthenticated, userData, pointsBalance }: SettingsClientProps) {
     const [activePage, setActivePage] = useState<SettingsPage>('menu');
     const [direction, setDirection] = useState(1);
@@ -75,7 +67,7 @@ export function SettingsClient({ isAuthenticated, userData, pointsBalance }: Set
             case 'account':
                 return <AccountSettings userData={userData} />;
             case 'shop':
-                return <ComingSoon />;
+                return <ShopView balance={pointsBalance} />;
             case 'notifications':
                 return <NotificationsSettings />;
             case 'inventory':

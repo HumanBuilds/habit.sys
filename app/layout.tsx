@@ -5,6 +5,8 @@ import "./globals.css";
 import PageTransition from "@/components/PageTransition";
 import { Footer } from "@/components/Footer";
 import { RetroSoundController } from "@/components/RetroSoundController";
+import { ToastProvider } from "@/context/ToastContext";
+import { ToastContainer } from "@/components/Toast";
 
 const vt323 = VT323({
   weight: "400",
@@ -29,13 +31,16 @@ export default function RootLayout({
         <body
           className={`${vt323.variable} ${vt323.className} dither-50 retro-theme h-dvh overflow-hidden flex flex-col`}
         >
-          <RetroSoundController />
-          <div className="flex-1 overflow-hidden relative">
-            <PageTransition>
-              {children}
-            </PageTransition>
-          </div>
-          <Footer />
+          <ToastProvider>
+            <RetroSoundController />
+            <ToastContainer />
+            <div className="flex-1 overflow-hidden relative">
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </div>
+            <Footer />
+          </ToastProvider>
         </body>
       </html>
     </ClerkProvider>
