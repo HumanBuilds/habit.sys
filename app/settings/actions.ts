@@ -27,7 +27,7 @@ export async function getPointsBalance(): Promise<{ balance: number; error?: str
 const SHOP_CATALOG: Record<string, { name: string; cost: number }> = {
     'sticker-1bit': { name: '1-BIT STICKER', cost: 5 },
     'colour-swap': { name: 'COLOUR SWAP', cost: 15 },
-    'sound-pack': { name: 'SOUND PACK', cost: 30 },
+    'sound-pack': { name: 'BLACK FRAME', cost: 30 },
 }
 
 const PREMIUM_CATALOG: Record<string, { name: string; priceInCents: number; stripePriceId: string }> = {
