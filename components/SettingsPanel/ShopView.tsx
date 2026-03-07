@@ -18,14 +18,14 @@ function CartIcon() {
 
 const SHOP_ITEMS = [
     { id: 'sticker-1bit', name: '1-BIT STICKER', cost: 5, category: 'STICKER' },
-    { id: 'colour-swap', name: 'COLOUR SWAP', cost: 15, category: 'THEME' },
-    { id: 'sound-pack', name: 'BLACK FRAME', cost: 30, category: 'SOUND' },
+    { id: 'colour-swap', name: 'PRIMARY COLOUR SWAP', cost: 15, category: 'THEME' },
+    { id: 'sound-pack', name: 'BLACK FRAME', cost: 30, category: 'MUSIC' },
 ]
 
 const PREMIUM_ITEMS = [
-    { id: 'bonus-track', name: 'THE LITTLE BROTH', priceLabel: '$0.99', category: 'PREMIUM' },
-    { id: 'secondary-colour', name: 'SECONDARY COLOUR', priceLabel: '$1.99', category: 'PREMIUM' },
-    { id: 'mini-game', name: 'MINI GAME', priceLabel: '$2.99', category: 'PREMIUM' },
+    { id: 'bonus-track', name: 'THE LITTLE BROTH', priceLabel: '$0.99', category: 'MUSIC' },
+    { id: 'secondary-colour', name: 'SECONDARY COLOUR SWAP', priceLabel: '$1.99', category: 'THEME' },
+    { id: 'mini-game', name: 'SNAKE', priceLabel: '$2.99', category: 'MINI GAME' },
 ]
 
 interface ShopViewProps {

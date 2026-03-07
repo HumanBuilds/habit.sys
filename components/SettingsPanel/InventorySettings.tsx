@@ -101,11 +101,11 @@ function GameIcon() {
 
 const INVENTORY_ITEMS: Record<string, { name: string; icon: () => ReactNode }> = {
     'sticker-1bit': { name: '1-BIT STICKER', icon: StickerIcon },
-    'colour-swap': { name: 'COLOUR SWAP', icon: SwapIcon },
-    'sound-pack': { name: 'BLACK FRAME', icon: SpeakerIcon },
+    'colour-swap': { name: 'PRIMARY SWAP', icon: SwapIcon },
+    'sound-pack': { name: 'BLACK FRAME', icon: MusicNoteIcon },
     'bonus-track': { name: 'THE LITTLE BROTH', icon: MusicNoteIcon },
-    'secondary-colour': { name: 'SECONDARY COLOUR', icon: SecondaryColourIcon },
-    'mini-game': { name: 'MINI GAME', icon: GameIcon },
+    'secondary-colour': { name: 'SECONDARY SWAP', icon: SwapIcon },
+    'mini-game': { name: 'SNAKE', icon: GameIcon },
 }
 
 function CustomStickerIcon({ grid }: { grid: boolean[] }) {
