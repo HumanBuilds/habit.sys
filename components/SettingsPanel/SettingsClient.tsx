@@ -79,7 +79,7 @@ export function SettingsClient({ isAuthenticated, userData, pointsBalance, purch
     };
 
     const handleExit = () => {
-        router.back();
+        router.push('/dashboard');
     };
 
     const renderPage = () => {
