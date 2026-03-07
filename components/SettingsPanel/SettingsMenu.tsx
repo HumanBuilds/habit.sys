@@ -38,7 +38,7 @@ export function SettingsMenu({ isAuthenticated, onNavigate }: SettingsMenuProps)
                     <button
                         key={item.page}
                         onClick={() => onNavigate(item.page)}
-                        className={`w-full flex items-center gap-3 py-3 pl-1 pr-3 text-xl text-left cursor-pointer hover:bg-black hover:text-white transition-colors ${
+                        className={`w-full flex items-center gap-3 py-3 px-3 text-xl text-left cursor-pointer hover:bg-black hover:text-white transition-colors ${
                             i < visibleItems.length - 1 ? 'border-b border-black' : ''
                         }`}
                     >

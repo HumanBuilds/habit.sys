@@ -41,12 +41,18 @@ export function ToastContainer() {
                         exit="exit"
                         className="pointer-events-auto"
                     >
-                        <button
-                            onClick={() => dismissToast(toast.id)}
-                            className="bg-white border-3 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm tracking-wider font-bold whitespace-nowrap"
-                        >
-                            {toast.message}
-                        </button>
+                        {toast.type === 'custom' && toast.content ? (
+                            <div className="bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                {toast.content}
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => dismissToast(toast.id)}
+                                className="bg-white border-3 border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm tracking-wider font-bold whitespace-nowrap"
+                            >
+                                {toast.message}
+                            </button>
+                        )}
                     </motion.div>
                 ))}
             </AnimatePresence>
