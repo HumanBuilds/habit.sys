@@ -252,7 +252,7 @@ function PasswordSection({ hasPassword }: { hasPassword: boolean }) {
                     </button>
                 </div>
                 {error && <p className="text-xs font-bold tracking-wider">{error}</p>}
-                <StatusButton status={isPending ? 'pending' : status} disabled={!newPassword} className="w-full" />
+                <StatusButton status={isPending ? 'pending' : status} className="w-full" />
             </form>
         </div>
     );
