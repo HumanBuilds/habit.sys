@@ -7,6 +7,7 @@ import { useToast } from '@/context/ToastContext';
 import { MusicPlayerContent, MUSIC_TOAST_ID } from '@/components/MusicPlayerToast';
 import { sidewaysFlashVariants } from '@/utils/animations';
 import { StickerEditor } from './StickerEditor';
+import { SnakeGame } from './SnakeGame';
 
 function StickerIcon() {
     return (
@@ -131,6 +132,7 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
     const [showColourPicker, setShowColourPicker] = useState(false)
     const [showSecondaryPicker, setShowSecondaryPicker] = useState(false)
     const [showStickerEditor, setShowStickerEditor] = useState(false)
+    const [showSnakeGame, setShowSnakeGame] = useState(false)
     const [stickerGrid, setStickerGrid] = useState<boolean[] | null>(initialStickerGrid)
     const [activeColour, setActiveColour] = useState(DEFAULT_PRIMARY)
     const [activeSecondary, setActiveSecondary] = useState(DEFAULT_SECONDARY)
@@ -150,6 +152,7 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
         setShowStickerEditor(false)
         setShowColourPicker(false)
         setShowSecondaryPicker(false)
+        setShowSnakeGame(false)
     }
 
     const handleItemClick = (itemId: string) => {
@@ -168,7 +171,9 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
         } else if (itemId === 'sound-pack' || itemId === 'bonus-track') {
             showCustomToast(MUSIC_TOAST_ID, <MusicPlayerContent />)
         } else if (itemId === 'mini-game') {
-            showToast('MINI GAME — COMING SOON')
+            const wasOpen = showSnakeGame
+            closeAllPanels()
+            if (!wasOpen) setShowSnakeGame(true)
         } else {
             showToast(`${INVENTORY_ITEMS[itemId]?.name || 'ITEM'} ACTIVATED`)
         }
@@ -225,7 +230,7 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
             <div className="grid grid-cols-3 gap-4">
                 {ownedItems.map(item => {
                     const Icon = getItemIcon(item.id)
-                    const isActive = (item.id === 'colour-swap' && showColourPicker) || (item.id === 'secondary-colour' && showSecondaryPicker) || (item.id === 'sticker-1bit' && showStickerEditor)
+                    const isActive = (item.id === 'colour-swap' && showColourPicker) || (item.id === 'secondary-colour' && showSecondaryPicker) || (item.id === 'sticker-1bit' && showStickerEditor) || (item.id === 'mini-game' && showSnakeGame)
                     return (
                         <button
                             key={item.id}
@@ -328,6 +333,19 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
                                 [ RESET TO DEFAULT ]
                             </button>
                         )}
+                    </motion.div>
+                )}
+                {showSnakeGame && (
+                    <motion.div
+                        key="snake-game"
+                        custom={1}
+                        variants={sidewaysFlashVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        className="border-2 border-black p-4"
+                    >
+                        <SnakeGame onClose={() => setShowSnakeGame(false)} />
                     </motion.div>
                 )}
             </AnimatePresence>
