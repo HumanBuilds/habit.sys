@@ -40,10 +40,12 @@ function SpeakerIcon() {
     )
 }
 
-const THEME_STORAGE_KEY = 'habit-sys-primary-colour';
-const DEFAULT_COLOUR = '#000000';
+const PRIMARY_STORAGE_KEY = 'habit-sys-primary-colour';
+const SECONDARY_STORAGE_KEY = 'habit-sys-secondary-colour';
+const DEFAULT_PRIMARY = '#000000';
+const DEFAULT_SECONDARY = '#FFFFFF';
 
-const COLOUR_PALETTE = [
+const PRIMARY_PALETTE = [
     { hex: '#000000', name: 'BLACK' },
     { hex: '#1a1a2e', name: 'MIDNIGHT' },
     { hex: '#0f3460', name: 'ROYAL' },
@@ -62,8 +64,31 @@ const COLOUR_PALETTE = [
     { hex: '#374151', name: 'GRAPHITE' },
 ];
 
-function applyThemeColour(hex: string) {
+const SECONDARY_PALETTE = [
+    { hex: '#FFFFFF', name: 'WHITE' },
+    { hex: '#f5f5f0', name: 'CREAM' },
+    { hex: '#fdf6e3', name: 'SOLARIZED' },
+    { hex: '#fff8dc', name: 'CORNSILK' },
+    { hex: '#f0fff0', name: 'HONEYDEW' },
+    { hex: '#f0f8ff', name: 'ALICE' },
+    { hex: '#fff0f5', name: 'LAVENDER' },
+    { hex: '#fce4ec', name: 'ROSE' },
+    { hex: '#e8f5e9', name: 'MINT' },
+    { hex: '#e3f2fd', name: 'ICE' },
+    { hex: '#f3e5f5', name: 'LILAC' },
+    { hex: '#fff3e0', name: 'PEACH' },
+    { hex: '#e0e0e0', name: 'SILVER' },
+    { hex: '#d7ccc8', name: 'WARM GREY' },
+    { hex: '#cfd8dc', name: 'COOL GREY' },
+    { hex: '#c8e6c9', name: 'SEAFOAM' },
+];
+
+function applyPrimaryColour(hex: string) {
     document.documentElement.style.setProperty('--color-black', hex);
+}
+
+function applySecondaryColour(hex: string) {
+    document.documentElement.style.setProperty('--color-white', hex);
 }
 
 function MusicNoteIcon() {
@@ -120,32 +145,44 @@ interface InventorySettingsProps {
 export function InventorySettings({ purchasedItemIds, stickerGrid: initialStickerGrid }: InventorySettingsProps) {
     const { showCustomToast, showToast } = useToast()
     const [showColourPicker, setShowColourPicker] = useState(false)
+    const [showSecondaryPicker, setShowSecondaryPicker] = useState(false)
     const [showStickerEditor, setShowStickerEditor] = useState(false)
     const [stickerGrid, setStickerGrid] = useState<boolean[] | null>(initialStickerGrid)
-    const [activeColour, setActiveColour] = useState(DEFAULT_COLOUR)
+    const [activeColour, setActiveColour] = useState(DEFAULT_PRIMARY)
+    const [activeSecondary, setActiveSecondary] = useState(DEFAULT_SECONDARY)
 
     useEffect(() => {
-        const stored = localStorage.getItem(THEME_STORAGE_KEY);
-        if (stored) {
-            setActiveColour(stored);
-        }
+        const storedPrimary = localStorage.getItem(PRIMARY_STORAGE_KEY);
+        if (storedPrimary) setActiveColour(storedPrimary);
+        const storedSecondary = localStorage.getItem(SECONDARY_STORAGE_KEY);
+        if (storedSecondary) setActiveSecondary(storedSecondary);
     }, []);
 
     const ownedItems = purchasedItemIds
         .filter(id => id in INVENTORY_ITEMS)
         .map(id => ({ id, ...INVENTORY_ITEMS[id] }))
 
+    const closeAllPanels = () => {
+        setShowStickerEditor(false)
+        setShowColourPicker(false)
+        setShowSecondaryPicker(false)
+    }
+
     const handleItemClick = (itemId: string) => {
         if (itemId === 'sticker-1bit') {
-            setShowStickerEditor(prev => !prev)
-            setShowColourPicker(false)
+            const wasOpen = showStickerEditor
+            closeAllPanels()
+            if (!wasOpen) setShowStickerEditor(true)
         } else if (itemId === 'colour-swap') {
-            setShowColourPicker(prev => !prev)
-            setShowStickerEditor(false)
+            const wasOpen = showColourPicker
+            closeAllPanels()
+            if (!wasOpen) setShowColourPicker(true)
+        } else if (itemId === 'secondary-colour') {
+            const wasOpen = showSecondaryPicker
+            closeAllPanels()
+            if (!wasOpen) setShowSecondaryPicker(true)
         } else if (itemId === 'sound-pack' || itemId === 'bonus-track') {
             showCustomToast(MUSIC_TOAST_ID, <MusicPlayerContent />)
-        } else if (itemId === 'secondary-colour') {
-            showToast('SECONDARY COLOUR — COMING SOON')
         } else if (itemId === 'mini-game') {
             showToast('MINI GAME — COMING SOON')
         } else {
@@ -160,16 +197,28 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
         return INVENTORY_ITEMS[itemId].icon
     }
 
-    const handleColourSelect = (hex: string) => {
+    const handlePrimarySelect = (hex: string) => {
         setActiveColour(hex);
-        applyThemeColour(hex);
-        localStorage.setItem(THEME_STORAGE_KEY, hex);
+        applyPrimaryColour(hex);
+        localStorage.setItem(PRIMARY_STORAGE_KEY, hex);
     }
 
-    const handleReset = () => {
-        setActiveColour(DEFAULT_COLOUR);
-        applyThemeColour(DEFAULT_COLOUR);
-        localStorage.removeItem(THEME_STORAGE_KEY);
+    const handlePrimaryReset = () => {
+        setActiveColour(DEFAULT_PRIMARY);
+        applyPrimaryColour(DEFAULT_PRIMARY);
+        localStorage.removeItem(PRIMARY_STORAGE_KEY);
+    }
+
+    const handleSecondarySelect = (hex: string) => {
+        setActiveSecondary(hex);
+        applySecondaryColour(hex);
+        localStorage.setItem(SECONDARY_STORAGE_KEY, hex);
+    }
+
+    const handleSecondaryReset = () => {
+        setActiveSecondary(DEFAULT_SECONDARY);
+        applySecondaryColour(DEFAULT_SECONDARY);
+        localStorage.removeItem(SECONDARY_STORAGE_KEY);
     }
 
     if (ownedItems.length === 0) {
@@ -192,7 +241,7 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
             <div className="grid grid-cols-3 gap-4">
                 {ownedItems.map(item => {
                     const Icon = getItemIcon(item.id)
-                    const isActive = (item.id === 'colour-swap' && showColourPicker) || (item.id === 'sticker-1bit' && showStickerEditor)
+                    const isActive = (item.id === 'colour-swap' && showColourPicker) || (item.id === 'secondary-colour' && showSecondaryPicker) || (item.id === 'sticker-1bit' && showStickerEditor)
                     return (
                         <button
                             key={item.id}
@@ -237,10 +286,10 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
                     >
                         <p className="text-sm font-bold tracking-widest mb-3">SELECT PRIMARY COLOUR</p>
                         <div className="grid grid-cols-8 gap-2">
-                            {COLOUR_PALETTE.map(colour => (
+                            {PRIMARY_PALETTE.map(colour => (
                                 <button
                                     key={colour.hex}
-                                    onClick={() => handleColourSelect(colour.hex)}
+                                    onClick={() => handlePrimarySelect(colour.hex)}
                                     title={colour.name}
                                     className={`w-full aspect-square border-2 cursor-pointer transition-transform ${
                                         activeColour === colour.hex
@@ -251,9 +300,45 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
                                 />
                             ))}
                         </div>
-                        {activeColour !== DEFAULT_COLOUR && (
+                        {activeColour !== DEFAULT_PRIMARY && (
                             <button
-                                onClick={handleReset}
+                                onClick={handlePrimaryReset}
+                                className="mt-3 text-xs font-bold tracking-widest hover:underline cursor-pointer"
+                            >
+                                [ RESET TO DEFAULT ]
+                            </button>
+                        )}
+                    </motion.div>
+                )}
+                {showSecondaryPicker && (
+                    <motion.div
+                        key="secondary-picker"
+                        custom={1}
+                        variants={sidewaysFlashVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        className="border-2 border-black p-4"
+                    >
+                        <p className="text-sm font-bold tracking-widest mb-3">SELECT SECONDARY COLOUR</p>
+                        <div className="grid grid-cols-8 gap-2">
+                            {SECONDARY_PALETTE.map(colour => (
+                                <button
+                                    key={colour.hex}
+                                    onClick={() => handleSecondarySelect(colour.hex)}
+                                    title={colour.name}
+                                    className={`w-full aspect-square border-2 cursor-pointer transition-transform ${
+                                        activeSecondary === colour.hex
+                                            ? 'border-black scale-110 ring-2 ring-black ring-offset-2'
+                                            : 'border-black hover:scale-110'
+                                    }`}
+                                    style={{ backgroundColor: colour.hex }}
+                                />
+                            ))}
+                        </div>
+                        {activeSecondary !== DEFAULT_SECONDARY && (
+                            <button
+                                onClick={handleSecondaryReset}
                                 className="mt-3 text-xs font-bold tracking-widest hover:underline cursor-pointer"
                             >
                                 [ RESET TO DEFAULT ]
