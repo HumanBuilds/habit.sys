@@ -21,14 +21,20 @@ function randomFood(snake: Point[]): Point {
 }
 
 export function SnakeGame() {
-    const [snake, setSnake] = useState<Point[]>([{ x: 10, y: 10 }]);
-    const [food, setFood] = useState<Point>({ x: 15, y: 10 });
-    const [direction, setDirection] = useState<Direction>('RIGHT');
-    const [gameOver, setGameOver] = useState(false);
-    const [score, setScore] = useState(0);
-    const [started, setStarted] = useState(false);
-    const [highScore, setHighScore] = useState(0);
+    // All mutable game state lives in refs to avoid React strict mode double-invocation issues
+    const snakeRef = useRef<Point[]>([{ x: 10, y: 10 }]);
+    const foodRef = useRef<Point>({ x: 15, y: 10 });
     const dirRef = useRef<Direction>('RIGHT');
+    const gameOverRef = useRef(false);
+    const startedRef = useRef(false);
+
+    // State only for triggering re-renders and UI display
+    const [tick, setTick] = useState(0);
+    const [score, setScore] = useState(0);
+    const [highScore, setHighScore] = useState(0);
+    const [gameOver, setGameOver] = useState(false);
+    const [started, setStarted] = useState(false);
+    const [direction, setDirection] = useState<Direction>('RIGHT');
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -37,30 +43,37 @@ export function SnakeGame() {
     }, []);
 
     const reset = useCallback(() => {
-        const initial = [{ x: 10, y: 10 }];
-        setSnake(initial);
-        setFood(randomFood(initial));
-        setDirection('RIGHT');
+        snakeRef.current = [{ x: 10, y: 10 }];
+        foodRef.current = randomFood(snakeRef.current);
         dirRef.current = 'RIGHT';
+        gameOverRef.current = false;
+        startedRef.current = true;
+        setDirection('RIGHT');
         setGameOver(false);
         setScore(0);
+        setStarted(true);
+        setTick(0);
+    }, []);
+
+    const start = useCallback(() => {
+        startedRef.current = true;
         setStarted(true);
     }, []);
 
     // Keyboard controls
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
-            if (gameOver) {
+            if (gameOverRef.current) {
                 if (e.key === ' ' || e.key === 'Enter') {
                     e.preventDefault();
                     reset();
                 }
                 return;
             }
-            if (!started) {
+            if (!startedRef.current) {
                 if (e.key === ' ' || e.key === 'Enter') {
                     e.preventDefault();
-                    setStarted(true);
+                    start();
                 }
                 return;
             }
@@ -95,71 +108,71 @@ export function SnakeGame() {
         };
         window.addEventListener('keydown', handleKey);
         return () => window.removeEventListener('keydown', handleKey);
-    }, [gameOver, started, reset]);
+    }, [reset, start]);
 
-    // Game loop
+    // Game loop — all logic is imperative, no React state updaters with side effects
     useEffect(() => {
         if (!started || gameOver) return;
 
         const interval = setInterval(() => {
-            setSnake(prev => {
-                const head = { ...prev[0] };
-                const dir = dirRef.current;
+            const prev = snakeRef.current;
+            const head = { ...prev[0] };
+            const dir = dirRef.current;
 
-                if (dir === 'UP') head.y -= 1;
-                else if (dir === 'DOWN') head.y += 1;
-                else if (dir === 'LEFT') head.x -= 1;
-                else if (dir === 'RIGHT') head.x += 1;
+            if (dir === 'UP') head.y -= 1;
+            else if (dir === 'DOWN') head.y += 1;
+            else if (dir === 'LEFT') head.x -= 1;
+            else if (dir === 'RIGHT') head.x += 1;
 
-                // Wall collision
-                if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-                    setGameOver(true);
-                    return prev;
-                }
+            // Wall collision
+            if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                gameOverRef.current = true;
+                setGameOver(true);
+                return;
+            }
 
-                // Self collision
-                if (prev.some(s => s.x === head.x && s.y === head.y)) {
-                    setGameOver(true);
-                    return prev;
-                }
+            // Self collision
+            if (prev.some(s => s.x === head.x && s.y === head.y)) {
+                gameOverRef.current = true;
+                setGameOver(true);
+                return;
+            }
 
-                const newSnake = [head, ...prev];
+            const ate = head.x === foodRef.current.x && head.y === foodRef.current.y;
 
-                // Eat food
-                setFood(currentFood => {
-                    if (head.x === currentFood.x && head.y === currentFood.y) {
-                        setScore(s => {
-                            const newScore = s + 1;
-                            setHighScore(hi => {
-                                if (newScore > hi) {
-                                    localStorage.setItem('habit-sys-snake-high', String(newScore));
-                                    return newScore;
-                                }
-                                return hi;
-                            });
+            if (ate) {
+                snakeRef.current = [head, ...prev];
+                foodRef.current = randomFood(snakeRef.current);
+                setScore(s => {
+                    const newScore = s + 1;
+                    setHighScore(hi => {
+                        if (newScore > hi) {
+                            localStorage.setItem('habit-sys-snake-high', String(newScore));
                             return newScore;
-                        });
-                        const nextFood = randomFood(newSnake);
-                        return nextFood;
-                    }
-                    newSnake.pop();
-                    return currentFood;
+                        }
+                        return hi;
+                    });
+                    return newScore;
                 });
+            } else {
+                snakeRef.current = [head, ...prev.slice(0, -1)];
+            }
 
-                return newSnake;
-            });
+            setTick(t => t + 1);
         }, TICK_MS);
 
         return () => clearInterval(interval);
     }, [started, gameOver]);
 
-    // Canvas rendering
+    // Canvas rendering — depends on tick to re-render
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
+        const snake = snakeRef.current;
+        const food = foodRef.current;
         const size = GRID_SIZE * CELL_SIZE;
 
         // Get theme colours from CSS vars
@@ -194,7 +207,6 @@ export function SnakeGame() {
         snake.forEach((segment, i) => {
             ctx.fillStyle = fg;
             if (i === 0) {
-                // Head — full cell
                 ctx.fillRect(
                     segment.x * CELL_SIZE,
                     segment.y * CELL_SIZE,
@@ -202,7 +214,6 @@ export function SnakeGame() {
                     CELL_SIZE,
                 );
             } else {
-                // Body — inset 1px
                 ctx.fillRect(
                     segment.x * CELL_SIZE + 1,
                     segment.y * CELL_SIZE + 1,
@@ -216,7 +227,7 @@ export function SnakeGame() {
         ctx.strokeStyle = fg;
         ctx.lineWidth = 2;
         ctx.strokeRect(0, 0, size, size);
-    }, [snake, food]);
+    }, [tick, gameOver]);
 
     const size = GRID_SIZE * CELL_SIZE;
 
@@ -236,8 +247,8 @@ export function SnakeGame() {
         touchStart.current = null;
 
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
-            if (!started) setStarted(true);
-            if (gameOver) reset();
+            if (!startedRef.current) start();
+            if (gameOverRef.current) reset();
             return;
         }
 
@@ -274,7 +285,7 @@ export function SnakeGame() {
                 {!started && !gameOver && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white/80">
                         <button
-                            onClick={() => setStarted(true)}
+                            onClick={start}
                             className="text-sm font-bold tracking-widest cursor-pointer hover:underline"
                         >
                             [ START ]
@@ -303,7 +314,7 @@ export function SnakeGame() {
                         <button
                             key={dir}
                             onPointerDown={() => {
-                                if (gameOver || !started) return;
+                                if (gameOverRef.current || !startedRef.current) return;
                                 const cur = dirRef.current;
                                 const opposites: Record<Direction, Direction> = { UP: 'DOWN', DOWN: 'UP', LEFT: 'RIGHT', RIGHT: 'LEFT' };
                                 if (cur !== opposites[dir]) {
