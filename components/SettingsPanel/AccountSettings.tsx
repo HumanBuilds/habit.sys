@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react';
 import { updateAlias, updateEmail, updatePassword } from '@/app/settings/actions';
+import { useToast } from '@/context/ToastContext';
 
 const EyeIcon = ({ show }: { show: boolean }) => (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" shapeRendering="crispEdges">
@@ -22,25 +23,19 @@ function RetroSpinner() {
     return <span className="inline-block w-4 text-center font-bold">{frames[frame]}</span>;
 }
 
-type ButtonStatus = 'idle' | 'pending' | 'success' | 'error';
+type ButtonStatus = 'idle' | 'pending' | 'error';
 
-// min-w ensures the button never shrinks below the width of "UPDATED"
-function StatusButton({ status, disabled, className = '' }: {
+function StatusButton({ status, className = '' }: {
     status: ButtonStatus;
-    disabled?: boolean;
     className?: string;
 }) {
-    const isDisabled = disabled || status === 'pending' || status === 'success';
     return (
         <button
             type="submit"
-            disabled={isDisabled}
+            disabled={status === 'pending'}
             className={`btn-retro text-sm min-w-[90px] ${className}`}
         >
-            {status === 'pending' && <RetroSpinner />}
-            {status === 'success' && 'UPDATED'}
-            {status === 'error' && 'ERROR'}
-            {status === 'idle' && 'UPDATE'}
+            {status === 'pending' ? <RetroSpinner /> : 'UPDATE'}
         </button>
     );
 }
@@ -59,7 +54,6 @@ export function AccountSettings({ userData }: AccountSettingsProps) {
     return (
         <div className="flex flex-col">
             <AliasSection initialAlias={userData.alias} />
-            <EmailSection currentEmail={userData.email} />
             <PasswordSection hasPassword={userData.hasPassword} />
         </div>
     );
@@ -73,18 +67,27 @@ function AliasSection({ initialAlias }: { initialAlias: string | null }) {
     const [savedAlias, setSavedAlias] = useState(initial);
     const [isPending, startTransition] = useTransition();
     const [status, setStatus] = useState<ButtonStatus>('idle');
+    const [error, setError] = useState('');
+    const { showToast } = useToast();
 
     const hasChanged = alias !== savedAlias;
 
     const handleSave = (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        if (alias.trim().length > 12) {
+            setError('Alias must be 12 characters or fewer');
+            return;
+        }
         startTransition(async () => {
             const result = await updateAlias(alias);
             if (result.error) {
                 setStatus('error');
+                setError(result.error);
             } else {
                 setSavedAlias(alias);
-                setStatus('success');
+                setStatus('idle');
+                showToast('ALIAS UPDATED');
             }
         });
     };
@@ -96,13 +99,14 @@ function AliasSection({ initialAlias }: { initialAlias: string | null }) {
                 <input
                     type="text"
                     value={alias}
-                    onChange={(e) => { setAlias(e.target.value); setStatus('idle'); }}
-                    maxLength={20}
+                    onChange={(e) => { setAlias(e.target.value); setStatus('idle'); setError(''); }}
+                    maxLength={12}
                     className="input-retro flex-1"
                     placeholder="ENTER ALIAS"
                 />
-                <StatusButton status={isPending ? 'pending' : status} disabled={!hasChanged} />
+                <StatusButton status={isPending ? 'pending' : status} />
             </form>
+            {error && <p className="text-xs font-bold tracking-wider mt-1">{error}</p>}
         </div>
     );
 }
@@ -114,18 +118,32 @@ function EmailSection({ currentEmail }: { currentEmail: string | null }) {
     const [savedEmail, setSavedEmail] = useState(currentEmail ?? '');
     const [isPending, startTransition] = useTransition();
     const [status, setStatus] = useState<ButtonStatus>('idle');
+    const [error, setError] = useState('');
+    const { showToast } = useToast();
 
     const hasChanged = email.toLowerCase() !== savedEmail.toLowerCase();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        const trimmed = email.trim().toLowerCase();
+        if (!trimmed) {
+            setError('Email is required');
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+            setError('Invalid email address');
+            return;
+        }
         startTransition(async () => {
             const result = await updateEmail(email);
             if (result.error) {
                 setStatus('error');
+                setError(result.error);
             } else {
                 setSavedEmail(email.toLowerCase());
-                setStatus('success');
+                setStatus('idle');
+                showToast('EMAIL UPDATED');
             }
         });
     };
@@ -137,13 +155,14 @@ function EmailSection({ currentEmail }: { currentEmail: string | null }) {
                 <input
                     type="email"
                     value={email}
-                    onChange={(e) => { setEmail(e.target.value); setStatus('idle'); }}
+                    onChange={(e) => { setEmail(e.target.value); setStatus('idle'); setError(''); }}
                     className="input-retro flex-1"
                     placeholder="EMAIL ADDRESS"
                     autoComplete="email"
                 />
-                <StatusButton status={isPending ? 'pending' : status} disabled={!hasChanged} />
+                <StatusButton status={isPending ? 'pending' : status} />
             </form>
+            {error && <p className="text-xs font-bold tracking-wider mt-1">{error}</p>}
         </div>
     );
 }
@@ -157,9 +176,20 @@ function PasswordSection({ hasPassword }: { hasPassword: boolean }) {
     const [showNew, setShowNew] = useState(false);
     const [isPending, startTransition] = useTransition();
     const [status, setStatus] = useState<ButtonStatus>('idle');
+    const [error, setError] = useState('');
+    const { showToast } = useToast();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        if (newPassword.length < 8) {
+            setError('Password must be at least 8 characters');
+            return;
+        }
+        if (hasPassword && !currentPassword) {
+            setError('Current password is required');
+            return;
+        }
         startTransition(async () => {
             const result = await updatePassword(
                 newPassword,
@@ -167,15 +197,17 @@ function PasswordSection({ hasPassword }: { hasPassword: boolean }) {
             );
             if (result.error) {
                 setStatus('error');
+                setError(result.error);
             } else {
                 setCurrentPassword('');
                 setNewPassword('');
-                setStatus('success');
+                setStatus('idle');
+                showToast('PASSWORD UPDATED');
             }
         });
     };
 
-    const clearStatus = () => { if (status !== 'idle') setStatus('idle'); };
+    const clearStatus = () => { if (status !== 'idle') setStatus('idle'); setError(''); };
 
     return (
         <div>
@@ -190,7 +222,6 @@ function PasswordSection({ hasPassword }: { hasPassword: boolean }) {
                             className="input-retro w-full pr-16"
                             placeholder="CURRENT PASSWORD"
                             autoComplete="current-password"
-                            required
                         />
                         <button
                             type="button"
@@ -210,7 +241,6 @@ function PasswordSection({ hasPassword }: { hasPassword: boolean }) {
                         className="input-retro w-full pr-16"
                         placeholder="NEW PASSWORD"
                         autoComplete="new-password"
-                        required
                     />
                     <button
                         type="button"
@@ -221,6 +251,7 @@ function PasswordSection({ hasPassword }: { hasPassword: boolean }) {
                         <EyeIcon show={showNew} />
                     </button>
                 </div>
+                {error && <p className="text-xs font-bold tracking-wider">{error}</p>}
                 <StatusButton status={isPending ? 'pending' : status} disabled={!newPassword} className="w-full" />
             </form>
         </div>
