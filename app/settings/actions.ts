@@ -3,6 +3,11 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { createNeonClient } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
+import Stripe from 'stripe'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2025-12-15.clover',
+})
 
 export async function getPointsBalance(): Promise<{ balance: number; error?: string }> {
     const { userId } = await auth()
@@ -23,6 +28,20 @@ const SHOP_CATALOG: Record<string, { name: string; cost: number }> = {
     'sticker-1bit': { name: '1-BIT STICKER', cost: 5 },
     'colour-swap': { name: 'COLOUR SWAP', cost: 15 },
     'sound-pack': { name: 'SOUND PACK', cost: 30 },
+}
+
+const PREMIUM_CATALOG: Record<string, { name: string; priceInCents: number; stripePriceId: string }> = {
+    'bonus-track': { name: 'THE LITTLE BROTH', priceInCents: 99, stripePriceId: process.env.STRIPE_PRICE_BONUS_TRACK! },
+    'secondary-colour': { name: 'SECONDARY COLOUR', priceInCents: 199, stripePriceId: process.env.STRIPE_PRICE_SECONDARY_COLOUR! },
+    'mini-game': { name: 'MINI GAME', priceInCents: 299, stripePriceId: process.env.STRIPE_PRICE_MINI_GAME! },
+}
+
+export async function getPremiumCatalog() {
+    return Object.entries(PREMIUM_CATALOG).map(([id, item]) => ({
+        id,
+        name: item.name,
+        priceInCents: item.priceInCents,
+    }))
 }
 
 export async function redeemShopItem(itemId: string): Promise<{ success?: boolean; error?: string; newBalance?: number }> {
@@ -64,21 +83,67 @@ export async function redeemShopItem(itemId: string): Promise<{ success?: boolea
     return { success: true, newBalance }
 }
 
+export async function createCheckoutSession(itemId: string): Promise<{ url?: string; error?: string }> {
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+
+    const item = PREMIUM_CATALOG[itemId]
+    if (!item) return { error: 'Item not found' }
+
+    const neonClient = await createNeonClient()
+
+    // Check if already purchased
+    const { data: existing } = await neonClient
+        .from('user_purchases')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('item_id', itemId)
+        .maybeSingle()
+
+    if (existing) return { error: 'Already purchased' }
+
+    const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        line_items: [{ price: item.stripePriceId, quantity: 1 }],
+        client_reference_id: userId,
+        metadata: {
+            app_id: process.env.NEXT_PUBLIC_DB_SCHEMA!,
+            item_id: itemId,
+        },
+        success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings?purchased=${itemId}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings`,
+    })
+
+    return { url: session.url ?? undefined }
+}
+
 export async function getPurchasedItemIds(): Promise<string[]> {
     const { userId } = await auth()
     if (!userId) return []
 
     const neonClient = await createNeonClient()
-    const { data } = await neonClient
+
+    // Points-based purchases (from point_events)
+    const { data: pointsPurchases } = await neonClient
         .from('point_events')
         .select('metadata')
         .eq('user_id', userId)
         .eq('type', 'redemption')
 
-    if (!data) return []
-    return data
+    const pointsIds = (pointsPurchases ?? [])
         .map((e: { metadata: { item_id?: string } | null }) => e.metadata?.item_id)
         .filter((id: string | undefined): id is string => !!id)
+
+    // Stripe purchases (from user_purchases)
+    const { data: stripePurchases } = await neonClient
+        .from('user_purchases')
+        .select('item_id')
+        .eq('user_id', userId)
+
+    const stripeIds = (stripePurchases ?? [])
+        .map((e: { item_id: string }) => e.item_id)
+
+    return [...new Set([...pointsIds, ...stripeIds])]
 }
 
 export async function getStickerGrid(): Promise<boolean[] | null> {
@@ -138,6 +203,12 @@ export interface NotificationEvent {
     habit_title?: string
 }
 
+const PREMIUM_ITEM_NAMES: Record<string, string> = {
+    'bonus-track': 'THE LITTLE BROTH',
+    'secondary-colour': 'SECONDARY COLOUR',
+    'mini-game': 'MINI GAME',
+}
+
 export async function getNotificationEvents(): Promise<NotificationEvent[]> {
     const { userId } = await auth()
     if (!userId) return []
@@ -152,11 +223,16 @@ export async function getNotificationEvents(): Promise<NotificationEvent[]> {
         .in('type', ['streak_3', 'streak_10', 'streak_30', 'redemption'])
         .order('created_at', { ascending: false })
 
-    if (!events || events.length === 0) return []
+    // Fetch Stripe purchases
+    const { data: purchases } = await neonClient
+        .from('user_purchases')
+        .select('id, item_id, purchased_at')
+        .eq('user_id', userId)
+        .order('purchased_at', { ascending: false })
 
     // Get habit names for milestone events
     const habitIds = [...new Set(
-        events
+        (events ?? [])
             .map((e: { habit_id?: string }) => e.habit_id)
             .filter((id: string | undefined): id is string => !!id)
     )]
@@ -175,7 +251,7 @@ export async function getNotificationEvents(): Promise<NotificationEvent[]> {
         }
     }
 
-    return events.map((e: { id: string; type: string; amount: number; metadata: Record<string, unknown> | null; created_at: string; habit_id?: string }) => ({
+    const pointEvents: NotificationEvent[] = (events ?? []).map((e: { id: string; type: string; amount: number; metadata: Record<string, unknown> | null; created_at: string; habit_id?: string }) => ({
         id: e.id,
         type: e.type,
         amount: e.amount,
@@ -183,6 +259,18 @@ export async function getNotificationEvents(): Promise<NotificationEvent[]> {
         created_at: e.created_at,
         habit_title: e.habit_id ? habitMap[e.habit_id] : undefined,
     }))
+
+    const purchaseEvents: NotificationEvent[] = (purchases ?? []).map((p: { id: string; item_id: string; purchased_at: string }) => ({
+        id: `purchase-${p.id}`,
+        type: 'purchase',
+        amount: 0,
+        metadata: { item_id: p.item_id, item_name: PREMIUM_ITEM_NAMES[p.item_id] || p.item_id },
+        created_at: p.purchased_at,
+    }))
+
+    return [...pointEvents, ...purchaseEvents].sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )
 }
 
 export async function getAlias(): Promise<{ alias: string | null; error?: string }> {

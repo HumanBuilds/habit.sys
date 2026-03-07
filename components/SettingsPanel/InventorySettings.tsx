@@ -66,10 +66,37 @@ function applyThemeColour(hex: string) {
     document.documentElement.style.setProperty('--color-black', hex);
 }
 
+function MusicNoteIcon() {
+    return (
+        <svg width="48" height="48" viewBox="0 0 256 256" fill="currentColor">
+            <path d="M212.92,17.69a8,8,0,0,0-6.86-1.45l-128,32A8,8,0,0,0,72,56V166.08A36,36,0,1,0,88,196V102.25l112-28v62.83A36,36,0,1,0,216,172V24A8,8,0,0,0,212.92,17.69ZM52,216a20,20,0,1,1,20-20A20,20,0,0,1,52,216ZM88,86.75V62.25l112-28v24.5ZM180,192a20,20,0,1,1,20-20A20,20,0,0,1,180,192Z" />
+        </svg>
+    )
+}
+
+function SecondaryColourIcon() {
+    return (
+        <svg width="48" height="48" viewBox="0 0 256 256" fill="currentColor">
+            <path d="M200.77,53.89A103.27,103.27,0,0,0,128,24h-1.07A104,104,0,0,0,24,128c0,43.41,16.22,71.2,27.76,86.27C60.89,226.18,71.58,232,80,232a27.77,27.77,0,0,0,5-.44,28.11,28.11,0,0,0,22.78-19.89A48.09,48.09,0,0,1,154.24,176H176A104.12,104.12,0,0,0,200.77,53.89ZM68,140a12,12,0,1,1,12-12A12,12,0,0,1,68,140Zm20-44a12,12,0,1,1,12-12A12,12,0,0,1,88,96Zm48-16a12,12,0,1,1,12-12A12,12,0,0,1,136,80Zm40,16a12,12,0,1,1,12-12A12,12,0,0,1,176,96Z" />
+        </svg>
+    )
+}
+
+function GameIcon() {
+    return (
+        <svg width="48" height="48" viewBox="0 0 256 256" fill="currentColor">
+            <path d="M176,112H152a8,8,0,0,1,0-16h24a8,8,0,0,1,0,16ZM104,96H96V88a8,8,0,0,0-16,0v8H72a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16ZM241.48,200.65a36,36,0,0,1-60.1,14.17,36.26,36.26,0,0,1-8.41-14.42L160.74,160H95.26L83,200.4a36.12,36.12,0,0,1-8.41,14.42,36,36,0,0,1-60.1-14.17,36.59,36.59,0,0,1-1.28-18.27L30.6,77.59A60,60,0,0,1,90,32h76a60,60,0,0,1,59.4,45.59l17.43,104.79A36.59,36.59,0,0,1,241.48,200.65Z" />
+        </svg>
+    )
+}
+
 const INVENTORY_ITEMS: Record<string, { name: string; icon: () => ReactNode }> = {
     'sticker-1bit': { name: '1-BIT STICKER', icon: StickerIcon },
     'colour-swap': { name: 'COLOUR SWAP', icon: SwapIcon },
     'sound-pack': { name: 'SOUND PACK', icon: SpeakerIcon },
+    'bonus-track': { name: 'THE LITTLE BROTH', icon: MusicNoteIcon },
+    'secondary-colour': { name: 'SECONDARY COLOUR', icon: SecondaryColourIcon },
+    'mini-game': { name: 'MINI GAME', icon: GameIcon },
 }
 
 function CustomStickerIcon({ grid }: { grid: boolean[] }) {
@@ -115,8 +142,12 @@ export function InventorySettings({ purchasedItemIds, stickerGrid: initialSticke
         } else if (itemId === 'colour-swap') {
             setShowColourPicker(prev => !prev)
             setShowStickerEditor(false)
-        } else if (itemId === 'sound-pack') {
+        } else if (itemId === 'sound-pack' || itemId === 'bonus-track') {
             showCustomToast(MUSIC_TOAST_ID, <MusicPlayerContent />)
+        } else if (itemId === 'secondary-colour') {
+            showToast('SECONDARY COLOUR — COMING SOON')
+        } else if (itemId === 'mini-game') {
+            showToast('MINI GAME — COMING SOON')
         } else {
             showToast(`${INVENTORY_ITEMS[itemId]?.name || 'ITEM'} ACTIVATED`)
         }

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/context/ToastContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sidewaysFlashVariants } from '@/utils/animations';
 import { SettingsMenu } from './SettingsMenu';
@@ -36,12 +37,30 @@ interface SettingsClientProps {
     purchasedItemIds: string[];
     notificationEvents: NotificationEvent[];
     stickerGrid: boolean[] | null;
+    justPurchased?: string;
 }
 
-export function SettingsClient({ isAuthenticated, userData, pointsBalance, purchasedItemIds, notificationEvents, stickerGrid }: SettingsClientProps) {
+export function SettingsClient({ isAuthenticated, userData, pointsBalance, purchasedItemIds, notificationEvents, stickerGrid, justPurchased }: SettingsClientProps) {
     const [activePage, setActivePage] = useState<SettingsPage>('menu');
     const [direction, setDirection] = useState(1);
     const router = useRouter();
+    const { showToast } = useToast();
+
+    useEffect(() => {
+        if (justPurchased) {
+            const names: Record<string, string> = {
+                'bonus-track': 'THE LITTLE BROTH',
+                'secondary-colour': 'SECONDARY COLOUR',
+                'mini-game': 'MINI GAME',
+            };
+            const name = names[justPurchased];
+            if (name) {
+                showToast(`ACQUIRED: ${name}`, 'milestone');
+            }
+            window.history.replaceState({}, '', '/settings');
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const navigateTo = (page: SettingsPage) => {
         setDirection(1);

@@ -1,18 +1,22 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { neon } from '@neondatabase/serverless';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2025-12-15.clover', // Updated to match installed library version
+    apiVersion: '2025-12-15.clover',
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
-// Mock function to unlock premium features
-async function unlockPremium(userId: string) {
-    console.log(`[Mock] Unlocking premium features for user: ${userId}`);
-    // implementation would go here
-    return true;
+async function fulfillPurchase(userId: string, itemId: string, sessionId: string) {
+    const sql = neon(process.env.DATABASE_URL!);
+    await sql`
+        INSERT INTO user_purchases (user_id, item_id, stripe_session_id)
+        VALUES (${userId}, ${itemId}, ${sessionId})
+        ON CONFLICT (user_id, item_id) DO NOTHING
+    `;
+    console.log(`[Webhook] Fulfilled purchase: ${itemId} for user ${userId}`);
 }
 
 export async function POST(req: Request) {
@@ -22,10 +26,11 @@ export async function POST(req: Request) {
     let event: Stripe.Event;
 
     try {
-        event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } catch (err: any) {
-        console.error(`Webhook signature verification failed.`, err.message);
-        return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+        event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Unknown error';
+        console.error(`Webhook signature verification failed.`, message);
+        return new NextResponse(`Webhook Error: ${message}`, { status: 400 });
     }
 
     if (event.type === 'checkout.session.completed') {
@@ -33,19 +38,18 @@ export async function POST(req: Request) {
         const metadata = session.metadata;
 
         // CRITICAL: Hub & Spoke Guard
-        // We only care about events for this specific "Spoke" (App ID)
         if (metadata?.app_id !== process.env.NEXT_PUBLIC_DB_SCHEMA) {
             console.log(`[Webhook] Ignoring event for app_id: ${metadata?.app_id}`);
             return NextResponse.json({ received: true, ignored: true });
         }
 
-        const userId = session.client_reference_id; // Assuming client_reference_id is the user ID
+        const userId = session.client_reference_id;
+        const itemId = metadata?.item_id;
 
-        if (userId) {
-            await unlockPremium(userId);
-            console.log(`[Webhook] Processed premium unlock for user ${userId}`);
+        if (userId && itemId) {
+            await fulfillPurchase(userId, itemId, session.id);
         } else {
-            console.warn('[Webhook] No user ID found in session');
+            console.warn('[Webhook] Missing userId or itemId in session');
         }
     }
 

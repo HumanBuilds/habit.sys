@@ -3,7 +3,8 @@ import { Window } from '@/components/Window';
 import { SettingsClient } from '@/components/SettingsPanel/SettingsClient';
 import { getAlias, getPointsBalance, getPurchasedItemIds, getNotificationEvents, getStickerGrid } from './actions';
 
-export default async function SettingsPage() {
+export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ purchased?: string }> }) {
+    const params = await searchParams;
     const { userId } = await auth();
     const user = userId ? await currentUser() : null;
     const [aliasResult, pointsResult, purchasedIds, notifications, stickerGrid] = await Promise.all([
@@ -26,7 +27,7 @@ export default async function SettingsPage() {
                 title="SYS.CONFIG"
                 className="w-full max-w-2xl min-h-[442px]"
             >
-                <SettingsClient isAuthenticated={!!userId} userData={userData} pointsBalance={pointsResult.balance} purchasedItemIds={purchasedIds} notificationEvents={notifications} stickerGrid={stickerGrid} />
+                <SettingsClient isAuthenticated={!!userId} userData={userData} pointsBalance={pointsResult.balance} purchasedItemIds={purchasedIds} notificationEvents={notifications} stickerGrid={stickerGrid} justPurchased={params.purchased} />
             </Window>
         </div>
     );
