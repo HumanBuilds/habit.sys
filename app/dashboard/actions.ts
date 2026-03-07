@@ -257,6 +257,89 @@ export async function checkProtocolEligibility() {
     }
 }
 
+// ── Dev-only actions (stripped in production builds) ──
+
+export async function devAddPoints(amount: number) {
+    if (process.env.NODE_ENV === 'production') return { error: 'Not available' }
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+    const neonClient = await createNeonClient()
+    await adjustPoints(neonClient, userId, amount)
+    revalidatePath('/dashboard')
+    revalidatePath('/settings')
+    return { success: true }
+}
+
+export async function devResetPoints() {
+    if (process.env.NODE_ENV === 'production') return { error: 'Not available' }
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+    const neonClient = await createNeonClient()
+
+    // Delete all point events
+    await neonClient.from('point_events').delete().eq('user_id', userId)
+    // Reset balance to 0
+    const { data: existing } = await neonClient
+        .from('user_points')
+        .select('user_id')
+        .eq('user_id', userId)
+        .maybeSingle()
+    if (existing) {
+        await neonClient
+            .from('user_points')
+            .update({ balance: 0, updated_at: new Date().toISOString() })
+            .eq('user_id', userId)
+    }
+
+    revalidatePath('/dashboard')
+    revalidatePath('/settings')
+    return { success: true }
+}
+
+export async function devResetMilestones(habitId: string) {
+    if (process.env.NODE_ENV === 'production') return { error: 'Not available' }
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+    const neonClient = await createNeonClient()
+
+    // Delete milestone events for this habit (allows re-earning)
+    for (const type of ['streak_3', 'streak_10', 'streak_30']) {
+        await neonClient
+            .from('point_events')
+            .delete()
+            .eq('user_id', userId)
+            .eq('habit_id', habitId)
+            .eq('type', type)
+    }
+
+    revalidatePath('/dashboard')
+    return { success: true }
+}
+
+export async function devGetPointsInfo() {
+    if (process.env.NODE_ENV === 'production') return { error: 'Not available' }
+    const { userId } = await auth()
+    if (!userId) return { error: 'Unauthorized' }
+    const neonClient = await createNeonClient()
+
+    const { data: points } = await neonClient
+        .from('user_points')
+        .select('balance')
+        .eq('user_id', userId)
+        .maybeSingle()
+
+    const { data: events } = await neonClient
+        .from('point_events')
+        .select('type, amount, habit_id, created_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+
+    return {
+        balance: points?.balance ?? 0,
+        events: events ?? [],
+    }
+}
+
 export async function forceResetProtocol(habitId: string) {
     const { userId } = await auth()
 

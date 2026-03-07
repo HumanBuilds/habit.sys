@@ -8,6 +8,7 @@ import { useClerk } from '@clerk/nextjs';
 import { HabitTaskList } from '@/components/HabitTaskList';
 import { HabitPunchcard } from '@/components/HabitPunchcard';
 import { ViewToggle } from './ViewToggle';
+import { DevPanel } from '@/components/DevPanel';
 import { sidewaysFlashVariants } from '@/utils/animations';
 
 interface DashboardClientProps {
@@ -21,6 +22,7 @@ interface DashboardClientProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     eligibility: any;
     logsByHabit: Record<string, string[]>;
+    pointsBalance: number;
 }
 
 export const DashboardClient: React.FC<DashboardClientProps> = ({
@@ -29,6 +31,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
     completedHabitIds,
     eligibility,
     logsByHabit,
+    pointsBalance,
 }) => {
     const [viewMode, setViewMode] = useState<'detailed' | 'simplified'>(() => {
         if (typeof window !== 'undefined') {
@@ -122,6 +125,13 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                     </div>
                 )}
 
+
+                {process.env.NODE_ENV === 'development' && habits && habits.length > 0 && (
+                    <DevPanel
+                        habits={habits.map(h => ({ id: h.id, title: h.title }))}
+                        initialBalance={pointsBalance}
+                    />
+                )}
 
             </div >
 
