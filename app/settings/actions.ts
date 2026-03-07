@@ -293,7 +293,7 @@ export async function updateAlias(alias: string): Promise<{ success?: boolean; e
     if (!userId) return { error: 'Unauthorized' }
 
     const trimmed = alias.trim()
-    if (trimmed.length > 20) return { error: 'Alias must be 20 characters or fewer' }
+    if (trimmed.length > 12) return { error: 'Alias must be 12 characters or fewer' }
 
     const neonClient = await createNeonClient()
 
@@ -351,7 +351,7 @@ export async function updateEmail(newEmail: string): Promise<{ success?: boolean
         return { success: true }
     } catch (err: unknown) {
         const clerkErr = err as { errors?: { longMessage?: string }[] }
-        return { error: clerkErr?.errors?.[0]?.longMessage || 'Failed to update email' }
+        return { error: 'Failed to update email. Please try a different address.' }
     }
 }
 
