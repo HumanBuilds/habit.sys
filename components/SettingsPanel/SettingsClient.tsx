@@ -11,9 +11,10 @@ import { AccountSettings } from './AccountSettings';
 import { NotificationsSettings } from './NotificationsSettings';
 import { InventorySettings } from './InventorySettings';
 import { ShopView } from './ShopView';
+import { SnakeGame } from './SnakeGame';
 import type { NotificationEvent } from '@/app/settings/actions';
 
-type SettingsPage = 'menu' | 'sound' | 'account' | 'shop' | 'notifications' | 'inventory';
+type SettingsPage = 'menu' | 'sound' | 'account' | 'shop' | 'notifications' | 'inventory' | 'snake';
 
 const pageTitles: Record<SettingsPage, string> = {
     menu: 'SETTINGS',
@@ -22,6 +23,11 @@ const pageTitles: Record<SettingsPage, string> = {
     shop: 'SHOP',
     notifications: 'NOTIFICATIONS',
     inventory: 'INVENTORY',
+    snake: 'SNAKE.SYS',
+};
+
+const pageParent: Partial<Record<SettingsPage, SettingsPage>> = {
+    snake: 'inventory',
 };
 
 interface UserData {
@@ -69,7 +75,7 @@ export function SettingsClient({ isAuthenticated, userData, pointsBalance, purch
 
     const goBack = () => {
         setDirection(-1);
-        setActivePage('menu');
+        setActivePage(pageParent[activePage] || 'menu');
     };
 
     const handleExit = () => {
@@ -94,7 +100,9 @@ export function SettingsClient({ isAuthenticated, userData, pointsBalance, purch
             case 'notifications':
                 return <NotificationsSettings events={notificationEvents} />;
             case 'inventory':
-                return <InventorySettings purchasedItemIds={purchasedItemIds} stickerGrid={stickerGrid} />;
+                return <InventorySettings purchasedItemIds={purchasedItemIds} stickerGrid={stickerGrid} onNavigate={(page) => navigateTo(page as SettingsPage)} />;
+            case 'snake':
+                return <SnakeGame />;
         }
     };
 

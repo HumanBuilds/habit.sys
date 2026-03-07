@@ -20,7 +20,7 @@ function randomFood(snake: Point[]): Point {
     return food;
 }
 
-export function SnakeGame({ onClose }: { onClose: () => void }) {
+export function SnakeGame() {
     const [snake, setSnake] = useState<Point[]>([{ x: 10, y: 10 }]);
     const [food, setFood] = useState<Point>({ x: 15, y: 10 });
     const [direction, setDirection] = useState<Direction>('RIGHT');
@@ -253,16 +253,6 @@ export function SnakeGame({ onClose }: { onClose: () => void }) {
 
     return (
         <div className="flex flex-col items-center gap-3">
-            <div className="w-full flex items-center justify-between">
-                <p className="text-sm font-bold tracking-widest">SNAKE.SYS</p>
-                <button
-                    onClick={onClose}
-                    className="text-xs font-bold tracking-widest hover:underline cursor-pointer"
-                >
-                    [ CLOSE ]
-                </button>
-            </div>
-
             <div className="flex gap-4 text-xs font-bold tracking-widest">
                 <span>SCORE: {score}</span>
                 <span>HI: {highScore}</span>
