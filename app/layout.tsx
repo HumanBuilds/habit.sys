@@ -31,7 +31,7 @@ export default function RootLayout({
         <head>
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){try{var c=localStorage.getItem('habit-sys-primary-colour');if(c)document.documentElement.style.setProperty('--color-black',c)}catch(e){}})()`,
+              __html: `(function(){try{var c=localStorage.getItem('habit-sys-primary-colour');if(c)document.documentElement.style.setProperty('--color-black',c);var s=localStorage.getItem('habit-sys-secondary-colour');if(s)document.documentElement.style.setProperty('--color-white',s)}catch(e){}})()`,
             }}
           />
         </head>
