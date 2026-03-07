@@ -1,16 +1,19 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
 
 export interface Toast {
     id: string
-    message: string
-    type: 'milestone' | 'info'
+    message?: string
+    type: 'milestone' | 'info' | 'custom'
+    persistent?: boolean
+    content?: ReactNode
 }
 
 interface ToastContextValue {
     toasts: Toast[]
-    showToast: (message: string, type?: Toast['type']) => void
+    showToast: (message: string, type?: 'milestone' | 'info') => void
+    showCustomToast: (id: string, content: ReactNode) => void
     dismissToast: (id: string) => void
 }
 
@@ -23,7 +26,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         setToasts(prev => prev.filter(t => t.id !== id))
     }, [])
 
-    const showToast = useCallback((message: string, type: Toast['type'] = 'info') => {
+    const showToast = useCallback((message: string, type: 'milestone' | 'info' = 'info') => {
         const id = crypto.randomUUID()
         setToasts(prev => [...prev, { id, message, type }])
 
@@ -32,8 +35,18 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         }, 4000)
     }, [dismissToast])
 
+    const showCustomToast = useCallback((id: string, content: ReactNode) => {
+        setToasts(prev => {
+            // Replace if same id exists, otherwise add
+            if (prev.some(t => t.id === id)) {
+                return prev.map(t => t.id === id ? { id, type: 'custom' as const, persistent: true, content } : t)
+            }
+            return [...prev, { id, type: 'custom' as const, persistent: true, content }]
+        })
+    }, [])
+
     return (
-        <ToastContext.Provider value={{ toasts, showToast, dismissToast }}>
+        <ToastContext.Provider value={{ toasts, showToast, showCustomToast, dismissToast }}>
             {children}
         </ToastContext.Provider>
     )

@@ -10,6 +10,7 @@ import { AccountSettings } from './AccountSettings';
 import { NotificationsSettings } from './NotificationsSettings';
 import { InventorySettings } from './InventorySettings';
 import { ShopView } from './ShopView';
+import type { NotificationEvent } from '@/app/settings/actions';
 
 type SettingsPage = 'menu' | 'sound' | 'account' | 'shop' | 'notifications' | 'inventory';
 
@@ -32,9 +33,12 @@ interface SettingsClientProps {
     isAuthenticated: boolean;
     userData: UserData | null;
     pointsBalance: number;
+    purchasedItemIds: string[];
+    notificationEvents: NotificationEvent[];
+    stickerGrid: boolean[] | null;
 }
 
-export function SettingsClient({ isAuthenticated, userData, pointsBalance }: SettingsClientProps) {
+export function SettingsClient({ isAuthenticated, userData, pointsBalance, purchasedItemIds, notificationEvents, stickerGrid }: SettingsClientProps) {
     const [activePage, setActivePage] = useState<SettingsPage>('menu');
     const [direction, setDirection] = useState(1);
     const router = useRouter();
@@ -67,11 +71,11 @@ export function SettingsClient({ isAuthenticated, userData, pointsBalance }: Set
             case 'account':
                 return <AccountSettings userData={userData} />;
             case 'shop':
-                return <ShopView balance={pointsBalance} />;
+                return <ShopView balance={pointsBalance} purchasedItemIds={purchasedItemIds} />;
             case 'notifications':
-                return <NotificationsSettings />;
+                return <NotificationsSettings events={notificationEvents} />;
             case 'inventory':
-                return <InventorySettings />;
+                return <InventorySettings purchasedItemIds={purchasedItemIds} stickerGrid={stickerGrid} />;
         }
     };
 

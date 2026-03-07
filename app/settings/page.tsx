@@ -1,14 +1,17 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { Window } from '@/components/Window';
 import { SettingsClient } from '@/components/SettingsPanel/SettingsClient';
-import { getAlias, getPointsBalance } from './actions';
+import { getAlias, getPointsBalance, getPurchasedItemIds, getNotificationEvents, getStickerGrid } from './actions';
 
 export default async function SettingsPage() {
     const { userId } = await auth();
     const user = userId ? await currentUser() : null;
-    const [aliasResult, pointsResult] = await Promise.all([
+    const [aliasResult, pointsResult, purchasedIds, notifications, stickerGrid] = await Promise.all([
         userId ? getAlias() : Promise.resolve({ alias: null }),
         userId ? getPointsBalance() : Promise.resolve({ balance: 0 }),
+        userId ? getPurchasedItemIds() : Promise.resolve([]),
+        userId ? getNotificationEvents() : Promise.resolve([]),
+        userId ? getStickerGrid() : Promise.resolve(null),
     ]);
 
     const userData = userId ? {
@@ -23,7 +26,7 @@ export default async function SettingsPage() {
                 title="SYS.CONFIG"
                 className="w-full max-w-2xl min-h-[442px]"
             >
-                <SettingsClient isAuthenticated={!!userId} userData={userData} pointsBalance={pointsResult.balance} />
+                <SettingsClient isAuthenticated={!!userId} userData={userData} pointsBalance={pointsResult.balance} purchasedItemIds={purchasedIds} notificationEvents={notifications} stickerGrid={stickerGrid} />
             </Window>
         </div>
     );

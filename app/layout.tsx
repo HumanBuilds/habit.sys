@@ -28,6 +28,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){try{var c=localStorage.getItem('habit-sys-primary-colour');if(c)document.documentElement.style.setProperty('--color-black',c)}catch(e){}})()`,
+            }}
+          />
+        </head>
         <body
           className={`${vt323.variable} ${vt323.className} dither-50 retro-theme h-dvh overflow-hidden flex flex-col`}
         >
