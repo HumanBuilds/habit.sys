@@ -93,7 +93,7 @@ function GameIcon() {
 const INVENTORY_ITEMS: Record<string, { name: string; icon: () => ReactNode }> = {
     'sticker-1bit': { name: '1-BIT STICKER', icon: StickerIcon },
     'colour-swap': { name: 'COLOUR SWAP', icon: SwapIcon },
-    'sound-pack': { name: 'SOUND PACK', icon: SpeakerIcon },
+    'sound-pack': { name: 'BLACK FRAME', icon: SpeakerIcon },
     'bonus-track': { name: 'THE LITTLE BROTH', icon: MusicNoteIcon },
     'secondary-colour': { name: 'SECONDARY COLOUR', icon: SecondaryColourIcon },
     'mini-game': { name: 'MINI GAME', icon: GameIcon },

@@ -19,7 +19,7 @@ function CartIcon() {
 const SHOP_ITEMS = [
     { id: 'sticker-1bit', name: '1-BIT STICKER', cost: 5, category: 'STICKER' },
     { id: 'colour-swap', name: 'COLOUR SWAP', cost: 15, category: 'THEME' },
-    { id: 'sound-pack', name: 'SOUND PACK', cost: 30, category: 'SOUND' },
+    { id: 'sound-pack', name: 'BLACK FRAME', cost: 30, category: 'SOUND' },
 ]
 
 const PREMIUM_ITEMS = [
