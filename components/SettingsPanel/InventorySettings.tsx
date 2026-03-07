@@ -48,19 +48,11 @@ const DEFAULT_SECONDARY = '#FFFFFF';
 const PRIMARY_PALETTE = [
     { hex: '#000000', name: 'BLACK' },
     { hex: '#1a1a2e', name: 'MIDNIGHT' },
-    { hex: '#0f3460', name: 'ROYAL' },
     { hex: '#023e8a', name: 'OCEAN' },
     { hex: '#3a0ca3', name: 'INDIGO' },
-    { hex: '#533483', name: 'PURPLE' },
     { hex: '#c9184a', name: 'CRIMSON' },
-    { hex: '#b80000', name: 'DARK RED' },
-    { hex: '#e94560', name: 'CORAL' },
     { hex: '#ff6600', name: 'ORANGE' },
-    { hex: '#6b4226', name: 'BROWN' },
-    { hex: '#4a4e69', name: 'SLATE' },
     { hex: '#1b4332', name: 'FOREST' },
-    { hex: '#2d6a4f', name: 'SAGE' },
-    { hex: '#065f46', name: 'TEAL' },
     { hex: '#374151', name: 'GRAPHITE' },
 ];
 
@@ -68,19 +60,11 @@ const SECONDARY_PALETTE = [
     { hex: '#FFFFFF', name: 'WHITE' },
     { hex: '#f5f5f0', name: 'CREAM' },
     { hex: '#fdf6e3', name: 'SOLARIZED' },
-    { hex: '#fff8dc', name: 'CORNSILK' },
-    { hex: '#f0fff0', name: 'HONEYDEW' },
     { hex: '#f0f8ff', name: 'ALICE' },
-    { hex: '#fff0f5', name: 'LAVENDER' },
     { hex: '#fce4ec', name: 'ROSE' },
     { hex: '#e8f5e9', name: 'MINT' },
-    { hex: '#e3f2fd', name: 'ICE' },
     { hex: '#f3e5f5', name: 'LILAC' },
-    { hex: '#fff3e0', name: 'PEACH' },
     { hex: '#e0e0e0', name: 'SILVER' },
-    { hex: '#d7ccc8', name: 'WARM GREY' },
-    { hex: '#cfd8dc', name: 'COOL GREY' },
-    { hex: '#c8e6c9', name: 'SEAFOAM' },
 ];
 
 function applyPrimaryColour(hex: string) {
