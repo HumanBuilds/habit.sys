@@ -4,6 +4,23 @@ import { auth } from '@clerk/nextjs/server'
 import { createNeonClient } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
 
+export type MilestoneEvent = {
+    type: 'streak_3' | 'streak_10' | 'streak_30'
+    bonusPoints: number
+    streakCount: number
+}
+
+export type CommitResult =
+    | { success: true; pointsEarned?: number; milestones?: MilestoneEvent[] }
+    | { success: true; pointsDeducted?: number }
+    | { error: string; details?: unknown }
+
+const STREAK_THRESHOLDS = [
+    { days: 3, bonus: 3, type: 'streak_3' as const },
+    { days: 10, bonus: 5, type: 'streak_10' as const },
+    { days: 30, bonus: 10, type: 'streak_30' as const },
+]
+
 export async function queryProtocolStreak(habitId: string) {
     const { userId } = await auth()
 
@@ -55,7 +72,30 @@ export async function queryProtocolStreak(habitId: string) {
     return streak
 }
 
-export async function commitHabitLog(habitId: string, isCompleted: boolean) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function adjustPoints(neonClient: any, userId: string, amount: number) {
+    const { data: existing } = await neonClient
+        .from('user_points')
+        .select('balance')
+        .eq('user_id', userId)
+        .maybeSingle()
+
+    const currentBalance = existing?.balance ?? 0
+    const newBalance = Math.max(0, currentBalance + amount)
+
+    if (existing) {
+        await neonClient
+            .from('user_points')
+            .update({ balance: newBalance, updated_at: new Date().toISOString() })
+            .eq('user_id', userId)
+    } else {
+        await neonClient
+            .from('user_points')
+            .insert({ user_id: userId, balance: newBalance, updated_at: new Date().toISOString() })
+    }
+}
+
+export async function commitHabitLog(habitId: string, isCompleted: boolean): Promise<CommitResult> {
     const { userId } = await auth()
 
     if (!userId) return { error: 'Unauthorized' }
@@ -79,6 +119,12 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
                 .lt('completed_at', startOfTomorrowUtc.toISOString())
 
             if (error) throw error
+
+            // Deduct 1 point (milestones are never reversed)
+            await adjustPoints(neonClient, userId, -1)
+
+            revalidatePath('/dashboard')
+            return { success: true, pointsDeducted: 1 }
         } else {
             // Check: insert with a timestamp
             const { error } = await neonClient
@@ -96,13 +142,57 @@ export async function commitHabitLog(habitId: string, isCompleted: boolean) {
                     throw error
                 }
             }
-        }
 
-        revalidatePath('/dashboard')
-        return { success: true }
-    } catch (error: any) {
+            // Award 1 point for completion
+            let totalPointsEarned = 1
+            await adjustPoints(neonClient, userId, 1)
+
+            // Log the completion event
+            await neonClient.from('point_events').insert({
+                user_id: userId,
+                habit_id: habitId,
+                type: 'completion',
+                amount: 1,
+            })
+
+            // Check for streak milestones
+            const streak = await queryProtocolStreak(habitId)
+            const milestones: MilestoneEvent[] = []
+
+            for (const threshold of STREAK_THRESHOLDS) {
+                if (streak >= threshold.days) {
+                    // Try to insert milestone — partial unique index rejects duplicates
+                    const { error: milestoneError } = await neonClient
+                        .from('point_events')
+                        .insert({
+                            user_id: userId,
+                            habit_id: habitId,
+                            type: threshold.type,
+                            amount: threshold.bonus,
+                            metadata: { streak_count: streak },
+                        })
+
+                    if (!milestoneError) {
+                        // Milestone awarded for the first time
+                        await adjustPoints(neonClient, userId, threshold.bonus)
+                        totalPointsEarned += threshold.bonus
+                        milestones.push({
+                            type: threshold.type,
+                            bonusPoints: threshold.bonus,
+                            streakCount: streak,
+                        })
+                    }
+                    // If error code 23505, milestone was already awarded — silently skip
+                }
+            }
+
+            revalidatePath('/dashboard')
+            return { success: true, pointsEarned: totalPointsEarned, milestones }
+        }
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'An unknown error occurred'
         console.error('Error toggling habit:', error)
-        return { error: error?.message || 'An unknown error occurred', details: error }
+        return { error: message, details: error }
     }
 }
 

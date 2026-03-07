@@ -6,10 +6,17 @@ import Link from 'next/link';
 import { HabitTaskItem } from './HabitTaskItem';
 import { EmptyState } from './EmptyState';
 import { sortHabits, type Habit } from './utils';
-import { commitHabitLog } from '@/app/dashboard/actions';
+import { commitHabitLog, type MilestoneEvent } from '@/app/dashboard/actions';
 import { GlitchState } from '../GlitchState';
 import { sidewaysFlashVariants, glitchExpansionVariants } from '@/utils/animations';
 import { soundEngine } from '@/utils/sound-engine';
+import { useToast } from '@/context/ToastContext';
+
+const MILESTONE_LABELS: Record<MilestoneEvent['type'], string> = {
+    streak_3: '3-DAY CHAIN',
+    streak_10: '10-DAY DEDICATION',
+    streak_30: '30-DAY PROTOCOL',
+};
 
 interface HabitTaskListProps {
     habits: Habit[];
@@ -32,6 +39,7 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
     const [isPending, startTransition] = useTransition();
     const [devOverride, setDevOverride] = useState(false);
     const [glitchExpanded, setGlitchExpanded] = useState(false);
+    const { showToast } = useToast();
 
     // Initial value for useOptimistic should be the base prop.
     const [optimisticCompletedIds, addOptimisticId] = useOptimistic(
@@ -74,9 +82,18 @@ export const HabitTaskList: React.FC<HabitTaskListProps> = ({ habits, completedH
             }
 
             const result = await commitHabitLog(habitId, isCompleted);
-            if (result.error) {
+            if ('error' in result) {
                 // revalidatePath will handle the rollback if needed by fetching fresh data
                 console.error(result.error);
+            } else if ('milestones' in result && result.milestones && result.milestones.length > 0) {
+                // Play milestone sound and show toasts
+                for (const milestone of result.milestones) {
+                    soundEngine.playConfirm();
+                    showToast(
+                        `STREAK PROTOCOL: ${MILESTONE_LABELS[milestone.type]} // +${milestone.bonusPoints} PTS`,
+                        'milestone'
+                    );
+                }
             }
         });
     };
