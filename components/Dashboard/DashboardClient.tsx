@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -33,6 +33,14 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
     logsByHabit,
     pointsBalance,
 }) => {
+    // Re-apply theme colours from localStorage on mount (client-side nav won't re-run the inline script)
+    useEffect(() => {
+        const primary = localStorage.getItem('habit-sys-primary-colour');
+        const secondary = localStorage.getItem('habit-sys-secondary-colour');
+        if (primary) document.documentElement.style.setProperty('--color-black', primary);
+        if (secondary) document.documentElement.style.setProperty('--color-white', secondary);
+    }, []);
+
     const [viewMode, setViewMode] = useState<'detailed' | 'simplified'>(() => {
         if (typeof window !== 'undefined') {
             const stored = sessionStorage.getItem('viewToggle');
@@ -55,6 +63,11 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
         // then sign out in the background without triggering its own redirect
         router.push('/login');
         signOut({ redirectUrl: '/login' });
+        // Reset theme colours mid-transition so the colour drains as pages slide
+        setTimeout(() => {
+            document.documentElement.style.setProperty('--color-black', '#000000');
+            document.documentElement.style.setProperty('--color-white', '#FFFFFF');
+        }, 600);
     };
 
     return (
@@ -70,7 +83,7 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                     <div className="flex gap-4">
                         <button
                             onClick={handleExit}
-                            className="btn-retro-secondary text-xs"
+                            className="btn-retro-secondary text-xs shrink-0 whitespace-nowrap"
                         >
                             [ <span>EXIT</span> ]
                         </button>
@@ -126,12 +139,12 @@ export const DashboardClient: React.FC<DashboardClientProps> = ({
                 )}
 
 
-                {process.env.NODE_ENV === 'development' && habits && habits.length > 0 && (
+                {/* {process.env.NODE_ENV === 'development' && habits && habits.length > 0 && (
                     <DevPanel
                         habits={habits.map(h => ({ id: h.id, title: h.title }))}
                         initialBalance={pointsBalance}
                     />
-                )}
+                )} */}
 
             </div >
 
