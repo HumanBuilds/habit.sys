@@ -39,12 +39,12 @@ export const GlitchState: React.FC<GlitchStateProps> = ({
                 {stats && (
                     <div className="space-y-2 text-sm ">
                         <div className="flex justify-between border-b border-white/10 pb-1">
-                            <span>LATEST_PROTOCOL:</span>
+                            <span>LATEST PROTOCOL:</span>
                             <span className="font-bold underline">{latestHabitTitle?.toUpperCase() || "N/A"}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span>STABILITY_COUNT:</span>
-                            <span className={stats.completions >= stats.requiredCompletions ? "flex items-center gap-2 font-bold" : "glitch-text-large glitch-text"}>
+                            <span>STABILITY COUNT:</span>
+                            <span className={stats.completions >= stats.requiredCompletions ? "flex items-center gap-2 font-bold" : ""}>
                                 {stats.completions >= stats.requiredCompletions ? (
                                     <>
                                         COMPLETED
@@ -56,8 +56,8 @@ export const GlitchState: React.FC<GlitchStateProps> = ({
                             </span>
                         </div>
                         <div className="flex justify-between">
-                            <span>DEDICATION_RATE:</span>
-                            <span className={stats.dedication >= stats.requiredDedication ? "flex items-center gap-2 font-bold" : "glitch-text-large glitch-text"}>
+                            <span>DEDICATION RATE:</span>
+                            <span className={stats.dedication >= stats.requiredDedication ? "flex items-center gap-2 font-bold" : ""}>
                                 {stats.dedication >= stats.requiredDedication ? (
                                     <>
                                         STABLE
@@ -70,11 +70,6 @@ export const GlitchState: React.FC<GlitchStateProps> = ({
                         </div>
                     </div>
                 )}
-
-                <div className="mt-2 text-xs opacity-60 italic">
-                    &gt;&gt; STATUS: MODULE_UNSTABLE. <br />
-                    &gt;&gt; ADVICE: STRENGTHEN THE CURRENT NODE BEFORE SYSTEM EXPANSION.
-                </div>
             </div>
         </motion.div>
     );
