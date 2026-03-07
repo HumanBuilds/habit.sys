@@ -2,6 +2,7 @@ import { auth, currentUser } from '@clerk/nextjs/server'
 import { createNeonClient } from '@/lib/neon'
 import { redirect } from 'next/navigation'
 import { checkProtocolEligibility } from './actions'
+import { getAlias, getPointsBalance } from '../settings/actions'
 import { Window } from '@/components/Window'
 import { DashboardClient } from '@/components/Dashboard'
 
@@ -42,6 +43,11 @@ export default async function DashboardPage() {
     // Check protocol eligibility for new ones
     const eligibility = await checkProtocolEligibility()
 
+    const [aliasResult, pointsResult] = await Promise.all([
+        getAlias(),
+        getPointsBalance(),
+    ])
+
     return (
         <div className="h-full p-4 md:p-8 !pb-0 flex flex-col items-center justify-center">
             <Window
@@ -50,11 +56,12 @@ export default async function DashboardPage() {
 
             >
                 <DashboardClient
-                    user={{ email: user?.emailAddresses[0]?.emailAddress }}
+                    user={{ email: user?.emailAddresses[0]?.emailAddress, alias: aliasResult.alias }}
                     habits={habits || []}
                     completedHabitIds={completedHabitIds}
                     eligibility={eligibility}
                     logsByHabit={logsByHabit}
+                    pointsBalance={pointsResult.balance}
                 />
             </Window>
         </div>

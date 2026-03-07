@@ -5,6 +5,8 @@ import "./globals.css";
 import PageTransition from "@/components/PageTransition";
 import { Footer } from "@/components/Footer";
 import { RetroSoundController } from "@/components/RetroSoundController";
+import { ToastProvider } from "@/context/ToastContext";
+import { ToastContainer } from "@/components/Toast";
 
 const vt323 = VT323({
   weight: "400",
@@ -25,17 +27,27 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){try{var p=location.pathname;if(p.startsWith('/dashboard')||p.startsWith('/settings')||p.startsWith('/create-habit')||p.startsWith('/edit-habit')){var c=localStorage.getItem('habit-sys-primary-colour');if(c)document.documentElement.style.setProperty('--color-black',c);var s=localStorage.getItem('habit-sys-secondary-colour');if(s)document.documentElement.style.setProperty('--color-white',s)}}catch(e){}})()`,
+            }}
+          />
+        </head>
         <body
           className={`${vt323.variable} ${vt323.className} dither-50 retro-theme h-dvh overflow-hidden flex flex-col`}
         >
-          <RetroSoundController />
-          <div className="flex-1 overflow-hidden relative">
-            <PageTransition>
-              {children}
-            </PageTransition>
-          </div>
-          <Footer />
+          <ToastProvider>
+            <RetroSoundController />
+            <ToastContainer />
+            <div className="flex-1 overflow-hidden relative">
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </div>
+            <Footer />
+          </ToastProvider>
         </body>
       </html>
     </ClerkProvider>

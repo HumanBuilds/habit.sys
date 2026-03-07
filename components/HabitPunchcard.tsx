@@ -11,6 +11,20 @@ interface HabitPunchcardProps {
     frequency?: string[]; // Array of short weekdays e.g. ['Mon', 'Tue']
 }
 
+function hashRef(id: string): string {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+        hash = ((hash << 5) - hash + id.charCodeAt(i)) | 0;
+    }
+    const num = Math.abs(hash);
+    const chars = 'ABCDEFGHJKLMNPQRSTVWXYZ';
+    const c1 = chars[num % chars.length];
+    const c2 = chars[(num >> 5) % chars.length];
+    const c3 = chars[(num >> 10) % chars.length];
+    const digits = String(num).slice(0, 5).padStart(5, '0');
+    return `${c1}${c2}${c3}${digits}`;
+}
+
 export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ id, title, createdAt, logs, frequency }) => {
     // 1. Calculate dates from creation to today
     const createdDate = new Date(createdAt);
@@ -41,12 +55,10 @@ export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ id, title, creat
 
     return (
         <div className="punchcard w-full max-w-md">
-            <div className="punchcard-clip"></div>
-
             <div className="flex justify-between items-start mb-6 border-b border-[rgba(0,0,0,0.1)] pb-2">
                 <div>
                     <h3 className="text-2xl font-bold tracking-tighter leading-none">{title.toUpperCase()}</h3>
-                    <p className="punchcard-label mt-1">PROTOCOL_REF: {createdAt.replace(/[^0-9]/g, '').slice(0, 8)}</p>
+                    <p className="punchcard-label mt-1">PROTOCOL REF: {hashRef(id)}</p>
                 </div>
                 <div className="text-right">
                     <p className="punchcard-label">ESTABLISHED</p>
@@ -64,28 +76,17 @@ export const HabitPunchcard: React.FC<HabitPunchcardProps> = ({ id, title, creat
                             key={dateStr}
                             className={`punchcard-slot ${isPunched ? 'punched' : ''}`}
                             title={dateStr}
-                        >
-                            {/* Visual indicator for week boundaries could be added here if needed */}
-                        </div>
+                        />
                     );
                 })}
             </div>
 
-            <div className="mt-6 pt-4 border-t-2 border-dashed border-[rgba(0,0,0,0.2)] flex flex-col gap-3">
-                <div className="flex justify-between items-center">
-                    <div className="punchcard-label italic text-[10px] opacity-60">
-                        &gt;&gt; DATA_INTEGRITY_VERIFIED
-                    </div>
-                    <div className="text-[10px] font-bold opacity-30 uppercase font-mono">
-                        REF: {id ? id.slice(0, 8) : 'NULL'}
-                    </div>
-                </div>
-
+            <div className="mt-6 flex flex-col gap-3">
                 <Link
                     href={`/edit-habit/${id}`}
                     className="btn-retro-secondary w-full text-center group"
                 >
-                    [ <span >MODIFY_PROTOCOL_PARAMETERS</span> ]
+                    [ <span>MODIFY PROTOCOL</span> ]
                 </Link>
             </div>
         </div>
