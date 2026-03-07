@@ -40,12 +40,26 @@ export function NotificationsSettings({ events }: NotificationsSettingsProps) {
         <div className="flex flex-col gap-2">
             {events.map(event => {
                 const isMilestone = event.type.startsWith('streak_');
-                const label = isMilestone
-                    ? MILESTONE_LABELS[event.type] || event.type.toUpperCase()
-                    : `ACQUIRED: ${(event.metadata as { item_name?: string })?.item_name || 'ITEM'}`;
-                const subtitle = isMilestone
-                    ? event.habit_title?.toUpperCase() || 'PROTOCOL'
-                    : `${Math.abs(event.amount)} PTS REDEEMED`;
+                const isPurchase = event.type === 'purchase';
+                const itemName = (event.metadata as { item_name?: string })?.item_name || 'ITEM';
+
+                let label: string;
+                let subtitle: string;
+                let badge: string;
+
+                if (isMilestone) {
+                    label = MILESTONE_LABELS[event.type] || event.type.toUpperCase();
+                    subtitle = event.habit_title?.toUpperCase() || 'PROTOCOL';
+                    badge = `+${event.amount} PTS`;
+                } else if (isPurchase) {
+                    label = `ACQUIRED: ${itemName}`;
+                    subtitle = 'PREMIUM PURCHASE';
+                    badge = 'PAID';
+                } else {
+                    label = `ACQUIRED: ${itemName}`;
+                    subtitle = `${Math.abs(event.amount)} PTS REDEEMED`;
+                    badge = `${Math.abs(event.amount)} PTS`;
+                }
 
                 return (
                     <div
@@ -64,9 +78,7 @@ export function NotificationsSettings({ events }: NotificationsSettingsProps) {
                             <p className="text-xs tracking-widest opacity-60 truncate">{subtitle}</p>
                         </div>
                         <div className="shrink-0 text-right">
-                            <p className="font-bold text-sm tracking-tight">
-                                {isMilestone ? `+${event.amount} PTS` : `${Math.abs(event.amount)} PTS`}
-                            </p>
+                            <p className="font-bold text-sm tracking-tight">{badge}</p>
                             <p className="text-xs tracking-widest opacity-60">{formatDate(event.created_at)}</p>
                         </div>
                     </div>

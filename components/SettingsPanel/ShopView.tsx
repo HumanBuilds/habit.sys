@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { Lock } from 'lucide-react'
-import { redeemShopItem } from '@/app/settings/actions'
+import { redeemShopItem, createCheckoutSession } from '@/app/settings/actions'
 import { useToast } from '@/context/ToastContext'
 import { soundEngine } from '@/utils/sound-engine'
 
@@ -20,6 +20,12 @@ const SHOP_ITEMS = [
     { id: 'sticker-1bit', name: '1-BIT STICKER', cost: 5, category: 'STICKER' },
     { id: 'colour-swap', name: 'COLOUR SWAP', cost: 15, category: 'THEME' },
     { id: 'sound-pack', name: 'SOUND PACK', cost: 30, category: 'SOUND' },
+]
+
+const PREMIUM_ITEMS = [
+    { id: 'bonus-track', name: 'THE LITTLE BROTH', priceLabel: '$0.99', category: 'PREMIUM' },
+    { id: 'secondary-colour', name: 'SECONDARY COLOUR', priceLabel: '$1.99', category: 'PREMIUM' },
+    { id: 'mini-game', name: 'MINI GAME', priceLabel: '$2.99', category: 'PREMIUM' },
 ]
 
 interface ShopViewProps {
@@ -41,6 +47,17 @@ export function ShopView({ balance: initialBalance, purchasedItemIds: initialPur
                 setPurchased(prev => new Set(prev).add(itemId))
                 soundEngine.playConfirm()
                 showToast(`ACQUIRED: ${itemName}`, 'info')
+            } else if (result.error) {
+                showToast(`ERROR: ${result.error}`, 'info')
+            }
+        })
+    }
+
+    const handleBuy = (itemId: string) => {
+        startTransition(async () => {
+            const result = await createCheckoutSession(itemId)
+            if (result.url) {
+                window.location.href = result.url
             } else if (result.error) {
                 showToast(`ERROR: ${result.error}`, 'info')
             }
@@ -88,6 +105,40 @@ export function ShopView({ balance: initialBalance, purchasedItemIds: initialPur
                                     {canAfford && <CartIcon />}
                                     <span className="text-sm font-bold">{item.cost} PTS</span>
                                 </div>
+                            )}
+                        </button>
+                    )
+                })}
+            </div>
+
+            {/* Premium Items */}
+            <div className="pt-4 mt-4 border-t-2 border-black">
+                <label className="text-sm font-bold uppercase tracking-widest">PREMIUM</label>
+            </div>
+            <div className="flex flex-col gap-3 mt-3">
+                {PREMIUM_ITEMS.map(item => {
+                    const owned = purchased.has(item.id)
+                    return (
+                        <button
+                            key={item.id}
+                            disabled={owned || isPending}
+                            onClick={() => handleBuy(item.id)}
+                            className={`border-2 border-black p-3 flex justify-between items-center text-left transition-colors ${
+                                owned
+                                    ? 'opacity-60'
+                                    : 'cursor-pointer hover:bg-black hover:text-white'
+                            }`}
+                        >
+                            <div className="flex items-center gap-3">
+                                <div>
+                                    <p className="font-bold text-sm tracking-wider">{item.name}</p>
+                                    <p className="text-xs tracking-widest opacity-70">{item.category}</p>
+                                </div>
+                            </div>
+                            {owned ? (
+                                <span className="text-sm font-bold tracking-wider">PURCHASED</span>
+                            ) : (
+                                <span className="text-sm font-bold">{item.priceLabel}</span>
                             )}
                         </button>
                     )
